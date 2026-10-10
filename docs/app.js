@@ -17,51 +17,95 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let paused = reduced.matches, frame = 0, width = 0, height = 0, angle = 0.3, last = 0, visible = true;
   let pointer = { x: 0, y: 0 }, rotation = { x: 0, y: 0 };
-  const rings = [];
-  for (let j = 0; j < 30; j++) {
-    const ring = [];
-    for (let i = 0; i <= 140; i++) {
-      const u = i / 140 * Math.PI * 2, v = j / 30 * Math.PI * 2;
-      const radius = 1.25 + .47 * Math.cos(v);
-      ring.push([radius * Math.cos(u), radius * Math.sin(u), .47 * Math.sin(v)]);
-    }
-    rings.push(ring);
+  // Seeded stars keep the galaxy stable across reloads and viewport changes.
+  let seed = 938;
+  function random() { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }
+  function scatter() { return (random() + random() + random() - 1.5); }
+  const stars = [];
+  const background = Array.from({ length: 130 }, () => ({
+    x: random(), y: random(), size: .35 + random() * 1.1, alpha: .12 + random() * .45
+  }));
+  for (let i = 0; i < 3400; i++) {
+    const radius = .06 + Math.pow(random(), .7) * 2.15;
+    const arm = i % 4 * Math.PI / 2;
+    const theta = arm + radius * 2.6 + scatter() * (.15 + radius * .16);
+    const spread = .025 + radius * .09;
+    stars.push({
+      x: Math.cos(theta) * radius + scatter() * spread,
+      y: Math.sin(theta) * radius + scatter() * spread,
+      z: scatter() * (.05 + .1 * Math.exp(-radius * 2)),
+      size: .35 + Math.pow(random(), 3) * 1.5,
+      alpha: .25 + random() * .65,
+      color: radius < .55 ? '#ffe6b0' : ['#a8c4ff', '#c6b7ff', '#e1eaff', '#8ca9ed'][i % 4]
+    });
   }
-  function project(point, spin) {
-    const [x,y,z] = point;
-    const a = .9 + rotation.y, b = spin + rotation.x;
-    const yy = y * Math.cos(a) - z * Math.sin(a), zz = y * Math.sin(a) + z * Math.cos(a);
-    const xx = x * Math.cos(b) + zz * Math.sin(b), depth = -x * Math.sin(b) + zz * Math.cos(b);
-    const c = -.43;
-    const rx = xx * Math.cos(c) - yy * Math.sin(c), ry = xx * Math.sin(c) + yy * Math.cos(c);
-    const scale = Math.min(width,height) * .26 * 4.5 / (4.5 + depth);
-    return [width / 2 + rx * scale, height / 2 + ry * scale, depth];
+  // A spherical central bulge gives the disk a luminous, dimensional core.
+  for (let i = 0; i < 700; i++) {
+    const theta = random() * Math.PI * 2, phi = Math.acos(2 * random() - 1);
+    const radius = Math.pow(random(), 2) * .55;
+    stars.push({ x: radius * Math.sin(phi) * Math.cos(theta),
+      y: radius * Math.sin(phi) * Math.sin(theta), z: radius * Math.cos(phi) * .5,
+      size: .4 + random() * .8, alpha: .25 + random() * .65, color: '#ffe5ba' });
+  }
+  function project(star) {
+    const spin = angle;
+    const x = star.x * Math.cos(spin) - star.y * Math.sin(spin);
+    const y = star.x * Math.sin(spin) + star.y * Math.cos(spin);
+    const tilt = 1.02 + rotation.y;
+    const vertical = y * Math.cos(tilt) - star.z * Math.sin(tilt);
+    const depth = y * Math.sin(tilt) + star.z * Math.cos(tilt);
+    const roll = -.38 + rotation.x;
+    const scale = Math.min(width, height) * .205 * 5 / (5 + depth);
+    return [width / 2 + (x * Math.cos(roll) - vertical * Math.sin(roll)) * scale,
+      height * .5 + (x * Math.sin(roll) + vertical * Math.cos(roll)) * scale,
+      5 / (5 + depth)];
+  }
+  function halo(x, y, radius, color) {
+    const glow = context.createRadialGradient(x, y, 0, x, y, radius);
+    glow.addColorStop(0, color); glow.addColorStop(1, 'rgba(0,0,0,0)');
+    context.fillStyle = glow; context.fillRect(x-radius, y-radius, radius*2, radius*2);
   }
   function draw(time = 0) {
     frame = 0;
     const delta = last ? Math.min(time-last,40) : 0;
     last = time;
-    if (!paused) angle += delta * .000095;
-    rotation.x += (pointer.x-rotation.x)*.045; rotation.y += (pointer.y-rotation.y)*.045;
-    context.clearRect(0,0,width,height);
-    const glow = context.createRadialGradient(width/2,height*.52,10,width/2,height*.52,width*.44);
-    glow.addColorStop(0,'rgba(172,208,112,.09)'); glow.addColorStop(1,'rgba(172,208,112,0)');
-    context.fillStyle=glow; context.fillRect(0,0,width,height);
-    const rendered = rings.map(ring => ring.map(point => project(point,angle)));
-    rendered.sort((a,b) => b.reduce((s,p)=>s+p[2],0)-a.reduce((s,p)=>s+p[2],0));
-    rendered.forEach(ring => {
-      for(let i=1;i<ring.length;i++) {
-        const depth = (ring[i][2]+1.8)/3.6;
-        context.strokeStyle=`rgba(${Math.round(207-depth*66)},${Math.round(236-depth*63)},${Math.round(154-depth*60)},${.22+(1-depth)*.55})`;
-        context.lineWidth=.65+(1-depth)*.7;
-        context.beginPath();context.moveTo(ring[i-1][0],ring[i-1][1]);context.lineTo(ring[i][0],ring[i][1]);context.stroke();
-      }
-    });
-    for(let i=0;i<16;i++) {
-      const t=i/16*Math.PI*2;
-      const p=project([2.05*Math.cos(t),2.05*Math.sin(t),.1],angle*.35);
-      context.fillStyle='rgba(198,224,152,.45)';context.fillRect(p[0],p[1],1.5,1.5);
+    if (!paused) {
+      angle += delta * .000025;
+      rotation.x += (pointer.x-rotation.x)*.045;
+      rotation.y += (pointer.y-rotation.y)*.045;
     }
+    context.clearRect(0,0,width,height);
+    for (const star of background) {
+      context.globalAlpha = star.alpha;
+      context.fillStyle = '#d1ddf5';
+      context.fillRect(star.x * width, 40 + star.y * (height-80), star.size, star.size);
+    }
+    context.globalAlpha = 1;
+    context.save();
+    context.translate(width/2, height*.5);
+    context.rotate(-.38 + rotation.x);
+    context.scale(1, .48);
+    context.globalCompositeOperation = 'lighter';
+    halo(0, 0, Math.min(width,height)*.47, 'rgba(95,111,230,.16)');
+    halo(0, 0, Math.min(width,height)*.21, 'rgba(216,177,240,.16)');
+    context.restore();
+    context.globalCompositeOperation = 'lighter';
+    // Additive starlight avoids per-frame sorting and keeps mobile rendering light.
+    for (const star of stars) {
+      const [x,y,depth] = project(star);
+      const size = star.size * depth;
+      context.globalAlpha = star.alpha;
+      context.fillStyle = star.color;
+      context.fillRect(x-size/2, y-size/2, size, size);
+      if (star.size > 1.65) {
+        context.globalAlpha = star.alpha * .08;
+        context.fillRect(x-size*2, y-size*2, size*4, size*4);
+      }
+    }
+    context.globalAlpha = 1;
+    halo(width/2, height*.5, Math.min(width,height)*.11, 'rgba(255,220,166,.48)');
+    halo(width/2, height*.5, Math.min(width,height)*.035, 'rgba(255,245,218,.8)');
+    context.globalCompositeOperation = 'source-over';
     if (!paused && visible && !document.hidden) frame=requestAnimationFrame(draw);
   }
   function requestDraw(){if(!frame) frame=requestAnimationFrame(draw);}
