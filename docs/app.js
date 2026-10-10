@@ -13,9 +13,10 @@
   const context = canvas.getContext('2d');
   if (!context) return;
   const scene = document.querySelector('#scene');
+  const astronaut = document.querySelector('#astronaut');
   const button = document.querySelector('#motion');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let paused = reduced.matches, frame = 0, width = 0, height = 0, angle = 0.3, last = 0, visible = true;
+  let paused = reduced.matches, frame = 0, width = 0, height = 0, angle = 0.3, last = 0, visible = true, elapsed = 0;
   let pointer = { x: 0, y: 0 }, rotation = { x: 0, y: 0 };
   // Seeded stars keep the galaxy stable across reloads and viewport changes.
   let seed = 938;
@@ -23,7 +24,7 @@
   function scatter() { return (random() + random() + random() - 1.5); }
   const stars = [];
   const background = Array.from({ length: 130 }, () => ({
-    x: random(), y: random(), size: .35 + random() * 1.1, alpha: .12 + random() * .45
+    x: random(), y: random(), size: .35 + random() * 1.1, alpha: .12 + random() * .45, phase: random() * Math.PI * 2
   }));
   for (let i = 0; i < 3400; i++) {
     const radius = .06 + Math.pow(random(), .7) * 2.15;
@@ -70,17 +71,46 @@
     const delta = last ? Math.min(time-last,40) : 0;
     last = time;
     if (!paused) {
-      angle += delta * .000025;
+      angle += delta * .000065;
+      elapsed += delta / 1000;
       rotation.x += (pointer.x-rotation.x)*.045;
       rotation.y += (pointer.y-rotation.y)*.045;
     }
+    if (astronaut) {
+      const driftX = Math.sin(elapsed * .34) * 12 + rotation.x * 22;
+      const driftY = Math.cos(elapsed * .48) * 13 + rotation.y * 14;
+      astronaut.style.transform = `translate3d(${driftX}px, ${driftY}px, 0) rotate(${16 + Math.sin(elapsed * .3) * 9}deg)`;
+    }
     context.clearRect(0,0,width,height);
     for (const star of background) {
-      context.globalAlpha = star.alpha;
+      context.globalAlpha = star.alpha * (.8 + .2 * Math.sin(elapsed * .7 + star.phase));
       context.fillStyle = '#d1ddf5';
       context.fillRect(star.x * width, 40 + star.y * (height-80), star.size, star.size);
     }
     context.globalAlpha = 1;
+    // Fine orbital arcs frame the galaxy without covering the stars.
+    context.save();
+    context.translate(width*.5, height*.5);
+    context.rotate(-.38 + rotation.x);
+    context.strokeStyle = 'rgba(154,180,227,.13)';
+    context.lineWidth = .7;
+    context.setLineDash([2,7]);
+    context.beginPath();
+    context.ellipse(0,0,Math.min(width,height)*.47,Math.min(width,height)*.21,0,0,Math.PI*2);
+    context.stroke();
+    context.restore();
+    // One brief meteor every twelve seconds; no flashes or abrupt bursts.
+    const meteor = elapsed % 12;
+    if (meteor > 8 && meteor < 9.4) {
+      const progress = (meteor-8)/1.4;
+      const x = width*(.18 + progress*.55), y = height*(.1 + progress*.28);
+      const trail = context.createLinearGradient(x-65,y-30,x,y);
+      trail.addColorStop(0,'rgba(164,195,255,0)');
+      trail.addColorStop(1,`rgba(210,225,255,${Math.sin(progress*Math.PI)*.65})`);
+      context.strokeStyle = trail;
+      context.lineWidth = 1.2;
+      context.beginPath();context.moveTo(x-65,y-30);context.lineTo(x,y);context.stroke();
+    }
     context.save();
     context.translate(width/2, height*.5);
     context.rotate(-.38 + rotation.x);
