@@ -1,0 +1,6 @@
+{
+  "name": "yashwant-portfolio",
+  "private": true,
+  "scripts": { "test": "node tests/smoke.cjs" },
+  "devDependencies": { "playwright": "1.62.1" }
+}

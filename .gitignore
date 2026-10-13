@@ -1,3 +1,6 @@
 # Original private Sites checkout and deployment package
 /yash-portfolio/
 /yash-portfolio.tar.gz
+node_modules/
+test-results/
+__pycache__/

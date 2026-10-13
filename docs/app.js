@@ -2,12 +2,38 @@
   'use strict';
   const filters = [...document.querySelectorAll('[data-filter]')];
   const projects = [...document.querySelectorAll('[data-category]')];
-  filters.forEach(button => button.addEventListener('click', () => {
-    filters.forEach(item => { item.classList.toggle('active', item === button); item.setAttribute('aria-pressed', String(item === button)); });
+  const search = document.querySelector('#project-search');
+  const status = document.querySelector('#filter-status');
+  let activeFilter = 'all';
+  const normalize = text => text.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const searchable = new Map(projects.map(project => [project, normalize(project.textContent)]));
+  function filterProjects() {
+    const terms = normalize(search.value).trim().split(/\s+/).filter(Boolean);
     let count = 0;
-    projects.forEach(project => { project.hidden = button.dataset.filter !== 'all' && !project.dataset.category.split(' ').includes(button.dataset.filter); if (!project.hidden) count++; });
-    document.querySelector('#filter-status').textContent = `${count} projects shown`;
+    projects.forEach(project => {
+      const categoryMatch = activeFilter === 'all' || project.dataset.category.split(' ').includes(activeFilter);
+      const textMatch = terms.every(term => searchable.get(project).includes(term));
+      project.hidden = !categoryMatch || !textMatch;
+      if (!project.hidden) count++;
+    });
+    status.textContent = `${count} of ${projects.length} projects and contribution highlights shown`;
+    document.querySelector('#no-results').hidden = count !== 0;
+    filters.forEach(button => {
+      const selected = button.dataset.filter === activeFilter;
+      button.classList.toggle('active', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+  }
+  filters.forEach(button => button.addEventListener('click', () => {
+    activeFilter = button.dataset.filter;
+    filterProjects();
   }));
+  search.addEventListener('input', filterProjects);
+  document.querySelector('#reset-filters').addEventListener('click', () => {
+    activeFilter = 'all'; search.value = ''; filterProjects(); search.focus();
+  });
+  document.querySelector('.project-controls').hidden = false;
+  filterProjects();
   document.querySelector('#year').textContent = new Date().getFullYear();
   const canvas = document.querySelector('#orb');
   const context = canvas.getContext('2d');

@@ -1,0 +1,177 @@
+{
+  "verifiedOn": "2026-10-13",
+  "projects": [
+    {
+      "id": "eld", "name": "Qualcomm ELD contributions", "categories": ["systems"], "eyebrow": "SYSTEMS / OPEN SOURCE",
+      "summary": "Two merged fixes in Qualcomm's LLVM-based ELF linker: GNU-compatible numeric -O handling and a PHDRS/FILEHDR layout crash. Further LTO, AArch64, and build-guidance changes are in review.",
+      "status": "2 merged fixes · focused regression tests across 6 target configurations",
+      "stack": ["C++", "LLVM", "Linux", "lit / FileCheck"],
+      "flow": "Object files + linker script → symbol and section layout → ELF executable",
+      "features": ["Accepted numeric GNU -O compatibility options while keeping LTO optimization controls independent.", "Guarded ELF/program-header address assignment when a linker script omits those headers from the output layout.", "Reproduced failures and added regression coverage for x86-64, Hexagon, ARM, AArch64, RV32, and RV64 configurations."],
+      "notes": "The linked PRs record focused validation and expected skips. These were not full-suite runs; review status is listed below.",
+      "links": [{"label": "My contributions", "url": "https://github.com/qualcomm/eld/pulls?q=is%3Apr+author%3Ayashwant938"}]
+    },
+    {
+      "id": "legal-lens", "name": "Legal Lens 2.0", "categories": ["ai", "apps", "research"], "eyebrow": "GENAI / COLLABORATIVE PROJECT",
+      "summary": "A legal research workspace that connects natural-language questions to page-level evidence in a 1,871-page historical IPC PDF. Contributed hybrid retrieval, a cited assistant, and research-brief exports.",
+      "status": "Collaborative research application · source-linked answers",
+      "stack": ["Python", "FastAPI", "Next.js", "MiniLM", "scikit-learn"],
+      "flow": "PDF pages → BM25 + MiniLM indexes → reciprocal rank fusion → cited answer or source excerpts",
+      "features": ["Combined lexical and semantic ranking with reciprocal rank fusion, keeping PDF page references attached to retrieved passages.", "Added retrieval-augmented generation with page-linked citations and a document-excerpt fallback when generation is unavailable.", "Implemented local scope/intent classification using MiniLM embeddings and logistic regression, plus cited research-brief export."],
+      "notes": "Built around a historical source corpus. Retrieval-quality and latency benchmarks are not claimed; the repository documents provider setup and reproduction.",
+      "links": [{"label": "Source & setup", "url": "https://github.com/ZainiiiBoyx278/legal-lens"}, {"label": "My project PRs", "url": "https://github.com/ZainiiiBoyx278/legal-lens/pulls?q=is%3Apr+author%3Ayashwant938+is%3Amerged"}]
+    },
+    {
+      "id": "llvm-bugsquad", "name": "LLVM BugSquad", "categories": ["systems", "ai", "apps"], "eyebrow": "SYSTEMS × GENAI / DEVELOPER TOOLS",
+      "summary": "An LLVM investigation workspace that brings compiler inputs, model-assisted routing, isolated compiler recipes, and inspectable evidence into one local interface.",
+      "status": "Synthetic replay demo · live model/worker integration validation pending",
+      "stack": ["Python", "FastAPI", "Next.js", "SQLite", "Docker", "LLVM"],
+      "flow": "Input IR → FastAPI coordinator → replay/model routing + compiler worker → events and evidence ZIP",
+      "features": ["Stored run history and ordered events in SQLite, with resumable server-sent events and cancellation.", "Implemented fixed opt, FileCheck, and lit recipes with resource-limited Docker workers and captured artifacts.", "Exported reports and ZIP bundles with input/artifact hashes and worker image identity for reproducible investigation."],
+      "notes": "The demo uses synthetic replay scenarios and substituted contract tests. Diagnosis is a deterministic evidence summary; autonomous patching is not implemented.",
+      "links": [{"label": "Architecture & code", "url": "https://github.com/yashwant938/LLVMBugSquad"}]
+    },
+    {
+      "id": "newsscript", "name": "NewsScript", "categories": ["ai", "apps"], "eyebrow": "GENAI / FULL-STACK APPLICATION",
+      "summary": "A news-to-script workspace that collects RSS stories, removes duplicates, ranks articles, and turns selected stories into structured video-script drafts.",
+      "status": "Local prototype · provider integration and deployment hardening pending",
+      "stack": ["TypeScript", "Next.js", "Prisma", "SQLite", "Gemini / OpenAI"],
+      "flow": "RSS → cleanup and ranking → saved articles → model or template draft → text/PDF export",
+      "features": ["Implemented RSS ingestion, URL/title-similarity deduplication, heuristic ranking, and a process-local cache.", "Added bookmarks and stored scripts with short/long formats backed by Prisma and SQLite.", "Integrated optional Gemini/OpenAI generation with a local template fallback, plus copy, text, and PDF exports."],
+      "notes": "Ranking uses heuristic signals, including synthetic engagement inputs. The assistant uses article metadata as context rather than a vector retrieval pipeline.",
+      "links": [{"label": "Explore prototype", "url": "https://github.com/yashwant938/NewsScript"}]
+    },
+    {
+      "id": "moodpet", "name": "MoodPet", "categories": ["apps"], "eyebrow": "DESKTOP / PRODUCTIVITY",
+      "summary": "A native Windows companion that combines an animated desktop pet with focus sessions, local activity history, persistent streaks, and a productivity dashboard.",
+      "status": "Local Windows application",
+      "stack": ["Python", "PySide6", "SQLite", "Windows APIs"],
+      "flow": "Manual timer + activity signals → focus state → SQLite → pet, charts, and history",
+      "features": ["Built pause/resume focus timers with partial-session recording and a tray interface.", "Added daily charts, 7/30-day history, a 12-week calendar, CSV exports, and persistent XP/streaks.", "Stored aggregate durations and sessions locally, with unit tests for focus and persistence behavior."],
+      "notes": "Activity classification uses personal heuristics. The source contains local setup instructions; a packaged public release is not listed.",
+      "links": [{"label": "Source & setup", "url": "https://github.com/yashwant938/MoodPet"}]
+    },
+    {
+      "id": "cpp-concepts", "name": "C++ Concepts Lab", "categories": ["systems", "ai", "apps"], "eyebrow": "SYSTEMS EDUCATION / INTERACTIVE WEB",
+      "summary": "An interactive C++ and STL learning lab with step-through container illustrations, an editable coding workspace, quizzes, and an optional Gemini tutor.",
+      "status": "Public learning interface · external compiler/model services required for those features",
+      "stack": ["React", "Vite", "Monaco", "Wandbox", "Gemini"],
+      "flow": "Lesson + visual simulation → editable code → Wandbox output; lesson context → optional AI tutor",
+      "features": ["Created data-driven memory/container simulations that explain concepts step by step.", "Connected the editor to Wandbox for C++, C, Java, and Python, separating compiler output from program output.", "Added timed quizzes, a browser-local leaderboard, and sanitized Markdown for assistant responses."],
+      "notes": "Visualizations are teaching simulations, not execution traces. The tutor receives lesson context directly rather than using RAG.",
+      "links": [{"label": "Open app", "url": "https://yashwant938.github.io/CompilerCppTopics/"}, {"label": "Source", "url": "https://github.com/yashwant938/CompilerCppTopics"}]
+    },
+    {
+      "id": "quizzes-by-iron", "name": "Quizzes by Iron", "categories": ["apps"], "eyebrow": "REAL-TIME / MULTIPLAYER",
+      "summary": "An event-driven multiplayer quiz with host-controlled rooms, QR-code joins, timed questions, server-side scoring, and live leaderboards.",
+      "status": "Web application · room state held in one server process",
+      "stack": ["React", "Node.js", "Express", "Socket.IO", "Vite"],
+      "flow": "Host/player clients ↔ Socket.IO rooms → timers and scoring → answer feedback and leaderboard",
+      "features": ["Built separate host and player views with six-character room codes and QR join links.", "Implemented 20-second question timers, time-based points, submission counts, and room-scoped updates.", "Checked duplicate lobby names and repeated answers while keeping scoring on the server."],
+      "notes": "Rooms are in memory; host disconnection or server restart ends continuity. The public frontend is available; no scale or latency measurements are claimed.",
+      "links": [{"label": "Open app", "url": "https://quizzesbyiron.vercel.app"}, {"label": "Source", "url": "https://github.com/yashwant938/quizzesbyiron"}]
+    },
+    {
+      "id": "filesystem-lab", "name": "C++ Filesystem & Concurrency Lab", "categories": ["systems"], "eyebrow": "C++ / SYSTEMS COURSEWORK",
+      "summary": "A C++17 command interpreter exploring the differences between sequential and threaded filesystem operations, recursive traversal, and coordinated output.",
+      "status": "Educational Linux experiment",
+      "stack": ["C++17", "std::filesystem", "std::thread", "GCC", "Make"],
+      "flow": "Command parser → sequential/threaded command classes → filesystem traversal and operations",
+      "features": ["Implemented command classes for cd, ls, cp, mv, and rm with recursive directory handling.", "Compared sequential and threaded executables, coordinating listing output with a mutex.", "Included workload-generation and timing scripts to explore filesystem and concurrency behavior."],
+      "notes": "This is a filesystem interpreter, not a POSIX shell. The README explains the large benchmark workload and implementation limits; no reproducible speedup is claimed.",
+      "links": [{"label": "Explore the lab", "url": "https://github.com/yashwant938/OOPD-Project"}]
+    },
+    {
+      "id": "gpt2-summarization", "name": "GPT-2 Review Summarization", "categories": ["ai", "research"], "eyebrow": "NLP / COURSEWORK EXPERIMENT",
+      "summary": "A notebook experiment fine-tuning GPT-2 to turn Amazon Fine Food Reviews into short summaries, covering data preparation, training, checkpointing, and generation.",
+      "status": "ML coursework · evaluation corrections documented",
+      "stack": ["Python", "PyTorch", "Hugging Face", "pandas", "Jupyter"],
+      "flow": "Reviews → preprocessing and split → GPT-2 fine-tuning → checkpoint → summary generation",
+      "features": ["Prepared review–TL;DR–summary sequences with a custom dataset and data loaders.", "Implemented an AdamW training loop, learning-rate scheduling, checkpoint save/load, and prompt-based generation.", "Included ROUGE/BLEU evaluation code and documented prompt-leakage and batching issues that need correction."],
+      "notes": "Historical scores are not presented as valid quality measurements. The repository documents reproduction gaps and does not include a packaged inference service.",
+      "links": [{"label": "Notebook & findings", "url": "https://github.com/yashwant938/CSE508_Winter2024_A4_MT23107"}]
+    },
+    {
+      "id": "real-estate", "name": "Real Estate Aggregator", "categories": ["apps"], "eyebrow": "BACKEND / PROPERTY MARKETPLACE",
+      "summary": "A PHP/Slim property marketplace connecting searchable listings, account workflows, MySQL persistence, Razorpay integration, and generated PDF contracts.",
+      "status": "Full-stack prototype",
+      "stack": ["PHP", "Slim", "MySQL", "JavaScript", "Razorpay", "TCPDF"],
+      "flow": "PHP/Slim routes → account and property workflows → MySQL + payment/email/PDF integrations",
+      "features": ["Built listing creation/editing and filters for location, budget, availability, and amenities.", "Implemented registration, login, email OTP/reset flows, and account views.", "Added Razorpay order creation/signature checks, stored payment records, and TCPDF contract generation."],
+      "notes": "The repository documents setup and remaining authorization/payment-consistency work. This is a prototype, without a verified production payment deployment.",
+      "links": [{"label": "Source & architecture", "url": "https://github.com/yashwant938/E-Commerce"}]
+    },
+    {
+      "id": "bio-literature", "name": "Bioinformatics Literature & Graph Explorer", "categories": ["research", "apps"], "eyebrow": "NLP / RESEARCH VISUALIZATION",
+      "summary": "A related pair of research tools: an extremophile literature-mining pipeline and an interactive chemical–gene graph that makes prepared relationships and publication references easier to explore.",
+      "status": "Research capstone · two connected repositories",
+      "stack": ["Python", "pandas", "Entrez", "Streamlit", "NetworkX"],
+      "flow": "PubMed literature → entity cleanup and PMID joins → co-occurrence records → interactive graph",
+      "features": ["Organized gene and chemical metadata, joined records by publication, and filtered co-occurring sentences.", "Assigned rule-based interaction labels and exported inspectable research tables.", "Built chemical filters, directed labeled edges, component coloring, and a metadata sidebar with PubMed references."],
+      "notes": "The graph visualizes prepared relationships; co-occurrence is not causation. The notebooks use environment-specific paths and do not constitute a validated biomedical prediction model.",
+      "links": [{"label": "Graph explorer", "url": "https://github.com/yashwant938/3DKnolwedgeGraph"}, {"label": "Mining pipeline", "url": "https://github.com/yashwant938/ExtremophilesData"}]
+    },
+    {
+      "id": "android-classifier", "name": "Android Image Classifier", "categories": ["ai", "apps"], "eyebrow": "APPLIED ML / ANDROID",
+      "summary": "An Android app that runs a bundled quantized MobileNet model locally to classify a selected gallery image and display its predicted label.",
+      "status": "Educational mobile prototype",
+      "stack": ["Kotlin", "Jetpack Compose", "TensorFlow Lite", "MobileNet"],
+      "flow": "Gallery image → 224 × 224 RGB buffer → local MobileNet inference → predicted label",
+      "features": ["Built gallery selection, image preview, result display, and reset in a Compose interface.", "Prepared model inputs with resizing and RGB byte-buffer conversion.", "Bundled the TensorFlow Lite model and label assets for local inference."],
+      "notes": "Uses a pretrained model rather than training a new network. It classifies selected images; device accuracy and latency benchmarks are not claimed.",
+      "links": [{"label": "Android source", "url": "https://github.com/yashwant938/ImageClassification"}]
+    },
+    {
+      "id": "image-captioning", "name": "Voice–Vision: Image Captioning", "categories": ["ai", "apps", "research"], "eyebrow": "COMPUTER VISION / LANGUAGE GENERATION",
+      "summary": "A Flask image-captioning prototype combining InceptionV3 visual features with an LSTM language decoder to turn an uploaded image into a caption.",
+      "status": "Earlier ML prototype",
+      "stack": ["Python", "Flask", "TensorFlow / Keras", "InceptionV3", "LSTM"],
+      "flow": "Uploaded image → InceptionV3 features → token-by-token LSTM decoding → caption view",
+      "features": ["Implemented browser uploads and 299 × 299 image preprocessing.", "Extracted 2,048-dimensional visual features and mapped generated tokens through a vocabulary.", "Rendered generated captions in a Flask web interface with supporting model/vocabulary assets."],
+      "notes": "The implemented workflow is image-to-caption generation. Reproduction needs legacy dependency and model-path validation; voice synthesis and quality metrics are not claimed.",
+      "links": [{"label": "Explore the prototype", "url": "https://github.com/yashwant938/Voice-Vision-Communication"}]
+    },
+    {
+      "id": "decrypter-analyzer", "name": "Decrypter & Analyzer", "categories": ["apps"], "eyebrow": "SECURITY EDUCATION / WEB TOOLS",
+      "summary": "An educational PHP toolkit exploring hash demonstrations and basic website configuration inspection through browser-based forms and result panels.",
+      "status": "Educational prototype for authorized lab use",
+      "stack": ["PHP", "JavaScript", "MySQL", "HTML / CSS"],
+      "flow": "Form input → PHP hash or configuration-inspection handlers → structured result views",
+      "features": ["Included MD5, SHA, and bcrypt examples alongside dictionary/rainbow-table demonstrations.", "Built result views for HTTP headers, WHOIS, CORS, and clickjacking-related configuration checks.", "Connected input forms, inspection handlers, and result panels in a PHP web application."],
+      "notes": "Hash lookup demonstrations do not reverse encryption. Individual configuration checks are educational tools rather than a comprehensive security audit.",
+      "links": [{"label": "Source & scope", "url": "https://github.com/yashwant938/Decrypter-Analyzer"}]
+    }
+  ],
+  "contributions": [
+    {
+      "name": "Qualcomm ELD", "eyebrow": "C++ / LLVM / LINKER ENGINEERING",
+      "summary": "Compatibility, layout correctness, LTO output, and an easier contributor setup.",
+      "items": [
+        {"title": "#2011 · GNU numeric -O compatibility", "url": "https://github.com/qualcomm/eld/pull/2011", "status": "Merged", "detail": "Unblocked warning-sensitive Meson links while leaving --lto-O controls independent. Regression coverage across six target configurations."},
+        {"title": "#2065 · PHDRS/FILEHDR layout crash", "url": "https://github.com/qualcomm/eld/pull/2065", "status": "Merged", "detail": "Guarded header address assignment when a linker script omits headers from the output layout; checked both header combinations."},
+        {"title": "#2129 · Native LTO saved objects", "url": "https://github.com/qualcomm/eld/pull/2129", "status": "Open", "detail": "Preserved native ARM/AArch64 object emission with --save-temps; covered full LTO, ThinLTO, and explicit assembly output."},
+        {"title": "#2134 · AArch64 feature flags", "url": "https://github.com/qualcomm/eld/pull/2134", "status": "Open", "detail": "Preserved BTI/PAC flags across multiple sections in one input. The regression failed before the fix; 18 focused runs passed after it."},
+        {"title": "#2127 · Contributor build guidance", "url": "https://github.com/qualcomm/eld/pull/2127", "status": "Open", "detail": "Documented LLVM main alignment and space-free source/build paths following hands-on WSL setup and maintainer discussion."}
+      ],
+      "note": "Test results are recorded in the PRs and cover focused regressions, not the full ELD suite. Open changes remain under review."
+    },
+    {
+      "name": "AI tooling & application libraries", "eyebrow": "PYTHON / REACT / CONTRIBUTOR WORK",
+      "summary": "Working on the details that make AI tools and interactive applications easier to use reliably.",
+      "items": [
+        {"title": "smolagents #2949 · Tool export validation", "url": "https://github.com/huggingface/smolagents/pull/2949", "status": "Draft", "detail": "Submitted AST validation for tuple/list/nested/starred context-manager aliases, with export/reload regressions. The PR records 70 focused pytest passes."},
+        {"title": "React ChatBotify #366 · History sanitization", "url": "https://github.com/react-chatbotify/react-chatbotify/pull/366", "status": "Open", "detail": "Submitted chat-history HTML sanitization, URL checks, and an optional sanitizer callback with tests."}
+      ],
+      "note": "These are submitted contributions, not merged fixes. The smolagents change is a draft awaiting scope acceptance and contributor review; full-suite and Python-version-matrix runs are not claimed."
+    }
+  ],
+  "archive": [
+    {"label": "DSA practice", "url": "https://github.com/yashwant938/DSA"},
+    {"label": "CSES problems", "url": "https://github.com/yashwant938/CSES"},
+    {"label": "LeetCode daily work", "url": "https://github.com/yashwant938/LeetcodeDailyCode"},
+    {"label": "A-to-Z series", "url": "https://github.com/yashwant938/AtoZ100DaysSeries"},
+    {"label": "Earlier LeetCode practice", "url": "https://github.com/yashwant938/DailyLeetcode"},
+    {"label": "Striver A-to-Z", "url": "https://github.com/yashwant938/StriverAtozz"},
+    {"label": "Early HTML portfolio", "url": "https://github.com/yashwant938/html-portfolio"}
+  ]
+}
