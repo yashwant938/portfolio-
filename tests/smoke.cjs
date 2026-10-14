@@ -4,7 +4,7 @@ const path = require('node:path');
 const { chromium } = require('playwright');
 let browser;
 
-const ids = ['eld', 'legal-lens', 'cpp-systems', 'gpt2-summarization', 'real-estate'];
+const ids = ['eld', 'legal-lens', 'real-estate', 'gpt2-summarization', 'cpp-systems'];
 const visibleProjects = page => page.locator('article.project:visible').evaluateAll(nodes => nodes.map(n => n.id));
 async function loadImages(page) {
   await page.evaluate(async () => {
@@ -57,8 +57,8 @@ async function checkStructure(page) {
   assert.ok(pdf.length > 1000);
   const filters = {
     systems: ['eld', 'cpp-systems'],
-    ai: ['legal-lens', 'cpp-systems', 'gpt2-summarization'],
-    apps: ['legal-lens', 'cpp-systems', 'real-estate'],
+    ai: ['legal-lens', 'gpt2-summarization', 'cpp-systems'],
+    apps: ['legal-lens', 'real-estate', 'cpp-systems'],
     research: ['legal-lens', 'gpt2-summarization'],
     all: ids
   };

@@ -47,7 +47,7 @@ def project_card(project, index):
 def build():
     data = json.loads((ROOT / 'content/projects.json').read_text(encoding='utf-8'))
     projects = data['projects']
-    assert [p['id'] for p in projects] == ['eld', 'legal-lens', 'cpp-systems', 'gpt2-summarization', 'real-estate']
+    assert [p['id'] for p in projects] == ['eld', 'legal-lens', 'real-estate', 'gpt2-summarization', 'cpp-systems']
     template = (ROOT / 'content/index.template.html').read_text(encoding='utf-8')
     replacements = {
         '{{PROJECTS}}': '\n'.join(project_card(p, i) for i, p in enumerate(projects, 1)),

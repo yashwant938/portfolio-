@@ -141,55 +141,56 @@
       }
     },
     {
-      "id": "cpp-systems",
-      "name": "C++ Concepts & Systems Lab",
+      "id": "real-estate",
+      "name": "Real Estate Aggregator",
       "categories": [
-        "systems",
-        "ai",
         "apps"
       ],
-      "eyebrow": "C++ / INTERACTIVE LEARNING",
-      "summary": "Interactive C++ lessons and a C++17 filesystem lab exploring containers, recursive operations, and concurrency.",
+      "eyebrow": "BACKEND / PROPERTY MARKETPLACE",
+      "summary": "A property marketplace prototype with searchable listings, account workflows, payment integration, and PDF contracts.",
       "stack": [
-        "C++17",
-        "Linux",
-        "std::thread",
-        "React",
-        "Monaco"
+        "PHP",
+        "Slim",
+        "MySQL",
+        "JavaScript",
+        "Razorpay",
+        "TCPDF"
       ],
-      "flow": "Concepts: lesson → simulation → editable code → compiler output. Systems: command parser → sequential/threaded commands → filesystem operations.",
+      "flow": "PHP/Slim routes → account and property workflows → MySQL + payment/email/PDF integrations",
       "features": [
-        "Created data-driven memory/container simulations that explain concepts step by step.",
-        "Connected the editor to Wandbox for C++, C, Java, and Python, separating compiler output from program output.",
-        "Added timed quizzes, a browser-local leaderboard, and sanitized Markdown for assistant responses.",
-        "Implemented command classes for cd, ls, cp, mv, and rm with recursive directory handling.",
-        "Compared sequential and threaded executables, coordinating listing output with a mutex.",
-        "Included workload-generation and timing scripts to explore filesystem and concurrency behavior."
+        "Built listing creation/editing and filters for location, budget, availability, and amenities.",
+        "Implemented registration, login, email OTP/reset flows, and account views.",
+        "Added Razorpay order creation/signature checks, stored payment records, and TCPDF contract generation."
       ],
-      "notes": "Two complementary implementations: a browser learning app and an educational filesystem interpreter. Visuals are teaching simulations, not execution traces. Compilation and AI features require external services. Timing scripts explore concurrency; no measured speedup is claimed.",
+      "notes": "The repository documents setup and remaining authorization/payment-consistency work. This is a prototype, without a verified production payment deployment.",
       "links": [
         {
-          "label": "Live demo",
-          "url": "https://yashwant938.github.io/CompilerCppTopics/"
-        },
-        {
-          "label": "Concepts source",
-          "url": "https://github.com/yashwant938/CompilerCppTopics"
-        },
-        {
-          "label": "Systems source",
-          "url": "https://github.com/yashwant938/OOPD-Project"
+          "label": "Source & architecture",
+          "url": "https://github.com/yashwant938/E-Commerce"
         }
       ],
       "highlights": [
-        "Step-through simulations, an editable compiler workspace, quizzes, and an optional Gemini tutor.",
-        "cd / ls / cp / mv / rm; sequential and threaded variants with synchronized output."
+        "Location, budget, availability, and amenity filters backed by MySQL.",
+        "Razorpay order/signature handling, email OTP flows, and TCPDF contracts."
       ],
       "visual": {
-        "kind": "screenshot",
-        "path": "assets/screenshots/cpp-concepts.webp",
-        "alt": "C++ Concepts Lab's live code workspace showing an unordered_map symbol-table example in the editor.",
-        "caption": "Live C++ Concepts demo · code workspace"
+        "kind": "workflow",
+        "label": "APPLICATION ARCHITECTURE",
+        "steps": [
+          {
+            "title": "Discover properties",
+            "detail": "Search, filter, create, and edit listings"
+          },
+          {
+            "title": "Handle requests",
+            "detail": "PHP / Slim routes + MySQL persistence"
+          },
+          {
+            "title": "Connect integrations",
+            "detail": "Payment orders · email · PDF contracts"
+          }
+        ],
+        "caption": "Full-stack prototype · source available"
       }
     },
     {
@@ -246,56 +247,55 @@
       }
     },
     {
-      "id": "real-estate",
-      "name": "Real Estate Aggregator",
+      "id": "cpp-systems",
+      "name": "C++ Concepts & Systems Lab",
       "categories": [
+        "systems",
+        "ai",
         "apps"
       ],
-      "eyebrow": "BACKEND / PROPERTY MARKETPLACE",
-      "summary": "A property marketplace prototype with searchable listings, account workflows, payment integration, and PDF contracts.",
+      "eyebrow": "C++ / INTERACTIVE LEARNING",
+      "summary": "Interactive C++ lessons and a C++17 filesystem lab exploring containers, recursive operations, and concurrency.",
       "stack": [
-        "PHP",
-        "Slim",
-        "MySQL",
-        "JavaScript",
-        "Razorpay",
-        "TCPDF"
+        "C++17",
+        "Linux",
+        "std::thread",
+        "React",
+        "Monaco"
       ],
-      "flow": "PHP/Slim routes → account and property workflows → MySQL + payment/email/PDF integrations",
+      "flow": "Concepts: lesson → simulation → editable code → compiler output. Systems: command parser → sequential/threaded commands → filesystem operations.",
       "features": [
-        "Built listing creation/editing and filters for location, budget, availability, and amenities.",
-        "Implemented registration, login, email OTP/reset flows, and account views.",
-        "Added Razorpay order creation/signature checks, stored payment records, and TCPDF contract generation."
+        "Created data-driven memory/container simulations that explain concepts step by step.",
+        "Connected the editor to Wandbox for C++, C, Java, and Python, separating compiler output from program output.",
+        "Added timed quizzes, a browser-local leaderboard, and sanitized Markdown for assistant responses.",
+        "Implemented command classes for cd, ls, cp, mv, and rm with recursive directory handling.",
+        "Compared sequential and threaded executables, coordinating listing output with a mutex.",
+        "Included workload-generation and timing scripts to explore filesystem and concurrency behavior."
       ],
-      "notes": "The repository documents setup and remaining authorization/payment-consistency work. This is a prototype, without a verified production payment deployment.",
+      "notes": "Two complementary implementations: a browser learning app and an educational filesystem interpreter. Visuals are teaching simulations, not execution traces. Compilation and AI features require external services. Timing scripts explore concurrency; no measured speedup is claimed.",
       "links": [
         {
-          "label": "Source & architecture",
-          "url": "https://github.com/yashwant938/E-Commerce"
+          "label": "Live demo",
+          "url": "https://yashwant938.github.io/CompilerCppTopics/"
+        },
+        {
+          "label": "Concepts source",
+          "url": "https://github.com/yashwant938/CompilerCppTopics"
+        },
+        {
+          "label": "Systems source",
+          "url": "https://github.com/yashwant938/OOPD-Project"
         }
       ],
       "highlights": [
-        "Location, budget, availability, and amenity filters backed by MySQL.",
-        "Razorpay order/signature handling, email OTP flows, and TCPDF contracts."
+        "Step-through simulations, an editable compiler workspace, quizzes, and an optional Gemini tutor.",
+        "cd / ls / cp / mv / rm; sequential and threaded variants with synchronized output."
       ],
       "visual": {
-        "kind": "workflow",
-        "label": "APPLICATION ARCHITECTURE",
-        "steps": [
-          {
-            "title": "Discover properties",
-            "detail": "Search, filter, create, and edit listings"
-          },
-          {
-            "title": "Handle requests",
-            "detail": "PHP / Slim routes + MySQL persistence"
-          },
-          {
-            "title": "Connect integrations",
-            "detail": "Payment orders · email · PDF contracts"
-          }
-        ],
-        "caption": "Full-stack prototype · source available"
+        "kind": "screenshot",
+        "path": "assets/screenshots/cpp-concepts.webp",
+        "alt": "C++ Concepts Lab's live code workspace showing an unordered_map symbol-table example in the editor.",
+        "caption": "Live C++ Concepts demo · code workspace"
       }
     }
   ]

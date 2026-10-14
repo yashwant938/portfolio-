@@ -25,10 +25,10 @@ The featured order is:
 
 1. Qualcomm ELD Contributions
 2. Legal Lens 2.0
-3. C++ Concepts & Systems Lab — groups the interactive app and filesystem lab,
-   preserving both source repositories and the live demo
+3. Real Estate Aggregator
 4. GPT-2 Review Summarization
-5. Real Estate Aggregator
+5. C++ Concepts & Systems Lab — groups the interactive app and filesystem lab,
+   preserving both source repositories and the live demo
 
 Experience precedes projects, and the hero downloads the supplied resume at
 `docs/assets/Yashwant-Singh-Rana-Resume.pdf`.
