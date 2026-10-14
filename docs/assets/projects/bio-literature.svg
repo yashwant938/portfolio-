@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" class="standalone" role="img" aria-labelledby="bio-literature-title bio-literature-desc">
+    <title id="bio-literature-title">Bio Literature — connections across research</title><desc id="bio-literature-desc">A dimensional molecular sculpture rises over layered research papers. Teal, lilac, and lime nodes connected by shaded bonds evoke literature discovery in the life sciences.</desc>
+    <defs>
+      <radialGradient id="bio-literature-bg" cx="48%" cy="36%" r="76%"><stop stop-color="#233740"/><stop offset="1" stop-color="#0c1722"/></radialGradient>
+      <linearGradient id="bio-literature-ivory" x2="0.85" y2="1"><stop stop-color="#fff5df"/><stop offset="1" stop-color="#c8c8b2"/></linearGradient>
+      <linearGradient id="bio-literature-green" x2="0.9" y2="1"><stop stop-color="#d4f596"/><stop offset="1" stop-color="#70b692"/></linearGradient>
+      <linearGradient id="bio-literature-purple" x2="0.8" y2="1"><stop stop-color="#d8c4ff"/><stop offset="1" stop-color="#8475b3"/></linearGradient>
+      <linearGradient id="bio-literature-coral" x2="1" y2="1"><stop stop-color="#ffccae"/><stop offset="1" stop-color="#d58078"/></linearGradient>
+      <radialGradient id="bio-literature-glass" cx="28%" cy="24%"><stop stop-color="#d6fff0"/><stop offset="0.35" stop-color="#77c4be"/><stop offset="1" stop-color="#286570"/></radialGradient>
+      <filter id="bio-literature-shadow" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="17" stdDeviation="15" flood-color="#030b14" flood-opacity="0.42"/></filter>
+      <pattern id="bio-literature-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#9bdaca" stroke-opacity="0.045"/></pattern>
+    </defs>
+    <style>
+      .standalone .art-float { animation:bio-literature-float 4s ease-in-out 1; }
+      .standalone .art-pulse { animation:bio-literature-pulse 4s ease-in-out 1; }
+      .standalone .art-flow { stroke-dasharray:8 10; animation:bio-literature-flow 4s ease-in-out 1; }
+      @keyframes bio-literature-float { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-8px) } }
+      @keyframes bio-literature-pulse { 0%,100% { opacity:1 } 50% { opacity:.65 } }
+      @keyframes bio-literature-flow { 0%,100% { stroke-dashoffset:0 } 50% { stroke-dashoffset:36 } }
+      @media(prefers-reduced-motion:reduce) { .standalone .art-float,.standalone .art-pulse,.standalone .art-flow { animation:none } }
+    </style>
+    <rect width="800" height="480" rx="26" fill="url(#bio-literature-bg)"/>
+    <rect x="32" y="32" width="736" height="416" rx="18" fill="url(#bio-literature-grid)"/>
+    <circle cx="637" cy="104" r="70" fill="#8fd6cb" opacity=".035"/>
+    
+  <ellipse cx="401" cy="385" rx="263" ry="32" fill="#060e17" opacity=".48"/>
+  <path d="M181 319L405 240L634 315L405 408Z" fill="#567a7d"/>
+  <path d="M181 310L405 231L634 306L405 398Z" fill="#b4c4bd"/>
+  <path d="M184 309L405 388L631 303" stroke="#ecedce" stroke-width="4" fill="none"/>
+  <path d="M203 295L405 222L614 291L406 375Z" fill="url(#bio-literature-ivory)"/>
+  <path d="M223 286L405 220L587 280L406 354Z" fill="#e5e6ce"/>
+  <path d="M313 294L417 331M330 283L470 331M352 274L491 322M374 265L506 312" stroke="#8ba198" stroke-width="5" stroke-linecap="round"/>
+  <path d="M444 266L479 252L532 270L497 284Z" fill="#81b7a7"/>
+  <g transform="translate(163 252)"><g class="art-float" filter="url(#bio-literature-shadow)">
+    <path d="M0 0L95-33L149-14V67L54 104L0 83Z" fill="#a1c7bb"/>
+    <path d="M0 0L54 20V104L0 83Z" fill="#c4e0ca"/><path d="M54 20L149-14V67L54 104Z" fill="#719994"/>
+    <path d="M17 25L36 32M17 41L36 48M17 57L29 62" stroke="#6d9f8f" stroke-width="4" stroke-linecap="round"/>
+    <path d="M72 37L123 19M72 54L111 40M72 71L118 54" stroke="#cbe7d4" stroke-width="4" stroke-linecap="round"/>
+  </g></g>
+  <g class="art-float" filter="url(#bio-literature-shadow)">
+    <g stroke="#335760" stroke-width="15" stroke-linecap="round" fill="none"><path d="M293 169L373 113L466 155L459 247L365 284L293 227Z"/><path d="M293 169L293 227M466 155L553 103M459 247L560 289M373 113L374 65"/></g>
+    <g stroke="#89b5ab" stroke-width="6" stroke-linecap="round" fill="none"><path d="M293 164L373 108L466 150L459 242L365 279L293 222Z"/><path d="M293 164L293 222M466 150L553 98M459 242L560 284M373 108L374 65"/></g>
+    <path d="M317 181L374 143L439 171M439 181L434 229L368 254" stroke="#507b7c" stroke-width="4" fill="none"/>
+    <circle cx="293" cy="169" r="31" fill="url(#bio-literature-glass)"/>
+    <circle cx="373" cy="113" r="27" fill="url(#bio-literature-purple)"/>
+    <circle cx="466" cy="155" r="35" fill="url(#bio-literature-glass)"/>
+    <circle cx="459" cy="247" r="28" fill="url(#bio-literature-purple)"/>
+    <circle cx="365" cy="284" r="32" fill="url(#bio-literature-green)"/>
+    <circle cx="293" cy="227" r="23" fill="url(#bio-literature-coral)"/>
+    <circle cx="553" cy="103" r="22" fill="url(#bio-literature-green)"/>
+    <circle cx="560" cy="289" r="23" fill="url(#bio-literature-glass)"/>
+    <circle cx="374" cy="65" r="16" fill="url(#bio-literature-coral)"/>
+    <g fill="#f3ffe4" opacity=".62"><ellipse cx="283" cy="158" rx="8" ry="5" transform="rotate(-30 283 158)"/><ellipse cx="455" cy="142" rx="10" ry="6" transform="rotate(-30 455 142)"/><ellipse cx="355" cy="273" rx="8" ry="5" transform="rotate(-30 355 273)"/><ellipse cx="367" cy="104" rx="7" ry="4" transform="rotate(-30 367 104)"/></g>
+  </g>
+  <path class="art-flow" d="M585 268C646 200 614 137 574 124" fill="none" stroke="#a0bba6" stroke-width="2" opacity=".6"/>
+  <g class="art-pulse"><circle cx="618" cy="204" r="5" fill="#baaddb"/><circle cx="206" cy="137" r="5" fill="#87bca9"/><path d="M648 322L651 312L654 322L664 325L654 328L651 338L648 328L638 325Z" fill="#d8d3aa"/></g>
+
+    </svg>

@@ -137,3 +137,29 @@ input:focus-visible,summary:focus-visible{outline:2px solid var(--lime);outline-
   .more-work{flex-wrap:wrap;gap:12px}
   footer>div{gap:15px;flex-wrap:wrap;justify-content:flex-start;font-size:12px}
 }
+
+/* Original vector studies: dimensional artwork for every project, with a
+   shared pause control and animation work limited to visible cards. */
+.catalog-toolbar{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:32px}
+.catalog-toolbar .catalog-status{margin:0}
+.motion-control{flex-shrink:0;padding:10px 14px;background:#1b2117;color:#c8d3bc;border:1px solid #47543b;border-radius:24px;font-size:12px;min-height:42px}
+.motion-control:hover{border-color:var(--lime);color:var(--lime)}
+.project-visual.project-art{display:block;height:auto;padding:0;border:1px solid #394334;border-radius:9px;overflow:hidden;background:#17201c;isolation:isolate;transition:border-color .25s,box-shadow .25s;filter:none}
+.project-art:hover,.project-art:focus-visible{border-color:#8aa762;box-shadow:0 12px 40px #0003;filter:none}
+.art-stage{display:block;aspect-ratio:5/3;transform:perspective(900px) rotateX(var(--tilt-y,0deg)) rotateY(var(--tilt-x,0deg));transform-origin:50% 50%;transition:transform .22s ease-out;backface-visibility:hidden}
+.project-svg{display:block;width:100%;height:auto;aspect-ratio:5/3;overflow:hidden}
+.art-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;border-top:1px solid #354432;background:#161e16;color:#b6c4a8;font-size:10px;letter-spacing:1.2px;position:relative;z-index:1}
+.art-caption>span:last-child{color:#def1b9;font-size:12px;letter-spacing:0}
+.project-art .art-float{animation:project-float 6s ease-in-out infinite;animation-play-state:paused}
+.project-art .art-pulse{animation:project-pulse 5s ease-in-out infinite;animation-play-state:paused}
+.project-art .art-flow{stroke-dasharray:8 10;animation:project-flow 5s linear infinite;animation-play-state:paused}
+.project-art.art-visible .art-float,.project-art.art-visible .art-pulse,.project-art.art-visible .art-flow{animation-play-state:running}
+.motion-paused .project-art .art-float,.motion-paused .project-art .art-pulse,.motion-paused .project-art .art-flow,
+.page-hidden .project-art .art-float,.page-hidden .project-art .art-pulse,.page-hidden .project-art .art-flow{animation-play-state:paused}
+.motion-paused .art-stage{transform:none;transition:none}
+@keyframes project-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes project-pulse{0%,100%{opacity:1}50%{opacity:.65}}
+@keyframes project-flow{to{stroke-dashoffset:-48}}
+@media(max-width:760px){.catalog-toolbar{align-items:flex-start}.art-caption{padding:12px 14px;font-size:9px;letter-spacing:.8px}.art-caption>span:last-child{font-size:11px}}
+@media(max-width:480px){.catalog-toolbar{flex-wrap:wrap;gap:10px}.project-visual.project-art{border-radius:6px}}
+@media(prefers-reduced-motion:reduce){.art-stage{transform:none!important}.project-art .art-float,.project-art .art-pulse,.project-art .art-flow{animation:none!important}}

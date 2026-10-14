@@ -3,6 +3,8 @@ from html import escape
 from pathlib import Path
 from hashlib import sha256
 import json
+import re
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -14,16 +16,26 @@ def link(item):
 
 def project_card(project, index):
     project_id = project['id']
-    visual_path = ROOT / 'content' / 'visuals' / f'{project_id}.html'
-    featured = visual_path.exists()
-    visual = visual_path.read_text(encoding='utf-8') if featured else (
-        f'<div class="project-symbol" aria-hidden="true"><span>{index:02d}</span>'
-        f'<span>{escape(project["eyebrow"])}</span></div>')
+    visual_path = ROOT / 'docs' / 'assets' / 'projects' / f'{project_id}.svg'
+    svg = visual_path.read_text(encoding='utf-8')
+    svg_root = ET.fromstring(svg)
+    assert svg_root.attrib.get('viewBox') == '0 0 800 480', visual_path
+    # Standalone artwork animates briefly on GitHub. Inline artwork uses the
+    # portfolio's shared motion controls and viewport-aware animation instead.
+    svg = re.sub(r'<\?xml[^>]*\?>', '', svg).strip()
+    svg = re.sub(r'<style\b[^>]*>.*?</style>', '', svg, flags=re.S)
+    svg = '\n'.join(line.rstrip() for line in svg.splitlines())
+    svg = svg.replace('class="standalone"', 'class="project-svg" aria-hidden="true" focusable="false"', 1)
+    assert 'class="project-svg"' in svg
+    visual = (f'<a class="project-visual project-art" href="{escape(project["links"][0]["url"], quote=True)}" '
+              f'target="_blank" rel="noopener noreferrer" aria-label="Explore {escape(project["name"], quote=True)}">'
+              f'<span class="art-stage">{svg}</span>'
+              '<span class="art-caption"><span>CONCEPT ILLUSTRATION</span><span>Explore project ↗</span></span></a>')
     features = ''.join(f'<li>{escape(item)}</li>' for item in project['features'])
     links = ' '.join(link(item) for item in project['links'])
     categories = ' '.join(project['categories'])
     tags = ' · '.join(project['stack'])
-    return f'''<article class="project{' compact' if not featured else ''}" id="{project_id}" data-category="{categories}">
+    return f'''<article class="project" id="{project_id}" data-category="{categories}">
 {visual}
 <div class="project-meta"><span>{escape(project['eyebrow'])}</span><span>{index:02d}</span></div>
 <h3>{escape(project['name'])}</h3>

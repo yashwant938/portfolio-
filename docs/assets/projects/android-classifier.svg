@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="standalone" viewBox="0 0 800 480" role="img" aria-labelledby="android-classifier-title android-classifier-desc">
+<title id="android-classifier-title">Image classifier: a pocket-sized model</title><desc id="android-classifier-desc">A tilted dimensional phone scans floating image tiles and connects them to simple classification tags.</desc>
+<defs>
+<linearGradient id="android-classifier-bg" x2="1" y2="1"><stop stop-color="#173738"/><stop offset="1" stop-color="#102027"/></linearGradient>
+<radialGradient id="android-classifier-glow"><stop stop-color="#8ec895" stop-opacity=".2"/><stop offset="1" stop-color="#8ec895" stop-opacity="0"/></radialGradient>
+<linearGradient id="android-classifier-paper" x2=".9" y2="1"><stop stop-color="#fbf6e6"/><stop offset="1" stop-color="#c6d2bc"/></linearGradient>
+<linearGradient id="android-classifier-glass" x2="1" y2="1"><stop stop-color="#bdf8da" stop-opacity=".48"/><stop offset=".5" stop-color="#a4e7d0" stop-opacity=".08"/><stop offset="1" stop-color="#90cfc7" stop-opacity=".36"/></linearGradient>
+<linearGradient id="android-classifier-metal" x2=".9" y2="1"><stop stop-color="#cce5c0"/><stop offset=".45" stop-color="#608f85"/><stop offset="1" stop-color="#244d52"/></linearGradient>
+<linearGradient id="android-classifier-violet" x2="1" y2="1"><stop stop-color="#d2c0fa"/><stop offset="1" stop-color="#8e78b1"/></linearGradient>
+<filter id="android-classifier-shadow" x="-50%" y="-50%" width="200%" height="230%"><feGaussianBlur stdDeviation="15"/></filter>
+</defs>
+<style>
+.standalone .art-float{animation:android-classifier-float 4s ease-in-out 1;transform-box:fill-box;transform-origin:center}
+.standalone .art-pulse{animation:android-classifier-pulse 4s ease-in-out 1}
+.standalone .art-flow{animation:android-classifier-flow 4s ease-in-out 1}
+@keyframes android-classifier-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes android-classifier-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes android-classifier-flow{0%,100%{stroke-dashoffset:0}50%{stroke-dashoffset:16}}
+@media(prefers-reduced-motion:reduce){.standalone .art-float,.standalone .art-pulse,.standalone .art-flow{animation:none}}
+</style><rect width="800" height="480" fill="url(#android-classifier-bg)"/><ellipse cx="420" cy="236" rx="355" ry="265" fill="url(#android-classifier-glow)"/>
+<g stroke="#c5e8d8" opacity=".075" fill="none"><path d="M80 344 397 179 720 344M80 380 397 215 720 380M145 414 397 282 656 414"/><path d="m163 297 254 133m-181-172 297 156m-223-195 320 168m-172-150-295 156m221-194-321 168"/></g>
+<ellipse cx="405" cy="389" rx="245" ry="28" fill="#000" opacity=".34" filter="url(#android-classifier-shadow)"/>
+<g transform="rotate(-11 400 242)"><g class="art-float">
+<rect x="302" y="88" width="182" height="311" rx="31" fill="#172d36" stroke="#6a8785" stroke-width="3"/>
+<rect x="291" y="78" width="182" height="311" rx="31" fill="url(#android-classifier-metal)"/>
+<rect x="300" y="87" width="164" height="293" rx="25" fill="#152c35"/><rect x="348" y="96" width="65" height="13" rx="6.5" fill="#6c9289"/>
+<rect x="317" y="135" width="129" height="140" rx="16" fill="#9bbb9c"/><circle cx="414" cy="160" r="14" fill="#d9e4b5"/><path d="m318 252 37-55 26 32 22-17 43 50v13H317Z" fill="#5e8880"/><path d="m320 255 25-19 39 39h-65Z" fill="#406d70"/>
+<path d="M329 145h17m-17 0v17m100-17h-17m17 0v17M329 261h17m-17 0v-17m100 17h-17m17 0v-17" stroke="#eef6d7" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path class="art-flow" d="M320 210h122" stroke="#d3ef9e" stroke-width="3" stroke-dasharray="10 4"/>
+<rect x="318" y="294" width="127" height="23" rx="11.5" fill="#2e514f"/><rect x="324" y="301" width="84" height="9" rx="4.5" fill="#c4d8a0"/><path d="M321 337h77m-77 14h104" stroke="#6f938c" stroke-width="5" stroke-linecap="round"/>
+</g></g>
+<g transform="rotate(9 175 208)"><g class="art-float"><rect x="115" y="150" width="117" height="117" rx="20" fill="#677978"/><rect x="115" y="143" width="117" height="117" rx="20" fill="#d6d9bd"/><circle cx="190" cy="173" r="13" fill="#b3bd87"/><path d="m128 235 33-44 25 30 16-17 17 31Z" fill="#749c90"/><path d="m128 235 33-20 29 20Z" fill="#4d7b79"/></g></g>
+<g transform="rotate(8 588 271)"><g class="art-float"><rect x="544" y="237" width="145" height="58" rx="16" fill="#626c70"/><rect x="544" y="231" width="145" height="58" rx="16" fill="#c4b5df"/><circle cx="570" cy="260" r="11" fill="#8a7aa6"/><path d="M593 254h72m-72 13h50" stroke="#7b6d92" stroke-width="5" stroke-linecap="round"/></g></g>
+<g transform="rotate(-5 595 173)"><g class="art-float"><rect x="535" y="140" width="146" height="59" rx="16" fill="#53716b"/><rect x="535" y="134" width="146" height="59" rx="16" fill="#c5db9c"/><path d="m552 164 7 7 15-18" stroke="#5d7a51" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M590 157h68m-68 13h47" stroke="#7c985f" stroke-width="5" stroke-linecap="round"/></g></g>
+<path class="art-flow" d="M240 194h33M493 205q22-45 40-43M496 235q20 24 45 24" fill="none" stroke="#b3d8b3" stroke-width="2" stroke-dasharray="4 8"/>
+<g class="art-pulse" fill="#bbd4a7"><circle cx="188" cy="319" r="4"/><path d="M610 341v16m-8-8h16" stroke="#bbd4a7" stroke-width="2"/></g>
+
+</svg>

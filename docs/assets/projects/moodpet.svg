@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" class="standalone" role="img" aria-labelledby="moodpet-title moodpet-desc">
+    <title id="moodpet-title">MoodPet — a small companion for focused work</title><desc id="moodpet-desc">An ivory desktop companion with expressive eyes sits inside a luminous focus ring, beside a dimensional calendar and a small plant.</desc>
+    <defs>
+      <radialGradient id="moodpet-bg" cx="48%" cy="36%" r="76%"><stop stop-color="#233740"/><stop offset="1" stop-color="#0c1722"/></radialGradient>
+      <linearGradient id="moodpet-ivory" x2="0.85" y2="1"><stop stop-color="#fff5df"/><stop offset="1" stop-color="#c8c8b2"/></linearGradient>
+      <linearGradient id="moodpet-green" x2="0.9" y2="1"><stop stop-color="#d4f596"/><stop offset="1" stop-color="#70b692"/></linearGradient>
+      <linearGradient id="moodpet-purple" x2="0.8" y2="1"><stop stop-color="#d8c4ff"/><stop offset="1" stop-color="#8475b3"/></linearGradient>
+      <linearGradient id="moodpet-coral" x2="1" y2="1"><stop stop-color="#ffccae"/><stop offset="1" stop-color="#d58078"/></linearGradient>
+      <radialGradient id="moodpet-glass" cx="28%" cy="24%"><stop stop-color="#d6fff0"/><stop offset="0.35" stop-color="#77c4be"/><stop offset="1" stop-color="#286570"/></radialGradient>
+      <filter id="moodpet-shadow" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="17" stdDeviation="15" flood-color="#030b14" flood-opacity="0.42"/></filter>
+      <pattern id="moodpet-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#9bdaca" stroke-opacity="0.045"/></pattern>
+    </defs>
+    <style>
+      .standalone .art-float { animation:moodpet-float 4s ease-in-out 1; }
+      .standalone .art-pulse { animation:moodpet-pulse 4s ease-in-out 1; }
+      .standalone .art-flow { stroke-dasharray:8 10; animation:moodpet-flow 4s ease-in-out 1; }
+      @keyframes moodpet-float { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-8px) } }
+      @keyframes moodpet-pulse { 0%,100% { opacity:1 } 50% { opacity:.65 } }
+      @keyframes moodpet-flow { 0%,100% { stroke-dashoffset:0 } 50% { stroke-dashoffset:36 } }
+      @media(prefers-reduced-motion:reduce) { .standalone .art-float,.standalone .art-pulse,.standalone .art-flow { animation:none } }
+    </style>
+    <rect width="800" height="480" rx="26" fill="url(#moodpet-bg)"/>
+    <rect x="32" y="32" width="736" height="416" rx="18" fill="url(#moodpet-grid)"/>
+    <circle cx="637" cy="104" r="70" fill="#b8e76f" opacity=".035"/>
+    
+  <ellipse cx="402" cy="377" rx="251" ry="36" fill="#070f17" opacity=".46"/>
+  <ellipse cx="410" cy="313" rx="237" ry="83" fill="none" stroke="#577a75" stroke-width="1.5"/>
+  <path class="art-flow" d="M176 308C166 211 611 200 645 311" fill="none" stroke="#9ddbaf" stroke-width="2" opacity=".55"/>
+  <g class="art-pulse"><circle cx="644" cy="312" r="6" fill="#ccec8d"/><circle cx="215" cy="267" r="4" fill="#b6a7d8"/></g>
+  <g transform="translate(5 5)"><g class="art-float" filter="url(#moodpet-shadow)">
+    <path d="M251 196L288 184V316L251 330Z" fill="#426664"/>
+    <path d="M150 179L251 196L288 184L186 168Z" fill="#d0edd4"/>
+    <path d="M150 179L251 196V330L150 310Z" fill="url(#moodpet-ivory)"/>
+    <path d="M150 179L251 196V232L150 215Z" fill="#92c3a4"/>
+    <path d="M169 168V193M223 178V203" stroke="#2d5055" stroke-width="9" stroke-linecap="round"/>
+    <g fill="#839c91"><path d="M169 239L186 242V258L169 255Z"/><path d="M211 247L228 250V266L211 263Z"/><path d="M169 274L186 277V293L169 290Z"/></g>
+    <path d="M207 284L216 294L235 276" stroke="#3a7769" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g></g>
+  <g class="art-float">
+    <path d="M476 346L524 329L535 348L491 369Z" fill="#536a68"/><path d="M349 345L393 354L383 375L338 365Z" fill="#80958a"/>
+    <path d="M347 328L391 338V360L347 350Z" fill="#e5dfc7"/>
+    <path d="M468 333L508 320V346L468 361Z" fill="#8daca1"/>
+    <g filter="url(#moodpet-shadow)">
+      <path d="M487 155Q523 155 534 194L542 296Q540 323 507 339L467 354V179Z" fill="#759991"/>
+      <path d="M336 149Q336 119 364 126L367 171Z" fill="#e9ebd3"/><path d="M482 143Q514 107 518 145L514 183Z" fill="#a8c1ae"/>
+      <path d="M320 192Q318 151 355 148L466 141Q505 141 508 180L516 290Q519 328 479 341L366 354Q329 356 326 318Z" fill="url(#moodpet-ivory)"/>
+      <path d="M341 206Q339 183 365 180L457 174Q485 172 487 197L491 273Q493 299 466 304L371 316Q347 320 345 293Z" fill="#22353c"/>
+      <path d="M353 202Q353 190 369 188L456 182Q475 181 478 195" stroke="#77968c" stroke-width="2" fill="none" opacity=".6"/>
+      <ellipse cx="382" cy="242" rx="10" ry="15" fill="#d1f1af"/><ellipse cx="451" cy="235" rx="10" ry="15" fill="#d1f1af"/>
+      <path d="M404 271Q420 283 434 267" stroke="#d1f1af" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <ellipse cx="371" cy="270" rx="12" ry="5" fill="#edac9b" opacity=".75"/><ellipse cx="465" cy="261" rx="12" ry="5" fill="#edac9b" opacity=".75"/>
+      <path d="M317 260Q291 258 295 288Q299 300 325 294" fill="#ceccb5"/>
+      <path d="M534 248Q560 243 558 274Q555 290 539 291" fill="#73968c"/>
+    </g>
+    <circle cx="424" cy="330" r="5" fill="#5b8e7e"/>
+  </g>
+  <g transform="translate(581 271)"><path d="M3 35L51 36L44 81Q28 90 12 80Z" fill="url(#moodpet-coral)"/><ellipse cx="27" cy="36" rx="25" ry="10" fill="#af7166"/><path d="M28 36V-11" stroke="#90b69b" stroke-width="5"/><path d="M28 17Q-13 8 8-23Q38-14 28 17" fill="#7fa98e"/><path d="M28 4Q29-35 60-28Q71 0 28 4" fill="#b7da9b"/></g>
+  <path d="M387 82L390 70L393 82L405 85L393 88L390 100L387 88L375 85Z" fill="#d5c8a5" opacity=".8"/>
+  <circle cx="562" cy="156" r="4" fill="#a3c5c0"/>
+
+    </svg>

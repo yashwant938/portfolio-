@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="standalone" viewBox="0 0 800 480" role="img" aria-labelledby="image-captioning-title image-captioning-desc">
+<title id="image-captioning-title">Image captioning: from pixels to words</title><desc id="image-captioning-desc">A dimensional landscape frame feeds an image encoder, then connects to floating word capsules.</desc>
+<defs>
+<linearGradient id="image-captioning-bg" x2="1" y2="1"><stop stop-color="#333143"/><stop offset="1" stop-color="#151e2a"/></linearGradient>
+<radialGradient id="image-captioning-glow"><stop stop-color="#b3a3d1" stop-opacity=".2"/><stop offset="1" stop-color="#b3a3d1" stop-opacity="0"/></radialGradient>
+<linearGradient id="image-captioning-paper" x2=".9" y2="1"><stop stop-color="#fbf6e6"/><stop offset="1" stop-color="#c6d2bc"/></linearGradient>
+<linearGradient id="image-captioning-glass" x2="1" y2="1"><stop stop-color="#bdf8da" stop-opacity=".48"/><stop offset=".5" stop-color="#a4e7d0" stop-opacity=".08"/><stop offset="1" stop-color="#90cfc7" stop-opacity=".36"/></linearGradient>
+<linearGradient id="image-captioning-metal" x2=".9" y2="1"><stop stop-color="#cce5c0"/><stop offset=".45" stop-color="#608f85"/><stop offset="1" stop-color="#244d52"/></linearGradient>
+<linearGradient id="image-captioning-violet" x2="1" y2="1"><stop stop-color="#d2c0fa"/><stop offset="1" stop-color="#8e78b1"/></linearGradient>
+<filter id="image-captioning-shadow" x="-50%" y="-50%" width="200%" height="230%"><feGaussianBlur stdDeviation="15"/></filter>
+</defs>
+<style>
+.standalone .art-float{animation:image-captioning-float 4s ease-in-out 1;transform-box:fill-box;transform-origin:center}
+.standalone .art-pulse{animation:image-captioning-pulse 4s ease-in-out 1}
+.standalone .art-flow{animation:image-captioning-flow 4s ease-in-out 1}
+@keyframes image-captioning-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes image-captioning-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes image-captioning-flow{0%,100%{stroke-dashoffset:0}50%{stroke-dashoffset:16}}
+@media(prefers-reduced-motion:reduce){.standalone .art-float,.standalone .art-pulse,.standalone .art-flow{animation:none}}
+</style><rect width="800" height="480" fill="url(#image-captioning-bg)"/><ellipse cx="420" cy="236" rx="355" ry="265" fill="url(#image-captioning-glow)"/>
+<g stroke="#c5e8d8" opacity=".075" fill="none"><path d="M80 344 397 179 720 344M80 380 397 215 720 380M145 414 397 282 656 414"/><path d="m163 297 254 133m-181-172 297 156m-223-195 320 168m-172-150-295 156m221-194-321 168"/></g>
+<ellipse cx="414" cy="374" rx="271" ry="31" fill="#000" opacity=".34" filter="url(#image-captioning-shadow)"/>
+<g transform="rotate(-9 242 223)"><g class="art-float">
+<path d="M122 115h225v213H122Z" fill="#586b73"/><rect x="110" y="102" width="225" height="213" rx="19" fill="#d6d6c8"/><rect x="124" y="116" width="197" height="184" rx="10" fill="#84acaa"/>
+<circle cx="270" cy="155" r="22" fill="#e0dcaf"/><path d="m124 260 68-87 65 87 30-36 34 40v36H124Z" fill="#507e7a"/><path d="m124 289 70-39 46 28 44-23 37 25v20H124Z" fill="#315c60"/><path d="m166 206 26-33 29 40-23-9-15 5Z" fill="#bad1be"/>
+<path d="M136 128h18m-18 0v18m172-18h-18m18 0v18M136 287h18m-18 0v-18m172 18h-18m18 0v-18" stroke="#e0edc9" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>
+</g></g>
+<path class="art-flow" d="M345 217h40m89 15h48" fill="none" stroke="#d2d5b9" stroke-width="2.5" stroke-dasharray="4 9"/>
+<g transform="translate(0 0)"><g class="art-float">
+<path d="m381 203 47-25 49 25-48 25Z" fill="#d5c6e9"/><path d="m381 203 48 25v64l-48-25Z" fill="#9e8caf"/><path d="m429 228 48-25v64l-48 25Z" fill="#6d6482"/>
+<path d="m398 203 30-15 30 15-30 15Z" fill="#86779f"/><path d="m410 203 18-9 18 9-18 9Z" fill="#d8c6ed"/>
+<g stroke="#bac2b3" stroke-width="3" opacity=".6"><path d="m387 238-13-7m13 21-13-7m13 21-13-7m95-21 13-7m-13 21 13-7m-13 21 13-7"/></g>
+</g></g>
+<g transform="rotate(-4 622 141)"><g class="art-float"><rect x="552" y="112" width="155" height="59" rx="22" fill="#66867b"/><rect x="552" y="105" width="155" height="59" rx="22" fill="#d7dfb3"/><text x="629" y="144" text-anchor="middle" fill="#435e50" font-family="Arial,sans-serif" font-size="23" font-weight="600">a mountain</text></g></g>
+<g transform="rotate(4 599 231)"><g class="art-float"><rect x="535" y="206" width="122" height="59" rx="22" fill="#607774"/><rect x="535" y="199" width="122" height="59" rx="22" fill="#b7d7c5"/><text x="596" y="238" text-anchor="middle" fill="#3f665c" font-family="Arial,sans-serif" font-size="23" font-weight="600">beneath</text></g></g>
+<g transform="rotate(-4 645 322)"><g class="art-float"><rect x="579" y="298" width="130" height="59" rx="22" fill="#716784"/><rect x="579" y="291" width="130" height="59" rx="22" fill="#c9b5df"/><text x="644" y="330" text-anchor="middle" fill="#655777" font-family="Arial,sans-serif" font-size="23" font-weight="600">a bright sky</text></g></g>
+<path class="art-flow" d="M501 218q-4-83 43-83M502 245q-6 81 65 81" fill="none" stroke="#c4d4b4" stroke-opacity=".5" stroke-width="2" stroke-dasharray="3 9"/>
+<g class="art-pulse" fill="#cec6e1"><circle cx="397" cy="125" r="4"/><circle cx="489" cy="354" r="4"/><path d="M133 352v14m-7-7h14" stroke="#cec6e1" stroke-width="2"/></g>
+
+</svg>

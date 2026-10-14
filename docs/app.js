@@ -35,14 +35,55 @@
   document.querySelector('.project-controls').hidden = false;
   filterProjects();
   document.querySelector('#year').textContent = new Date().getFullYear();
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+  const artwork = [...document.querySelectorAll('.project-art')];
+  const motionButtons = [document.querySelector('#motion'), document.querySelector('#project-motion')];
+  let paused = reduced.matches;
+  let onMotionChange = () => {};
+  function resetTilt(art) {
+    art.style.removeProperty('--tilt-x');
+    art.style.removeProperty('--tilt-y');
+  }
+  function updateMotion() {
+    document.body.classList.toggle('motion-paused', paused);
+    motionButtons.forEach(button => {
+      button.hidden = false;
+      button.textContent = paused ? 'Play motion ▷' : 'Pause motion Ⅱ';
+      button.setAttribute('aria-pressed', String(paused));
+      button.setAttribute('aria-label', paused ? 'Play site animations' : 'Pause site animations');
+    });
+    if (paused) artwork.forEach(resetTilt);
+    onMotionChange();
+  }
+  motionButtons.forEach(button => button.addEventListener('click', () => {
+    paused = !paused; updateMotion();
+  }));
+  reduced.addEventListener('change', event => { paused = event.matches; updateMotion(); });
+  document.addEventListener('visibilitychange', () => {
+    document.body.classList.toggle('page-hidden', document.hidden);
+  });
+  const artObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => entry.target.classList.toggle('art-visible', entry.isIntersecting));
+  }, { threshold: 0.1 });
+  artwork.forEach(art => {
+    artObserver.observe(art);
+    art.addEventListener('pointermove', event => {
+      if (paused || reduced.matches || !finePointer.matches) return;
+      const rect = art.getBoundingClientRect();
+      art.style.setProperty('--tilt-x', `${((event.clientX - rect.left) / rect.width - .5) * 10}deg`);
+      art.style.setProperty('--tilt-y', `${((event.clientY - rect.top) / rect.height - .5) * -8}deg`);
+    });
+    art.addEventListener('pointerleave', () => resetTilt(art));
+    art.addEventListener('blur', () => resetTilt(art));
+  });
+  updateMotion();
   const canvas = document.querySelector('#orb');
   const context = canvas.getContext('2d');
   if (!context) return;
   const scene = document.querySelector('#scene');
   const astronaut = document.querySelector('#astronaut');
-  const button = document.querySelector('#motion');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let paused = reduced.matches, frame = 0, width = 0, height = 0, angle = 0.3, last = 0, visible = true, elapsed = 0;
+  let frame = 0, width = 0, height = 0, angle = 0.3, last = 0, visible = true, elapsed = 0;
   let pointer = { x: 0, y: 0 }, rotation = { x: 0, y: 0 };
   // Seeded stars keep the galaxy stable across reloads and viewport changes.
   let seed = 938;
@@ -166,13 +207,11 @@
   }
   function requestDraw(){if(!frame) frame=requestAnimationFrame(draw);}
   function resize(){const rect=scene.getBoundingClientRect();width=rect.width;height=rect.height;const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);context.setTransform(ratio,0,0,ratio,0,0);requestDraw();}
-  function updateButton(){button.textContent=paused?'Play motion ▷':'Pause motion Ⅱ';button.setAttribute('aria-pressed',String(paused));}
-  button.addEventListener('click',()=>{paused=!paused;last=0;updateButton();requestDraw();});
+  onMotionChange = () => { last = 0; requestDraw(); };
   scene.addEventListener('pointermove',event=>{if(paused||reduced.matches)return;const rect=scene.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width-.5)*.45;pointer.y=((event.clientY-rect.top)/rect.height-.5)*.3;});
   scene.addEventListener('pointerleave',()=>{pointer={x:0,y:0};});
-  reduced.addEventListener('change',event=>{paused=event.matches;updateButton();requestDraw();});
   document.addEventListener('visibilitychange',()=>{last=0;if(!document.hidden)requestDraw();});
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible){last=0;requestDraw();}},{threshold:0}).observe(scene);
   new ResizeObserver(resize).observe(scene);
-  updateButton();resize();
+  resize();
 })();

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" class="standalone" role="img" aria-labelledby="real-estate-title real-estate-desc">
+    <title id="real-estate-title">Real Estate Aggregator — a neighborhood of possibilities</title><desc id="real-estate-desc">A miniature isometric neighborhood with warm architectural models, trees, a listing card, and a search marker, representing a property discovery application.</desc>
+    <defs>
+      <radialGradient id="real-estate-bg" cx="48%" cy="36%" r="76%"><stop stop-color="#233740"/><stop offset="1" stop-color="#0c1722"/></radialGradient>
+      <linearGradient id="real-estate-ivory" x2="0.85" y2="1"><stop stop-color="#fff5df"/><stop offset="1" stop-color="#c8c8b2"/></linearGradient>
+      <linearGradient id="real-estate-green" x2="0.9" y2="1"><stop stop-color="#d4f596"/><stop offset="1" stop-color="#70b692"/></linearGradient>
+      <linearGradient id="real-estate-purple" x2="0.8" y2="1"><stop stop-color="#d8c4ff"/><stop offset="1" stop-color="#8475b3"/></linearGradient>
+      <linearGradient id="real-estate-coral" x2="1" y2="1"><stop stop-color="#ffccae"/><stop offset="1" stop-color="#d58078"/></linearGradient>
+      <radialGradient id="real-estate-glass" cx="28%" cy="24%"><stop stop-color="#d6fff0"/><stop offset="0.35" stop-color="#77c4be"/><stop offset="1" stop-color="#286570"/></radialGradient>
+      <filter id="real-estate-shadow" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="17" stdDeviation="15" flood-color="#030b14" flood-opacity="0.42"/></filter>
+      <pattern id="real-estate-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#9bdaca" stroke-opacity="0.045"/></pattern>
+    </defs>
+    <style>
+      .standalone .art-float { animation:real-estate-float 4s ease-in-out 1; }
+      .standalone .art-pulse { animation:real-estate-pulse 4s ease-in-out 1; }
+      .standalone .art-flow { stroke-dasharray:8 10; animation:real-estate-flow 4s ease-in-out 1; }
+      @keyframes real-estate-float { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-8px) } }
+      @keyframes real-estate-pulse { 0%,100% { opacity:1 } 50% { opacity:.65 } }
+      @keyframes real-estate-flow { 0%,100% { stroke-dashoffset:0 } 50% { stroke-dashoffset:36 } }
+      @media(prefers-reduced-motion:reduce) { .standalone .art-float,.standalone .art-pulse,.standalone .art-flow { animation:none } }
+    </style>
+    <rect width="800" height="480" rx="26" fill="url(#real-estate-bg)"/>
+    <rect x="32" y="32" width="736" height="416" rx="18" fill="url(#real-estate-grid)"/>
+    <circle cx="637" cy="104" r="70" fill="#e6b88f" opacity=".035"/>
+    
+  <ellipse cx="403" cy="376" rx="281" ry="40" fill="#030d16" opacity=".45"/>
+  <path d="M104 303L397 185L696 295L399 425Z" fill="#395957"/>
+  <path d="M104 286L397 168L696 278L399 408Z" fill="#90ada0"/>
+  <path d="M104 286L399 397V408L104 303Z" fill="#668e7d"/><path d="M399 397L696 278V295L399 408Z" fill="#476d64"/>
+  <path d="M151 290L412 185M375 201L623 296M225 319L490 214M304 352L573 245M228 258L487 359" stroke="#bfd0b2" stroke-width="3" opacity=".65"/>
+  <path d="M411 236L480 261L410 289L340 264Z" fill="#668881"/>
+  <g filter="url(#real-estate-shadow)">
+    <path d="M190 224L275 194L339 219V294L256 331L190 306Z" fill="#d6c4a4"/>
+    <path d="M256 248L339 219V294L256 331Z" fill="#a79e86"/>
+    <path d="M190 224L227 171L296 194L256 248Z" fill="#d9b39a"/><path d="M227 171L307 144L368 196L296 222Z" fill="#cb9382"/>
+    <path d="M296 222L368 196L339 219L256 248Z" fill="#825f5b"/>
+    <path d="M190 224L256 248L227 197Z" fill="#eee1bf"/>
+    <path d="M211 253L234 262V295L211 286Z" fill="#466e75"/>
+    <path d="M277 257L299 248V287L277 297Z" fill="#436269"/><path d="M309 243L328 236V257L309 265Z" fill="#d7e8d0"/>
+    <path d="M277 276L299 267M319 240V261" stroke="#d8d1b0" stroke-width="2"/>
+    <path d="M272 299L301 287L312 292L282 305Z" fill="#b8beaa"/>
+  </g>
+  <g filter="url(#real-estate-shadow)">
+    <path d="M410 274L491 242L553 266V322L473 357L410 333Z" fill="#e9e0bf"/><path d="M473 298L553 266V322L473 357Z" fill="#a6b3a0"/>
+    <path d="M402 271L457 215L522 239L473 297Z" fill="#bbd3b1"/><path d="M457 215L531 186L591 238L522 268Z" fill="#709c90"/>
+    <path d="M522 268L591 238L553 266L473 297Z" fill="#365d62"/>
+    <path d="M431 295L453 303V336L431 328Z" fill="#53777b"/><path d="M492 300L516 290V320L492 330Z" fill="#425c66"/><path d="M529 284L545 278V297L529 304Z" fill="#d7e9c7"/>
+    <path d="M503 296V325M492 311L516 301" stroke="#c3ccad" stroke-width="2"/>
+  </g>
+  <g transform="translate(606 273)"><path d="M0 0V49" stroke="#bba77c" stroke-width="7"/><ellipse cy="-10" rx="27" ry="34" fill="#477e70"/><ellipse cx="-7" cy="-17" rx="21" ry="26" fill="#90b78b"/></g>
+  <g transform="translate(159 265)"><path d="M0 0V37" stroke="#bba77c" stroke-width="5"/><ellipse cy="-11" rx="19" ry="26" fill="#659580"/><ellipse cx="-5" cy="-17" rx="15" ry="20" fill="#c0d795"/></g>
+  <g transform="translate(495 61) rotate(7 86 70)"><g class="art-float" filter="url(#real-estate-shadow)">
+    <rect x="7" y="10" width="161" height="133" rx="18" fill="#50636a"/>
+    <rect width="161" height="133" rx="18" fill="url(#real-estate-ivory)"/>
+    <rect x="13" y="12" width="135" height="63" rx="9" fill="#8caca0"/>
+    <path d="M43 53L65 32L91 49L117 27L147 64H13L27 48Z" fill="#cbdab8"/><circle cx="125" cy="29" r="8" fill="#e7d3a9"/>
+    <path d="M20 92H110M20 108H82" stroke="#809990" stroke-width="6" stroke-linecap="round"/>
+    <path d="M122 99C114 89 102 105 124 116C147 105 134 89 126 99L124 102Z" fill="#c8897b"/>
+  </g></g>
+  <g class="art-pulse"><path d="M345 104C345 77 389 77 389 104C389 123 367 141 367 141S345 123 345 104Z" fill="url(#real-estate-coral)"/><circle cx="367" cy="103" r="8" fill="#2c4850"/></g>
+  <path class="art-flow" d="M372 153C420 177 455 152 479 126" stroke="#c8d9a2" stroke-width="2" fill="none" opacity=".7"/>
+
+    </svg>

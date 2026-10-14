@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" class="standalone" role="img" aria-labelledby="quizzes-by-iron-title quizzes-by-iron-desc">
+    <title id="quizzes-by-iron-title">Quizzes by Iron — ideas in play</title><desc id="quizzes-by-iron-desc">Sculptural quiz cards orbit a three-level game podium. A bright check mark, playful question mark, and connected rings suggest a responsive learning game.</desc>
+    <defs>
+      <radialGradient id="quizzes-by-iron-bg" cx="48%" cy="36%" r="76%"><stop stop-color="#233740"/><stop offset="1" stop-color="#0c1722"/></radialGradient>
+      <linearGradient id="quizzes-by-iron-ivory" x2="0.85" y2="1"><stop stop-color="#fff5df"/><stop offset="1" stop-color="#c8c8b2"/></linearGradient>
+      <linearGradient id="quizzes-by-iron-green" x2="0.9" y2="1"><stop stop-color="#d4f596"/><stop offset="1" stop-color="#70b692"/></linearGradient>
+      <linearGradient id="quizzes-by-iron-purple" x2="0.8" y2="1"><stop stop-color="#d8c4ff"/><stop offset="1" stop-color="#8475b3"/></linearGradient>
+      <linearGradient id="quizzes-by-iron-coral" x2="1" y2="1"><stop stop-color="#ffccae"/><stop offset="1" stop-color="#d58078"/></linearGradient>
+      <radialGradient id="quizzes-by-iron-glass" cx="28%" cy="24%"><stop stop-color="#d6fff0"/><stop offset="0.35" stop-color="#77c4be"/><stop offset="1" stop-color="#286570"/></radialGradient>
+      <filter id="quizzes-by-iron-shadow" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="17" stdDeviation="15" flood-color="#030b14" flood-opacity="0.42"/></filter>
+      <pattern id="quizzes-by-iron-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#9bdaca" stroke-opacity="0.045"/></pattern>
+    </defs>
+    <style>
+      .standalone .art-float { animation:quizzes-by-iron-float 4s ease-in-out 1; }
+      .standalone .art-pulse { animation:quizzes-by-iron-pulse 4s ease-in-out 1; }
+      .standalone .art-flow { stroke-dasharray:8 10; animation:quizzes-by-iron-flow 4s ease-in-out 1; }
+      @keyframes quizzes-by-iron-float { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-8px) } }
+      @keyframes quizzes-by-iron-pulse { 0%,100% { opacity:1 } 50% { opacity:.65 } }
+      @keyframes quizzes-by-iron-flow { 0%,100% { stroke-dashoffset:0 } 50% { stroke-dashoffset:36 } }
+      @media(prefers-reduced-motion:reduce) { .standalone .art-float,.standalone .art-pulse,.standalone .art-flow { animation:none } }
+    </style>
+    <rect width="800" height="480" rx="26" fill="url(#quizzes-by-iron-bg)"/>
+    <rect x="32" y="32" width="736" height="416" rx="18" fill="url(#quizzes-by-iron-grid)"/>
+    <circle cx="637" cy="104" r="70" fill="#b29bea" opacity=".035"/>
+    
+  <ellipse cx="398" cy="371" rx="250" ry="34" fill="#040c17" opacity=".5"/>
+  <path d="M119 218C139 135 622 122 669 230C714 342 163 405 127 295" fill="none" stroke="#52707b" stroke-width="1.4"/>
+  <path class="art-flow" d="M130 218C139 144 598 131 653 213" fill="none" stroke="#a79bda" stroke-width="2"/>
+  <path d="M235 119C270 65 468 101 567 236C651 354 582 413 486 373" fill="none" stroke="#6b7590" stroke-width="1" opacity=".6"/>
+  <g class="art-pulse"><circle cx="130" cy="218" r="7" fill="#bca5f1"/><circle cx="660" cy="250" r="6" fill="#cfdf9b"/><circle cx="291" cy="105" r="4" fill="#ffb49c"/></g>
+  <g filter="url(#quizzes-by-iron-shadow)">
+    <path d="M184 310L283 271L394 308L294 348Z" fill="#a5cdb5"/><path d="M184 310L294 348V388L184 350Z" fill="#467c76"/><path d="M294 348L394 308V349L294 388Z" fill="#315c62"/>
+    <path d="M444 324L544 284L642 319L543 360Z" fill="#ccb9e7"/><path d="M444 324L543 360V398L444 363Z" fill="#887da7"/><path d="M543 360L642 319V358L543 398Z" fill="#5a597e"/>
+    <path d="M293 274L393 231L502 270L401 313Z" fill="#e7edb8"/><path d="M293 274L401 313V397L293 359Z" fill="#92b18f"/><path d="M401 313L502 270V354L401 397Z" fill="#5f8b7c"/>
+    <path d="M306 281L401 315L486 279" stroke="#f2f5c6" stroke-opacity=".6" stroke-width="2" fill="none"/>
+  </g>
+  <g transform="translate(291 66) rotate(-7 107 112)"><g class="art-float" filter="url(#quizzes-by-iron-shadow)">
+    <rect x="16" y="13" width="196" height="200" rx="30" fill="#7483a0"/>
+    <rect x="0" y="0" width="196" height="200" rx="30" fill="url(#quizzes-by-iron-ivory)"/>
+    <rect x="17" y="16" width="162" height="142" rx="18" fill="#263b46"/>
+    <path d="M71 59C71 28 126 26 129 58C132 82 98 81 98 108" fill="none" stroke="#c3dfa2" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="98" cy="133" r="8" fill="#c3dfa2"/>
+    <rect x="62" y="176" width="73" height="5" rx="2.5" fill="#8faaa0"/>
+  </g></g>
+  <g transform="translate(148 190) rotate(-16 65 44)"><g class="art-float" filter="url(#quizzes-by-iron-shadow)"><rect x="7" y="10" width="136" height="91" rx="19" fill="#7b647f"/><rect width="136" height="91" rx="19" fill="url(#quizzes-by-iron-purple)"/><circle cx="36" cy="45" r="17" fill="#6c6388"/><path d="M29 45L35 51L44 39" fill="none" stroke="#eadfff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M67 38H113M67 53H98" stroke="#807198" stroke-width="5" stroke-linecap="round"/></g></g>
+  <g transform="translate(509 167) rotate(14 69 47)"><g class="art-float" filter="url(#quizzes-by-iron-shadow)"><rect x="8" y="10" width="140" height="94" rx="20" fill="#709083"/><rect width="140" height="94" rx="20" fill="url(#quizzes-by-iron-green)"/><circle cx="37" cy="46" r="18" fill="#4c8576"/><path d="M29 46L36 53L47 39" fill="none" stroke="#ecf5d0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M70 39H117M70 55H105" stroke="#6d9e81" stroke-width="5" stroke-linecap="round"/></g></g>
+  <path d="M543 96L550 112L568 114L554 126L558 144L542 135L526 145L529 127L515 115L534 112Z" fill="url(#quizzes-by-iron-coral)"/>
+  <path d="M202 132L218 140L210 157L194 149Z" fill="#81b5b1" transform="rotate(16 206 144)"/>
+
+    </svg>

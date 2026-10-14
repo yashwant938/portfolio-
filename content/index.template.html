@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="style.css?v={{STYLE_REV}}">
 </head>
-<body>
+<body class="motion-paused">
 <a class="skip" href="#work">Skip to projects</a>
 <header class="nav wrap"><a class="wordmark" href="#" aria-label="Yashwant home">y<span>•</span></a><nav aria-label="Main navigation"><a href="#work">Work</a><a href="#contributions">Open source</a><a href="#about">About</a><a href="#contact">Contact <span>↗</span></a></nav><span class="nav-note">ENGINEERING WITH INTENT</span></header>
 <main>
@@ -24,7 +24,7 @@
 <section class="work wrap section" id="work" aria-labelledby="work-title">
 <div class="section-head"><div><span class="eyebrow">01 / PROJECTS &amp; ENGINEERING</span><h2 id="work-title">Deep in the stack.<br><em>Curious across the field.</em></h2></div><p>From compiler internals to GenAI applications.<br>Explore the problem, implementation, and code behind each project.</p></div>
 <div class="project-controls" hidden><div class="filters" role="group" aria-label="Filter projects"><button class="active" data-filter="all" aria-pressed="true">All work <sup>{{PROJECT_COUNT}}</sup></button><button data-filter="systems" aria-pressed="false">Systems</button><button data-filter="ai" aria-pressed="false">AI &amp; ML</button><button data-filter="apps" aria-pressed="false">Applications</button><button data-filter="research" aria-pressed="false">Research</button></div><label class="project-search"><span>Find a project</span><input type="search" id="project-search" placeholder="Search project, tool, or topic…" autocomplete="off"></label></div>
-<p id="filter-status" class="catalog-status" role="status">{{PROJECT_COUNT}} projects and contribution highlights</p>
+<div class="catalog-toolbar"><p id="filter-status" class="catalog-status" role="status">{{PROJECT_COUNT}} projects and contribution highlights</p><button id="project-motion" class="motion-control" type="button" aria-pressed="true" hidden>Play motion ▷</button></div>
 <div class="projects">{{PROJECTS}}</div>
 <div id="no-results" class="no-results" hidden><h3>No matching projects</h3><p>Try another topic or clear the filters to explore all work.</p><button id="reset-filters" class="button" type="button">Show all work ↗</button></div>
 <details class="learning-archive"><summary>Earlier explorations &amp; coding practice</summary><p>Algorithms and earlier web experiments, alongside the project case studies.</p><div class="archive-links">{{ARCHIVE}}</div></details>

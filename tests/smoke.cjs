@@ -16,6 +16,7 @@ let browser;
   const response = await page.goto(base, { waitUntil: 'networkidle' });
   assert.equal(response.status(), 200);
   assert.equal(await page.locator('.project:visible').count(), 14);
+  assert.equal(await page.locator('.project-art svg').count(), 14, 'Every project should have its own artwork');
   assert.equal(await page.locator('.contribution-list .merged').count(), 2);
   assert.equal(await page.locator('.contribution-list .draft').count(), 1);
 
@@ -50,6 +51,8 @@ let browser;
   assert.equal(await motion.getAttribute('aria-pressed'), 'false');
   await motion.click();
   assert.equal(await motion.getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('#project-motion').getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('.project-art .art-float').first().evaluate(node => getComputedStyle(node).animationName), 'none', 'Artwork respects reduced motion');
 
   // Decode below-the-fold lazy images before assessing whether they loaded.
   await page.evaluate(async () => {
@@ -85,9 +88,44 @@ let browser;
   await plainPage.goto(base);
   assert.equal(await plainPage.locator('.project:visible').count(), 14);
   assert.equal(await plainPage.locator('.project-controls').isVisible(), false);
+  assert.equal(await plainPage.locator('.project-art svg').count(), 14);
+  assert.equal(await plainPage.locator('#project-motion').isVisible(), false);
   await plain.close();
+
+  const animated = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'no-preference' });
+  const artPage = await animated.newPage();
+  artPage.on('pageerror', error => errors.push(error.message));
+  await artPage.goto(base, { waitUntil: 'networkidle' });
+  const art = artPage.locator('#real-estate .project-art');
+  await art.scrollIntoViewIfNeeded();
+  await artPage.waitForFunction(() => document.querySelector('#real-estate .project-art').classList.contains('art-visible'));
+  const float = art.locator('.art-float').first();
+  assert.equal(await float.evaluate(node => getComputedStyle(node).animationPlayState), 'running');
+  const initial = await float.evaluate(node => getComputedStyle(node).transform);
+  await artPage.waitForTimeout(250);
+  assert.notEqual(await float.evaluate(node => getComputedStyle(node).transform), initial, 'Artwork should move while playing');
+  const rect = await art.boundingBox();
+  await artPage.mouse.move(rect.x + rect.width * .8, rect.y + rect.height * .3);
+  assert.notEqual(await art.evaluate(node => node.style.getPropertyValue('--tilt-x')), '', 'Pointer adds depth');
+  // Trigger the shared control without moving the artwork offscreen.
+  await artPage.locator('#project-motion').evaluate(button => button.click());
+  assert.equal(await artPage.locator('#motion').getAttribute('aria-pressed'), 'true');
+  assert.equal(await float.evaluate(node => getComputedStyle(node).animationPlayState), 'paused');
+  assert.equal(await art.evaluate(node => node.style.getPropertyValue('--tilt-x')), '');
+  const frozen = await float.evaluate(node => getComputedStyle(node).transform);
+  await artPage.waitForTimeout(250);
+  assert.equal(await float.evaluate(node => getComputedStyle(node).transform), frozen, 'Pause freezes artwork');
+  await artPage.locator('#project-motion').evaluate(button => button.click());
+  await artPage.locator('#contact').scrollIntoViewIfNeeded();
+  await artPage.waitForFunction(() => !document.querySelector('#real-estate .project-art').classList.contains('art-visible'));
+  assert.equal(await float.evaluate(node => getComputedStyle(node).animationPlayState), 'paused', 'Offscreen artwork sleeps');
+  await artPage.emulateMedia({ reducedMotion: 'reduce' });
+  await artPage.waitForFunction(() => document.querySelector('#project-motion').getAttribute('aria-pressed') === 'true');
+  assert.equal(await artPage.locator('#project-motion').getAttribute('aria-pressed'), 'true');
+  assert.deepEqual(errors, []);
+  await animated.close();
   await browser.close();
-  const results = { passed: true, projectCards: 14, aiFilter: 7, mergedPRs: 2, draftPRs: 1, viewports, javascriptErrors: errors, javascriptDisabled: 'all projects readable' };
+  const results = { passed: true, projectCards: 14, illustratedCards: 14, motion: 'tilt, animation, shared pause, offscreen suspension, reduced motion passed', aiFilter: 7, mergedPRs: 2, draftPRs: 1, viewports, javascriptErrors: errors, javascriptDisabled: 'all projects and artwork readable' };
   fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify(results, null, 2));
   console.log(JSON.stringify(results, null, 2));
 })().catch(async error => { console.error(error); if (browser) await browser.close(); process.exit(1); });
