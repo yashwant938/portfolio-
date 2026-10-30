@@ -44,9 +44,8 @@ def project_card(project, index):
 <h3>{escape(project['name'])}</h3><p class="project-summary">{escape(project['summary'])}</p>
 <ul class="project-highlights">{highlights}</ul><ul class="tech-stack" aria-label="Technologies">{stack}</ul>
 <div class="project-links">{' '.join(link(item) for item in project['links'])}</div>
-{case_study}
 <details class="project-details"><summary>Implementation &amp; evidence</summary><div class="detail-body"><p class="detail-flow">{escape(project['flow'])}</p><ul>{features}</ul>{prs}<p class="detail-note">{escape(project['notes'])}</p></div></details>
-</div></article>'''
+</div>{case_study}</article>'''
 
 
 def build():

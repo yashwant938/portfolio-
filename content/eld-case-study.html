@@ -1,11 +1,46 @@
-<section class="case-study" id="eld-case-study" aria-labelledby="eld-case-title">
-  <div class="case-study-topline"><span>CASE STUDY / MERGED PR #2207</span><span class="case-study-status">MERGED</span></div>
-  <h4 id="eld-case-title">A warning that points to the problem.</h4>
-  <p class="case-study-intro">A linker combines compiled code into an executable. Its scripts can define symbols, but when the same symbol is declared again, the warning should help the developer find the conflicting line.</p>
-  <div class="case-study-step"><span class="case-study-label">01 / THE INPUT</span><p>In the actual regression test, <code>bar</code> is defined and then declared again two lines later:</p><pre aria-label="Excerpt from the linker script"><code><span>03</span>  PROVIDE(bar = 3);
+<section class="case-studies" id="eld-case-study" aria-labelledby="eld-cases-title">
+  <div class="case-studies-heading"><div><span class="case-studies-kicker">THE WORK BEHIND THE FIXES</span><h4 id="eld-cases-title">Two problems. Two merged fixes.</h4></div><p>Explore the input, the change, and the proof.</p></div>
+  <div class="case-studies-grid">
+    <details class="case-study" id="eld-case-warning">
+      <summary class="case-study-summary">
+        <span class="case-study-topline"><span>01 / DIAGNOSTICS · PR #2207</span><span class="case-study-status">MERGED</span></span>
+        <strong class="case-study-title">A warning that finds the problem.</strong>
+        <span class="case-study-description">Making linker-script warnings point to the exact line.</span>
+        <span class="case-study-peek" aria-hidden="true">BEFORE: file only &nbsp; → &nbsp; AFTER: file + line</span>
+        <span class="case-study-action"><span class="case-study-prompt"><span class="case-study-open-label">Explore case study</span><span class="case-study-close-label">Close case study</span></span><span aria-hidden="true" class="case-study-arrow">↗</span></span>
+      </summary>
+      <div class="case-study-body">
+        <p class="case-study-lead">A linker combines compiled code into an executable. When a linker script declares the same symbol again, a precise warning helps the developer find the conflicting line.</p>
+        <div class="case-study-columns">
+          <div class="case-study-step"><span class="case-study-label">THE INPUT</span><p>In the actual regression test, <code>bar</code> is defined and then declared again two lines later:</p><pre aria-label="Excerpt from the linker script"><code><span>03</span>  PROVIDE(bar = 3);
 <span>04</span>  *(*foo*)
-<span>05</span>  PROVIDE(bar = 5);</code></pre></div>
-  <div class="case-study-step"><span class="case-study-label">02 / BEFORE &amp; AFTER</span><p>Previously the warning identified the file but left developers to search it. The fix includes the line of the repeated declaration:</p><div class="case-study-output"><div><span>BEFORE</span><code>script.t: Ignoring provide symbol 'bar' redeclaration</code></div><div><span>AFTER</span><code>script.t:5: Ignoring provide symbol 'bar' redeclaration</code></div></div><p class="case-study-caption">Warning paths shortened for readability; the diagnostic wording matches the regression test.</p></div>
-  <div class="case-study-step"><span class="case-study-label">03 / THE FIX &amp; PROOF</span><p>Changed the diagnostic to use the existing <code>getContextWithLineNumber()</code> helper. The updated <code>ProvideSymbolRedecl</code> test checks lines 5, 7, and 9; a second test checks a declaration outside <code>SECTIONS</code>.</p><p>Both tests failed before the fix and passed afterward across six target configurations: <strong>12 focused passes, no skips.</strong> The full suite was not run.</p></div>
-  <div class="case-study-links"><a href="https://github.com/qualcomm/eld/pull/2207" target="_blank" rel="noopener noreferrer">Read the merged PR ↗</a><a href="https://github.com/qualcomm/eld/blob/a76506f7f421f1f4bcffdd8ce11604c88ffdddbd/test/Common/standalone/ProvideSymbolRedecl/ProvideSymbolRedecl.test" target="_blank" rel="noopener noreferrer">View regression test ↗</a><a href="https://github.com/qualcomm/eld/blob/a76506f7f421f1f4bcffdd8ce11604c88ffdddbd/test/Common/standalone/ProvideSymbolRedecl/Inputs/script.t" target="_blank" rel="noopener noreferrer">View input script ↗</a></div>
+<span>05</span>  PROVIDE(bar = 5);</code></pre><span class="case-study-label">BEFORE &amp; AFTER</span><div class="case-study-output"><div><span>BEFORE</span><code>script.t: Ignoring provide symbol 'bar' redeclaration</code></div><div><span>AFTER</span><code>script.t:5: Ignoring provide symbol 'bar' redeclaration</code></div></div><p class="case-study-caption">Warning paths shortened for readability; wording matches the test.</p></div>
+          <div class="case-study-step"><span class="case-study-label">THE FIX</span><p>Changed the diagnostic to use the existing <code>getContextWithLineNumber()</code> helper, so the warning identifies the repeated declaration.</p><span class="case-study-label">THE PROOF</span><p><code>ProvideSymbolRedecl</code> checks lines 5, 7, and 9; a second test checks a declaration outside <code>SECTIONS</code>. Both failed before and passed after the fix across six target configurations: <strong>12 focused passes, no skips.</strong> The full suite was not run.</p><div class="case-study-links"><a href="https://github.com/qualcomm/eld/pull/2207" target="_blank" rel="noopener noreferrer">Merged PR ↗</a><a href="https://github.com/qualcomm/eld/blob/a76506f7f421f1f4bcffdd8ce11604c88ffdddbd/test/Common/standalone/ProvideSymbolRedecl/ProvideSymbolRedecl.test" target="_blank" rel="noopener noreferrer">Regression test ↗</a><a href="https://github.com/qualcomm/eld/blob/a76506f7f421f1f4bcffdd8ce11604c88ffdddbd/test/Common/standalone/ProvideSymbolRedecl/Inputs/script.t" target="_blank" rel="noopener noreferrer">Input script ↗</a></div></div>
+        </div>
+      </div>
+    </details>
+    <details class="case-study" id="eld-case-headers">
+      <summary class="case-study-summary">
+        <span class="case-study-topline"><span>02 / LINKER LAYOUT · PR #2065</span><span class="case-study-status">MERGED</span></span>
+        <strong class="case-study-title">A linker script that stopped crashing.</strong>
+        <span class="case-study-description">Handling executable headers that aren't in the output layout.</span>
+        <span class="case-study-peek" aria-hidden="true">BEFORE: assertion failure &nbsp; → &nbsp; AFTER: link succeeds</span>
+        <span class="case-study-action"><span class="case-study-prompt"><span class="case-study-open-label">Explore case study</span><span class="case-study-close-label">Close case study</span></span><span aria-hidden="true" class="case-study-arrow">↗</span></span>
+      </summary>
+      <div class="case-study-body">
+        <p class="case-study-lead">Executable files have headers that describe their layout. A linker script can place those headers in different ways, including leaving one out of the output layout.</p>
+        <div class="case-study-columns">
+          <div class="case-study-step"><span class="case-study-label">THE INPUT</span><p>The added regression test links a small data object with a script that places the program header, but not the ELF header, in a segment:</p><pre aria-label="Excerpt from the PHDRS regression input"><code>PHDRS {
+  headers PT_LOAD PHDRS;
+  data PT_LOAD;
+}
+SECTIONS {
+  . = 0x1000;
+  .data 0x1000 : { *(.data*) *(.sdata*) } :data
+}</code></pre><p class="case-study-caption">Excerpt from the test fixture; a second case uses <code>FILEHDR</code> instead of <code>PHDRS</code>.</p></div>
+          <div class="case-study-step"><span class="case-study-label">BEFORE &amp; AFTER</span><p>Before the fix, address assignment could touch a header absent from the layout and trigger an assertion. After the fix, the test links both header configurations and checks the resulting load-segment offsets and addresses.</p><span class="case-study-label">THE FIX &amp; PROOF</span><p>Guarded ELF and program-header address assignment with <code>isEhdrInLayout()</code> and <code>isPhdrInLayout()</code>. The new regression and surrounding header tests recorded <strong>164 focused passes and 10 expected unsupported skips</strong> across six target configurations. The full suite was not run.</p><div class="case-study-links"><a href="https://github.com/qualcomm/eld/pull/2065" target="_blank" rel="noopener noreferrer">Merged PR ↗</a><a href="https://github.com/qualcomm/eld/issues/2063" target="_blank" rel="noopener noreferrer">Original issue ↗</a><a href="https://github.com/qualcomm/eld/blob/809e131b9292ef1418a2e8cbf63f7b26c529a518/test/Common/standalone/linkerscript/PHDRS/HeadersWithoutOutputSection/HeadersWithoutOutputSection.test" target="_blank" rel="noopener noreferrer">Regression test ↗</a></div></div>
+        </div>
+      </div>
+    </details>
+  </div>
 </section>

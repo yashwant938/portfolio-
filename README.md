@@ -46,9 +46,10 @@ evidence-location scores are not answer accuracy or a representative benchmark.
 Four ELD fixes are merged:
 #2011 (GNU options), #2065 (header layout), #2129 (native LTO saved objects), and
 #2207 (linker-script warning line numbers). #2127 and #2134 remain open.
-The hero count is generated from the contribution records. The ELD case study
-is maintained in `content/eld-case-study.html` and uses the merged PR #2207
-regression test and linker-script input. Reported ELD
+The hero count is generated from the contribution records. Two ELD case studies
+are maintained in `content/eld-case-study.html`, using the merged PR #2207 and
+#2065 regression tests and inputs. Hover or focus previews each card; click,
+keyboard, or tap opens it. The disclosures also work without JavaScript. Reported ELD
 validation covers focused regressions across six target
 configurations, not the full test suite. Website checks do not rerun project
 or PR tests. No unmeasured MCP productivity, retrieval quality, model score, or
