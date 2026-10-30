@@ -1,5 +1,57 @@
 (() => {
   'use strict';
+  // Native details remains usable without JavaScript. Hover is an enhancement;
+  // clicking pins the preview so mouse, touch, and keyboard users can read it.
+  const resume = document.querySelector('#resume');
+  const resumeSummary = resume.querySelector('summary');
+  const resumePanel = resume.querySelector('.resume-panel');
+  const resumeClose = resume.querySelector('.resume-close');
+  const canHover = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 761px)');
+  let resumePinned = false, resumeTimer;
+  function openResume() {
+    const available = Math.max(220, innerHeight - resumeSummary.getBoundingClientRect().bottom - 28);
+    resume.style.setProperty('--resume-available', available + 'px');
+    resume.open = true;
+  }
+  addEventListener('resize', () => { if (resume.open) openResume(); });
+  function closeResume() {
+    clearTimeout(resumeTimer);
+    const restoreFocus = resumePanel.contains(document.activeElement);
+    resumePinned = false;
+    resume.open = false;
+    if (restoreFocus) resumeSummary.focus({ preventScroll: true });
+  }
+  function leaveResume() {
+    clearTimeout(resumeTimer);
+    if (!resumePinned) resumeTimer = setTimeout(() => {
+      if (!resumePanel.contains(document.activeElement)) closeResume();
+    }, 250);
+  }
+  resume.addEventListener('pointerenter', event => {
+    clearTimeout(resumeTimer);
+    if (canHover.matches && event.pointerType === 'mouse') openResume();
+  });
+  resume.addEventListener('pointerleave', leaveResume);
+  resumePanel.addEventListener('pointerenter', () => clearTimeout(resumeTimer));
+  resumeSummary.addEventListener('click', event => {
+    event.preventDefault();
+    clearTimeout(resumeTimer);
+    if (resume.open && resumePinned) closeResume();
+    else { resumePinned = true; openResume(); }
+  });
+  resumePanel.addEventListener('focusin', () => {
+    resumePinned = true;
+    clearTimeout(resumeTimer);
+  });
+  resumeClose.hidden = false;
+  resumeClose.addEventListener('click', closeResume);
+  document.addEventListener('click', event => {
+    if (!resume.contains(event.target)) closeResume();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && resume.open) { event.preventDefault(); closeResume(); }
+  });
+
   const filters = [...document.querySelectorAll('[data-filter]')];
   const projects = [...document.querySelectorAll('.project')];
   const search = document.querySelector('#project-search');

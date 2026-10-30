@@ -30,8 +30,12 @@ The featured order is:
 5. C++ Concepts & Systems Lab — groups the interactive app and filesystem lab,
    preserving both source repositories and the live demo
 
-Experience precedes projects, and the hero downloads the supplied resume at
-`docs/assets/Yashwant-Singh-Rana-Resume.pdf`.
+Experience precedes projects. The hero's **View resume** control opens a readable
+HTML resume directly on the page: hover previews it on desktop, click pins it,
+and tap expands it inline on mobile. Escape, Close, or an outside click dismisses
+it. Native details also works without JavaScript. Edit `content/resume.html` and
+run the build to update the resume. The PDF asset and download link are removed;
+the preview does not load a PDF, embed a document viewer, or initiate a download.
 
 ## Evidence and assets
 
@@ -78,12 +82,20 @@ The Playwright smoke test uses installed Microsoft Edge by default.
 `BROWSER_CHANNEL=chrome` selects Chrome. `BASE_URL` can target a deployed
 site and `QA_DIR` changes the screenshot/result directory.
 
-Checks cover exact project order, IBM before projects, the resume PDF,
+Checks cover exact project order, IBM before projects, HTML resume hover/click,
+keyboard and touch interaction, no PDF requests or downloads,
 combined filters/search, empty/reset states, keyboard-operated details,
 merged PR and C++ source links, image loads, legacy anchor routing, the
 archive, motion preferences, no-JavaScript access, and page errors.
 Open and closed details are checked for overflow at 320, 390, 768, and 1440px.
 Desktop/mobile screenshots and a JSON report are saved to `test-results/`.
+
+## Browser safety warnings
+
+Removing a download does not by itself clear a Google Safe Browsing warning or
+establish what caused it. If a warning persists, inspect the property's Security
+Issues report in Google Search Console, fix any listed issues, and request a
+review. See https://support.google.com/webmasters/answer/9044101.
 
 ## Deployment
 

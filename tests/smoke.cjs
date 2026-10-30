@@ -33,6 +33,10 @@ async function checkStructure(page) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
   const page = await context.newPage();
   const errors = [];
+  const resumeDownloads = [];
+  const pdfRequests = [];
+  page.on('download', download => resumeDownloads.push(download.suggestedFilename()));
+  context.on('request', request => { if (/\.pdf(?:[?#]|$)/i.test(request.url())) pdfRequests.push(request.url()); });
   page.on('pageerror', error => errors.push(error.message));
   const response = await page.goto(base, { waitUntil: 'networkidle' });
   assert.equal(response.status(), 200);
@@ -45,16 +49,46 @@ async function checkStructure(page) {
   'IBM experience precedes featured projects');
   assert.match(await page.locator('#experience').textContent(), /IBM/);
   assert.match(await page.locator('#experience').textContent(), /8\+/);
-  const resume = page.locator('.hero a[download]');
-  assert.equal(await resume.count(), 1);
-  assert.equal(await resume.isVisible(), true);
-  assert.match(await resume.textContent(), /Download\s+Resume/i);
-  const resumeURL = await resume.evaluate(a => a.href);
-  const pdfResponse = await context.request.get(resumeURL);
-  assert.equal(pdfResponse.status(), 200);
-  const pdf = await pdfResponse.body();
-  assert.equal(pdf.subarray(0, 5).toString('ascii'), '%PDF-', 'Resume URL returns a real PDF');
-  assert.ok(pdf.length > 1000);
+  const resume = page.locator('#resume');
+  const resumeTrigger = resume.locator(':scope > summary');
+  const resumePanel = page.locator('#resume-panel');
+  assert.equal(await page.locator('a[download], a[href$=".pdf"], iframe, embed, object').count(), 0);
+  assert.match(await resumeTrigger.textContent(), /View resume/);
+  assert.equal(await resumePanel.isVisible(), false);
+  await resumeTrigger.hover();
+  await resumePanel.waitFor({ state: 'visible' });
+  await resumePanel.hover({ position: { x: 30, y: 100 } });
+  assert.equal(await resumePanel.isVisible(), true, 'Hover preview remains reachable');
+  await page.locator('#hero-title').hover();
+  await resumePanel.waitFor({ state: 'hidden' });
+  await resumeTrigger.click();
+  await page.locator('#hero-title').hover();
+  await page.waitForTimeout(300);
+  assert.equal(await resumePanel.isVisible(), true, 'Click pins the hover preview');
+  assert.match(await resumePanel.textContent(), /Sep 2026/);
+  assert.match(await resumePanel.textContent(), /8\+ production defects/);
+  assert.match(await resumePanel.textContent(), /8\.37/);
+  assert.ok(await resumePanel.evaluate(node => node.getBoundingClientRect().bottom <= innerHeight), 'Desktop preview fits available height');
+  await page.screenshot({ path: path.join(output, 'resume-desktop.png'), animations: 'disabled' });
+  await resumePanel.evaluate(node => { node.scrollTop = node.scrollHeight; });
+  assert.ok(await page.locator('#resume-recognition').evaluate(node => {
+    const panel = document.querySelector('#resume-panel').getBoundingClientRect();
+    const heading = node.getBoundingClientRect();
+    return heading.top >= panel.top && heading.bottom <= panel.bottom;
+  }), 'Entire resume is reachable by scrolling');
+  await page.getByRole('button', { name: 'Close resume preview' }).click();
+  assert.equal(await resumePanel.isVisible(), false);
+  assert.equal(await resumeTrigger.evaluate(node => node === document.activeElement), true, 'Close restores trigger focus');
+  await resumeTrigger.press('Enter');
+  assert.equal(await resumePanel.isVisible(), true);
+  await page.getByRole('button', { name: 'Close resume preview' }).focus();
+  await page.keyboard.press('Escape');
+  assert.equal(await resumePanel.isVisible(), false);
+  assert.equal(await resumeTrigger.evaluate(node => node === document.activeElement), true);
+  await resumeTrigger.press('Space');
+  assert.equal(await resumePanel.isVisible(), true);
+  await page.locator('#hero-title').click();
+  assert.equal(await resumePanel.isVisible(), false, 'Outside click dismisses preview');
   const filters = {
     systems: ['eld', 'cpp-systems'],
     ai: ['legal-lens', 'gpt2-summarization', 'cpp-systems'],
@@ -122,6 +156,10 @@ async function checkStructure(page) {
       await page.evaluate(() => document.fonts.ready);
       const layout = await page.evaluate(() => ({ width: innerWidth, documentWidth: document.documentElement.scrollWidth }));
       assert.ok(layout.documentWidth <= width + 1, 'Horizontal overflow: ' + JSON.stringify({ ...layout, expanded }));
+      if (expanded) {
+        const panel = await resumePanel.evaluate(node => ({ width: node.clientWidth, scroll: node.scrollWidth }));
+        assert.ok(panel.scroll <= panel.width + 1, 'Resume text fits preview at ' + width);
+      }
       viewports.push({ ...layout, expanded });
     }
   }
@@ -156,11 +194,24 @@ async function checkStructure(page) {
   assert.deepEqual(await visibleProjects(plainPage), ids);
   assert.equal(await plainPage.locator('.project-controls').isVisible(), false);
   assert.equal(await plainPage.locator('#project-motion').isVisible(), false);
-  assert.equal(await plainPage.locator('.hero a[download]').isVisible(), true);
+  await plainPage.locator('#resume > summary').click();
+  assert.equal(await plainPage.locator('#resume-panel').isVisible(), true, 'HTML resume works without JavaScript');
+  assert.match(await plainPage.locator('#resume-panel').textContent(), /Recognition/);
+  await plainPage.locator('#resume > summary').click();
   const plainDetail = plainPage.locator('#legal-lens details').first();
   await plainDetail.locator(':scope > summary').click();
   assert.equal(await plainDetail.getAttribute('open'), '', 'Native details work without JavaScript');
   await plain.close();
+  const touch = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const touchPage = await touch.newPage();
+  touchPage.on('pageerror', error => errors.push(error.message));
+  await touchPage.goto(home.href, { waitUntil: 'networkidle' });
+  await touchPage.locator('#resume > summary').tap();
+  assert.equal(await touchPage.locator('#resume-panel').isVisible(), true, 'Tap opens inline mobile resume');
+  await touchPage.screenshot({ path: path.join(output, 'resume-mobile.png'), animations: 'disabled' });
+  await touchPage.getByRole('button', { name: 'Close resume preview' }).tap();
+  assert.equal(await touchPage.locator('#resume-panel').isVisible(), false);
+  await touch.close();
   const animated = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'no-preference' });
   const motionPage = await animated.newPage();
   motionPage.on('pageerror', error => errors.push(error.message));
@@ -175,10 +226,12 @@ async function checkStructure(page) {
   assert.equal(await motionPage.locator('body').evaluate(n => n.classList.contains('motion-paused')), true);
   await animated.close();
   assert.deepEqual(errors, [], 'No browser JavaScript errors');
+  assert.deepEqual(resumeDownloads, [], 'Resume never triggers a download');
+  assert.deepEqual(pdfRequests, [], 'Browsing never requests a PDF');
   await browser.close();
   const results = {
     passed: true, projectCards: ids, experienceBeforeProjects: true,
-    resume: { url: resumeURL, bytes: pdf.length, signature: '%PDF-' },
+    resume: { format: 'HTML', hover: true, clickToPin: true, keyboard: true, touch: true, noJavaScript: true, downloads: resumeDownloads, pdfRequests },
     filters, projectScreenshots: screenshots, mergedPRLinks: [2011, 2065],
     legacyRoutes: ['cpp-concepts → cpp-systems', 'filesystem-lab → cpp-systems', 'contributions → expanded ELD', 'moodpet → archive.html#moodpet'],
     motion: 'pause control, body state, initial and changed reduced-motion preference passed',

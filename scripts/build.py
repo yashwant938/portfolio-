@@ -50,6 +50,7 @@ def build():
     assert [p['id'] for p in projects] == ['eld', 'legal-lens', 'real-estate', 'gpt2-summarization', 'cpp-systems']
     template = (ROOT / 'content/index.template.html').read_text(encoding='utf-8')
     replacements = {
+        '{{RESUME}}': (ROOT / 'content/resume.html').read_text(encoding='utf-8').strip(),
         '{{PROJECTS}}': '\n'.join(project_card(p, i) for i, p in enumerate(projects, 1)),
         '{{PROJECT_COUNT}}': str(len(projects)),
         '{{STYLE_REV}}': sha256((ROOT / 'docs/style.css').read_bytes()).hexdigest()[:12],
