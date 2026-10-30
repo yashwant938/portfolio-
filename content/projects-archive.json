@@ -3,12 +3,13 @@
   "projects": [
     {
       "id": "eld", "name": "Qualcomm ELD contributions", "categories": ["systems"], "eyebrow": "SYSTEMS / OPEN SOURCE",
-      "summary": "Two merged fixes in Qualcomm's LLVM-based ELF linker: GNU-compatible numeric -O handling and a PHDRS/FILEHDR layout crash. Further LTO, AArch64, and build-guidance changes are in review.",
-      "status": "2 merged fixes · focused regression tests across 6 target configurations",
+      "verifiedOn": "2026-10-30",
+      "summary": "Four merged fixes in Qualcomm's LLVM-based ELF linker: GNU option compatibility, PHDRS/FILEHDR layout, native ARM/AArch64 LTO saved objects, and linker-script warning locations.",
+      "status": "4 merged fixes · focused regression tests across 6 target configurations",
       "stack": ["C++", "LLVM", "Linux", "lit / FileCheck"],
       "flow": "Object files + linker script → symbol and section layout → ELF executable",
-      "features": ["Accepted numeric GNU -O compatibility options while keeping LTO optimization controls independent.", "Guarded ELF/program-header address assignment when a linker script omits those headers from the output layout.", "Reproduced failures and added regression coverage for x86-64, Hexagon, ARM, AArch64, RV32, and RV64 configurations."],
-      "notes": "The linked PRs record focused validation and expected skips. These were not full-suite runs; review status is listed below.",
+      "features": ["Accepted numeric GNU -O compatibility options while keeping LTO optimization controls independent.", "Guarded ELF/program-header address assignment when a linker script omits those headers from the output layout.", "Preserved native ARM/AArch64 LTO objects with --save-temps and added line numbers to PROVIDE/PROVIDE_HIDDEN redeclaration warnings.", "Reproduced failures and added regression coverage for x86-64, Hexagon, ARM, AArch64, RV32, and RV64 configurations."],
+      "notes": "ELD merge status refreshed on 30 October 2026. The linked PRs record focused regression validation, not full-suite runs.",
       "links": [{"label": "My contributions", "url": "https://github.com/qualcomm/eld/pulls?q=is%3Apr+author%3Ayashwant938"}]
     },
     {
@@ -145,11 +146,13 @@
   "contributions": [
     {
       "name": "Qualcomm ELD", "eyebrow": "C++ / LLVM / LINKER ENGINEERING",
-      "summary": "Compatibility, layout correctness, LTO output, and an easier contributor setup.",
+      "verifiedOn": "2026-10-30",
+      "summary": "Four merged fixes across GNU compatibility, header layout, native LTO output, and linker-script diagnostics.",
       "items": [
         {"title": "#2011 · GNU numeric -O compatibility", "url": "https://github.com/qualcomm/eld/pull/2011", "status": "Merged", "detail": "Unblocked warning-sensitive Meson links while leaving --lto-O controls independent. Regression coverage across six target configurations."},
         {"title": "#2065 · PHDRS/FILEHDR layout crash", "url": "https://github.com/qualcomm/eld/pull/2065", "status": "Merged", "detail": "Guarded header address assignment when a linker script omits headers from the output layout; checked both header combinations."},
-        {"title": "#2129 · Native LTO saved objects", "url": "https://github.com/qualcomm/eld/pull/2129", "status": "Open", "detail": "Preserved native ARM/AArch64 object emission with --save-temps; covered full LTO, ThinLTO, and explicit assembly output."},
+        {"title": "#2129 · Native LTO saved objects", "url": "https://github.com/qualcomm/eld/pull/2129", "status": "Merged", "detail": "Preserved native ARM/AArch64 object emission with --save-temps; covered full LTO, ThinLTO, and explicit assembly output."},
+        {"title": "#2207 · Linker-script warning locations", "url": "https://github.com/qualcomm/eld/pull/2207", "status": "Merged", "detail": "Included source line numbers in duplicate PROVIDE and PROVIDE_HIDDEN warnings; both updated regressions passed across six target configurations."},
         {"title": "#2134 · AArch64 feature flags", "url": "https://github.com/qualcomm/eld/pull/2134", "status": "Open", "detail": "Preserved BTI/PAC flags across multiple sections in one input. The regression failed before the fix; 18 focused runs passed after it."},
         {"title": "#2127 · Contributor build guidance", "url": "https://github.com/qualcomm/eld/pull/2127", "status": "Open", "detail": "Documented LLVM main alignment and space-free source/build paths following hands-on WSL setup and maintainer discussion."}
       ],

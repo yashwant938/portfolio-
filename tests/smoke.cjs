@@ -122,9 +122,15 @@ async function checkStructure(page) {
   assert.equal(await detail.getAttribute('open'), '', 'Native details respond to keyboard input');
   await page.keyboard.press('Enter');
   assert.equal(await detail.getAttribute('open'), null);
-  for (const number of [2011, 2065]) {
+  assert.match(await page.locator('.impact-strip').textContent(), /4\s+merged fixes/);
+  assert.match(await resumePanel.textContent(), /4 merged fixes/);
+  assert.equal(await page.locator('#eld .pr-status.merged').count(), 4);
+  assert.equal(await page.locator('#eld .evidence-item').count(), 4);
+  for (const number of [2011, 2065, 2129, 2207]) {
     assert.ok(await page.locator('#eld details a[href="https://github.com/qualcomm/eld/pull/' + number + '"]').count() > 0);
+    assert.ok(await resumePanel.locator('a[href="https://github.com/qualcomm/eld/pull/' + number + '"]').count() > 0);
   }
+  assert.equal(await page.locator('#eld .pr-status.open').count(), 2);
   for (const href of ['https://yashwant938.github.io/CompilerCppTopics/',
     'https://github.com/yashwant938/CompilerCppTopics', 'https://github.com/yashwant938/OOPD-Project']) {
     assert.ok(await page.locator('#cpp-systems a[href="' + href + '"]').count() > 0, 'Preserve combined lab link ' + href);
@@ -167,6 +173,7 @@ async function checkStructure(page) {
   await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
   await page.screenshot({ path: path.join(output, 'homepage-desktop.png'), fullPage: true, animations: 'disabled' });
   await page.locator('#work').screenshot({ path: path.join(output, 'projects-desktop.png'), animations: 'disabled' });
+  await page.locator('#eld').screenshot({ path: path.join(output, 'eld-contributions-desktop.png'), animations: 'disabled' });
   await page.setViewportSize({ width: 390, height: 900 });
   await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
   await page.screenshot({ path: path.join(output, 'homepage-mobile.png'), fullPage: true, animations: 'disabled' });
@@ -183,6 +190,8 @@ async function checkStructure(page) {
   await page.goto(archiveURL.href, { waitUntil: 'networkidle' });
   await page.waitForURL(url => url.pathname.endsWith('/archive.html') && url.hash === '#moodpet');
   assert.equal(await page.locator('#moodpet').isVisible(), true);
+  assert.match(await page.locator('#eld .project-status').textContent(), /4 merged fixes/);
+  assert.equal(await page.locator('#contributions .contribution-card').first().locator('.pr-status.merged').count(), 4);
   for (const name of ['MoodPet', 'LLVMBugSquad']) {
     assert.ok(await page.locator('a[href="https://github.com/yashwant938/' + name + '"]').count() > 0);
   }
@@ -232,7 +241,7 @@ async function checkStructure(page) {
   const results = {
     passed: true, projectCards: ids, experienceBeforeProjects: true,
     resume: { format: 'HTML', hover: true, clickToPin: true, keyboard: true, touch: true, noJavaScript: true, downloads: resumeDownloads, pdfRequests },
-    filters, projectScreenshots: screenshots, mergedPRLinks: [2011, 2065],
+    filters, projectScreenshots: screenshots, mergedPRLinks: [2011, 2065, 2129, 2207],
     legacyRoutes: ['cpp-concepts → cpp-systems', 'filesystem-lab → cpp-systems', 'contributions → expanded ELD', 'moodpet → archive.html#moodpet'],
     motion: 'pause control, body state, initial and changed reduced-motion preference passed',
     viewports, javascriptErrors: errors,

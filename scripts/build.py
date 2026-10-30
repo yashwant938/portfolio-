@@ -2,6 +2,7 @@
 from html import escape
 from pathlib import Path
 from hashlib import sha256
+from datetime import date
 import json
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,7 +31,9 @@ def project_card(project, index):
     stack = ''.join(f'<li>{escape(item)}</li>' for item in project['stack'])
     prs = ''
     if project.get('contributions'):
-        prs = '<div id="contributions"><p class="detail-label">Contribution record · checked 14 October 2026</p><ul class="pr-list">'
+        checked = date.fromisoformat(project['verifiedOn'])
+        checked_label = f'{checked.day} {checked:%B %Y}'
+        prs = f'<div id="contributions"><p class="detail-label">Contribution record · checked {checked_label}</p><ul class="pr-list">'
         for item in project['contributions']:
             prs += f'<li>{link({"label": item["title"], "url": item["url"]})}<span class="pr-status {item["status"].lower()}">{item["status"]}</span></li>'
         prs += '</ul></div>'
@@ -53,6 +56,7 @@ def build():
         '{{RESUME}}': (ROOT / 'content/resume.html').read_text(encoding='utf-8').strip(),
         '{{PROJECTS}}': '\n'.join(project_card(p, i) for i, p in enumerate(projects, 1)),
         '{{PROJECT_COUNT}}': str(len(projects)),
+        '{{MERGED_COUNT}}': str(sum(item['status'] == 'Merged' for item in projects[0]['contributions'])),
         '{{STYLE_REV}}': sha256((ROOT / 'docs/style.css').read_bytes()).hexdigest()[:12],
         '{{SCRIPT_REV}}': sha256((ROOT / 'docs/app.js').read_bytes()).hexdigest()[:12],
     }

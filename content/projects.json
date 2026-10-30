@@ -3,12 +3,13 @@
   "projects": [
     {
       "id": "eld",
+      "verifiedOn": "2026-10-30",
       "name": "Qualcomm ELD Contributions",
       "categories": [
         "systems"
       ],
       "eyebrow": "SYSTEMS / OPEN SOURCE",
-      "summary": "Two merged fixes in Qualcomm's LLVM-based ELF linker, improving GNU option compatibility and preventing linker-script crashes.",
+      "summary": "Four merged fixes in Qualcomm's LLVM-based ELF linker across GNU option compatibility, header layout, native LTO output, and linker-script diagnostics.",
       "stack": [
         "C++",
         "LLVM",
@@ -19,9 +20,11 @@
       "features": [
         "Accepted numeric GNU -O compatibility options while keeping LTO optimization controls independent.",
         "Guarded ELF/program-header address assignment when a linker script omits those headers from the output layout.",
+        "Preserved native ARM/AArch64 object emission with --save-temps, covering full LTO, ThinLTO, and explicit assembly output.",
+        "Added source line numbers to duplicate PROVIDE and PROVIDE_HIDDEN warnings so diagnostics identify the exact assignment.",
         "Reproduced failures and added regression coverage for x86-64, Hexagon, ARM, AArch64, RV32, and RV64 configurations."
       ],
-      "notes": "Focused validation covered x86-64, Hexagon, ARM, AArch64, RV32, and RV64 configurations, not the full ELD suite. Additional LTO, AArch64, and documentation changes remain under review.",
+      "notes": "Four PRs are merged as of 30 October 2026. Focused regression validation covered six target configurations; the full ELD suite was not run. AArch64 feature-flag and contributor-documentation changes remain open.",
       "links": [
         {
           "label": "GitHub contributions",
@@ -30,7 +33,8 @@
       ],
       "highlights": [
         "GNU numeric -O compatibility with independent LTO optimization controls.",
-        "PHDRS/FILEHDR crash fix; focused regressions across 6 target configurations."
+        "PHDRS/FILEHDR crash fix and native ARM/AArch64 LTO saved objects.",
+        "Precise PROVIDE warning locations; focused regressions across 6 target configurations."
       ],
       "contributions": [
         {
@@ -48,8 +52,14 @@
         {
           "title": "#2129 · Native LTO saved objects",
           "url": "https://github.com/qualcomm/eld/pull/2129",
-          "status": "Open",
+          "status": "Merged",
           "detail": "Preserved native ARM/AArch64 object emission with --save-temps; covered full LTO, ThinLTO, and explicit assembly output."
+        },
+        {
+          "title": "#2207 · Linker-script warning locations",
+          "url": "https://github.com/qualcomm/eld/pull/2207",
+          "status": "Merged",
+          "detail": "Included source line numbers in duplicate PROVIDE and PROVIDE_HIDDEN warnings; both updated regressions passed across six target configurations."
         },
         {
           "title": "#2134 · AArch64 feature flags",
@@ -78,6 +88,18 @@
             "title": "Linker-script crash fix",
             "code": "PHDRS / FILEHDR",
             "url": "https://github.com/qualcomm/eld/pull/2065"
+          },
+          {
+            "label": "PR #2129",
+            "title": "Native LTO saved objects",
+            "code": "ARM / AArch64 · --save-temps",
+            "url": "https://github.com/qualcomm/eld/pull/2129"
+          },
+          {
+            "label": "PR #2207",
+            "title": "Precise warning locations",
+            "code": "PROVIDE · script.t:5",
+            "url": "https://github.com/qualcomm/eld/pull/2207"
           }
         ]
       }
