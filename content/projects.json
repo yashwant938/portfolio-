@@ -174,7 +174,7 @@
         "apps"
       ],
       "eyebrow": "BACKEND / PROPERTY MARKETPLACE",
-      "summary": "A property marketplace prototype with searchable listings, account workflows, payment integration, and PDF contracts.",
+      "summary": "A property marketplace prototype exploring searchable listings, account workflows, and contracts, with a safe synthetic preview.",
       "stack": [
         "PHP",
         "Slim",
@@ -183,22 +183,26 @@
         "Razorpay",
         "TCPDF"
       ],
-      "flow": "PHP/Slim routes → account and property workflows → MySQL + payment/email/PDF integrations",
+      "flow": "PHP/Slim routes → account and property workflows → MySQL, email and PDF integrations; payment routes disabled.",
       "features": [
         "Built listing creation/editing and filters for location, budget, availability, and amenities.",
-        "Implemented registration, login, email OTP/reset flows, and account views.",
-        "Added Razorpay order creation/signature checks, stored payment records, and TCPDF contract generation."
+        "Added deny-before-dispatch authorization and bound parameters for listing filters, with focused regression checks.",
+        "Retained legacy payment integration for study; payment endpoints are disabled pending transaction and security work."
       ],
-      "notes": "The repository documents setup and remaining authorization/payment-consistency work. This is a prototype, without a verified production payment deployment.",
+      "notes": "Prototype only. The standalone preview uses fictional listings and no accounts or payments. Payment endpoints are disabled; database, identity, upload and authorization paths still need broader review.",
       "links": [
+        {
+          "label": "Synthetic preview",
+          "url": "demo/property/index.html"
+        },
         {
           "label": "Source & architecture",
           "url": "https://github.com/yashwant938/E-Commerce"
         }
       ],
       "highlights": [
-        "Location, budget, availability, and amenity filters backed by MySQL.",
-        "Razorpay order/signature handling, email OTP flows, and TCPDF contracts."
+        "Searchable property listings with account workflows and parameterized filters.",
+        "Synthetic preview; payment routes disabled pending transaction and security work."
       ],
       "visual": {
         "kind": "workflow",
@@ -213,11 +217,11 @@
             "detail": "PHP / Slim routes + MySQL persistence"
           },
           {
-            "title": "Connect integrations",
-            "detail": "Payment orders · email · PDF contracts"
+            "title": "Explore safely",
+            "detail": "Synthetic preview · payments disabled"
           }
         ],
-        "caption": "Full-stack prototype · source available"
+        "caption": "Full-stack prototype · synthetic preview"
       }
     },
     {
@@ -228,7 +232,7 @@
         "research"
       ],
       "eyebrow": "NLP / COURSEWORK EXPERIMENT",
-      "summary": "Fine-tuned GPT-2 to generate short Amazon review summaries, from data preparation to checkpointed inference.",
+      "summary": "Coursework experiment in review summarization, now paired with a corrected, reproducible evaluation.",
       "stack": [
         "Python",
         "PyTorch",
@@ -238,20 +242,24 @@
       ],
       "flow": "Reviews → preprocessing and split → GPT-2 fine-tuning → checkpoint → summary generation",
       "features": [
-        "Prepared review–TL;DR–summary sequences with a custom dataset and data loaders.",
-        "Implemented an AdamW training loop, learning-rate scheduling, checkpoint save/load, and prompt-based generation.",
-        "Included ROUGE/BLEU evaluation code and documented prompt-leakage and batching issues that need correction."
+        "Prepared review–TL;DR–summary sequences and a PyTorch training loop in the original coursework notebook.",
+        "Built a review-only evaluator that scores every batch item and compares against a lead-words baseline.",
+        "Measured a 513-review pilot with public pretrained GPT-2; published examples, settings, and limitations."
       ],
-      "notes": "Coursework experiment. Evaluation corrections are documented: historical ROUGE/BLEU scores are not valid quality measurements because of prompt leakage and batch-scoring issues. No benchmark result is claimed.",
+      "notes": "The original fine-tuned checkpoint is unavailable. The pilot evaluates public pretrained GPT-2, not the coursework model; the historical notebook scores are unreliable. ROUGE is an imperfect proxy and the sample is not independently reviewed or deduplicated.",
       "links": [
         {
-          "label": "Notebook & findings",
+          "label": "Pilot results",
+          "url": "https://github.com/yashwant938/CSE508_Winter2024_A4_MT23107/blob/main/results/REPORT.md"
+        },
+        {
+          "label": "Notebook & evaluator",
           "url": "https://github.com/yashwant938/CSE508_Winter2024_A4_MT23107"
         }
       ],
       "highlights": [
-        "Custom PyTorch datasets and loaders for review–TL;DR–summary sequences.",
-        "AdamW training, learning-rate scheduling, checkpoint save/load, and generation."
+        "Review-only evaluation covering 513 held-out reviews and a partial final batch.",
+        "Lead baseline ROUGE-L 0.097; pretrained GPT-2 0.049. Fine-tuned model not evaluated."
       ],
       "visual": {
         "kind": "workflow",
@@ -266,11 +274,11 @@
             "detail": "PyTorch · AdamW · learning-rate schedule"
           },
           {
-            "title": "Generate a summary",
-            "detail": "Saved checkpoint + review prompt"
+            "title": "Evaluate held-out reviews",
+            "detail": "Review-only prompts · lead baseline · ROUGE"
           }
         ],
-        "caption": "Data preparation → training → inference"
+        "caption": "Coursework experiment · fine-tuned checkpoint unavailable"
       }
     },
     {
@@ -290,16 +298,14 @@
         "React",
         "Monaco"
       ],
-      "flow": "Concepts: lesson → simulation → editable code → compiler output. Systems: command parser → sequential/threaded commands → filesystem operations.",
+      "flow": "Concepts: lesson → simulation or compiler-backed vector trace. Systems: sequential or bounded-worker copy → verified outputs and timings.",
       "features": [
-        "Created data-driven memory/container simulations that explain concepts step by step.",
-        "Connected the editor to Wandbox for C++, C, Java, and Python, separating compiler output from program output.",
-        "Added timed quizzes, a browser-local leaderboard, and sanitized Markdown for assistant responses.",
-        "Implemented command classes for cd, ls, cp, mv, and rm with recursive directory handling.",
-        "Compared sequential and threaded executables, coordinating listing output with a mutex.",
-        "Included workload-generation and timing scripts to explore filesystem and concurrency behavior."
+        "Created data-driven memory and container teaching simulations, clearly distinguished from actual program output.",
+        "Added an instrumented vector example that displays values, size and capacity printed by a real Wandbox run.",
+        "Built a bounded-worker file-copy experiment with a sequential mode and verified repeated benchmarks.",
+        "Implemented educational command classes for cd, ls, cp, mv, and rm; the original threaded commands remain separate."
       ],
-      "notes": "Two complementary implementations: a browser learning app and an educational filesystem interpreter. Visuals are teaching simulations, not execution traces. Compilation and AI features require external services. Timing scripts explore concurrency; no measured speedup is claimed.",
+      "notes": "The live vector example visualizes instrumented program output, not debugger or memory-address traces. The separate copy benchmark uses small synthetic workloads; the original Q3 commands still use unbounded threads. Compiler access requires Wandbox.",
       "links": [
         {
           "label": "Live demo",
@@ -312,11 +318,15 @@
         {
           "label": "Systems source",
           "url": "https://github.com/yashwant938/OOPD-Project"
+        },
+        {
+          "label": "Copy benchmark",
+          "url": "https://github.com/yashwant938/OOPD-Project#bounded-copy-experiment"
         }
       ],
       "highlights": [
-        "Step-through simulations, an editable compiler workspace, quizzes, and an optional Gemini tutor.",
-        "cd / ls / cp / mv / rm; sequential and threaded variants with synchronized output."
+        "Interactive teaching simulations plus a live vector trace from compiler output.",
+        "Bounded-worker file copy, tested against a sequential mode on repeatable workloads."
       ],
       "visual": {
         "kind": "screenshot",
