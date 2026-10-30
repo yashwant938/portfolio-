@@ -127,7 +127,7 @@
         "Added retrieval-augmented generation with page-linked citations and a document-excerpt fallback when generation is unavailable.",
         "Implemented local scope/intent classification using MiniLM embeddings and logistic regression, plus cited research-brief export."
       ],
-      "notes": "Built around a historical source corpus. Retrieval-quality and latency benchmarks are not claimed; the repository documents provider setup and reproduction.",
+      "notes": "Historical source corpus; current-law coverage is unverified. The evaluation is a small, author-created pilot, not a representative or expert-reviewed benchmark. A labelled passage hit does not establish answer accuracy. See the evaluation branch report for methodology, failures, fallback handling, and local warm timings.",
       "links": [
         {
           "label": "GitHub",
@@ -136,11 +136,16 @@
         {
           "label": "My merged PRs",
           "url": "https://github.com/ZainiiiBoyx278/legal-lens/pulls?q=is%3Apr+author%3Ayashwant938+is%3Amerged"
+        },
+        {
+          "label": "Evaluation pilot",
+          "url": "https://github.com/ZainiiiBoyx278/legal-lens/blob/codex/legal-lens-evaluation/evaluation/results/REPORT.md"
         }
       ],
       "highlights": [
         "BM25 + MiniLM with reciprocal rank fusion over a 1,871-page historical IPC source.",
-        "Cited answers, excerpt fallback, local intent classification, and research-brief export."
+        "Cited answers, excerpt fallback, local intent classification, and research-brief export.",
+        "Author-created pilot: BM25 and hybrid each found labelled passages in the top 5 for 14 of 27 historical questions; 8 of 8 scope cases returned no evidence."
       ],
       "visual": {
         "kind": "workflow",

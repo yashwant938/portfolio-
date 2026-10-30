@@ -49,6 +49,8 @@ async function checkStructure(page) {
   'IBM experience precedes featured projects');
   assert.match(await page.locator('#experience').textContent(), /IBM/);
   assert.match(await page.locator('#experience').textContent(), /8\+/);
+  assert.match(await page.locator('#legal-lens').textContent(), /14 of 27 historical questions/);
+  assert.equal(await page.locator('#legal-lens a[href="https://github.com/ZainiiiBoyx278/legal-lens/blob/codex/legal-lens-evaluation/evaluation/results/REPORT.md"]').count(), 1);
   const resume = page.locator('#resume');
   const resumeTrigger = resume.locator(':scope > summary');
   const resumePanel = page.locator('#resume-panel');

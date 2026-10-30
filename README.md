@@ -40,7 +40,10 @@ the preview does not load a PDF, embed a document viewer, or initiate a download
 ## Evidence and assets
 
 Project details are grounded in public source checked on 14 October 2026, with
-ELD contribution status refreshed on 30 October 2026. Four ELD fixes are merged:
+ELD contribution status refreshed on 30 October 2026. Legal Lens links to an
+author-created 35-question evaluation pilot on a separate review branch; its
+evidence-location scores are not answer accuracy or a representative benchmark.
+Four ELD fixes are merged:
 #2011 (GNU options), #2065 (header layout), #2129 (native LTO saved objects), and
 #2207 (linker-script warning line numbers). #2127 and #2134 remain open.
 The hero count is generated from the contribution records. The ELD case study
