@@ -25,7 +25,7 @@ def media(project):
     return f'<div class="workflow-panel"><span class="media-label">{escape(visual["label"])}</span><ol>{steps}</ol><p class="evidence-line">{escape(visual["caption"])}</p></div>'
 
 
-def project_card(project, index):
+def project_card(project, index, total):
     highlights = ''.join(f'<li>{escape(item)}</li>' for item in project['highlights'])
     features = ''.join(f'<li>{escape(item)}</li>' for item in project['features'])
     stack = ''.join(f'<li>{escape(item)}</li>' for item in project['stack'])
@@ -40,7 +40,7 @@ def project_card(project, index):
     case_study = (ROOT / 'content/eld-case-study.html').read_text(encoding='utf-8').strip() if project['id'] == 'eld' else ''
     return f'''<article class="project reveal" id="{project['id']}" data-category="{' '.join(project['categories'])}">
 <div class="project-media">{media(project)}</div>
-<div class="project-copy"><div class="project-meta"><span>{escape(project['eyebrow'])}</span><span>{index:02d} / 05</span></div>
+<div class="project-copy"><div class="project-meta"><span>{escape(project['eyebrow'])}</span><span>{index:02d} / {total:02d}</span></div>
 <h3>{escape(project['name'])}</h3><p class="project-summary">{escape(project['summary'])}</p>
 <ul class="project-highlights">{highlights}</ul><ul class="tech-stack" aria-label="Technologies">{stack}</ul>
 <div class="project-links">{' '.join(link(item) for item in project['links'])}</div>
@@ -51,11 +51,12 @@ def project_card(project, index):
 def build():
     data = json.loads((ROOT / 'content/projects.json').read_text(encoding='utf-8'))
     projects = data['projects']
-    assert [p['id'] for p in projects] == ['eld', 'legal-lens', 'real-estate', 'gpt2-summarization', 'cpp-systems']
+    assert projects and projects[0]['id'] == 'eld'
+    assert len({p['id'] for p in projects}) == len(projects), 'Project IDs must be unique'
     template = (ROOT / 'content/index.template.html').read_text(encoding='utf-8')
     replacements = {
         '{{RESUME}}': (ROOT / 'content/resume.html').read_text(encoding='utf-8').strip(),
-        '{{PROJECTS}}': '\n'.join(project_card(p, i) for i, p in enumerate(projects, 1)),
+        '{{PROJECTS}}': '\n'.join(project_card(p, i, len(projects)) for i, p in enumerate(projects, 1)),
         '{{PROJECT_COUNT}}': str(len(projects)),
         '{{MERGED_COUNT}}': str(sum(item['status'] == 'Merged' for item in projects[0]['contributions'])),
         '{{STYLE_REV}}': sha256((ROOT / 'docs/style.css').read_bytes()).hexdigest()[:12],

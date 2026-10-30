@@ -168,6 +168,52 @@
       }
     },
     {
+      "id": "signal-lab",
+      "name": "Signal · Recommendation Lab",
+      "categories": [
+        "ai",
+        "apps"
+      ],
+      "eyebrow": "MACHINE LEARNING / INTERACTIVE LAB",
+      "summary": "An interactive recommendation lab that makes collaborative filtering visible, explainable, and fun to explore.",
+      "stack": [
+        "React",
+        "TypeScript",
+        "Vite",
+        "Recharts",
+        "Vitest",
+        "Python"
+      ],
+      "flow": "Fictional ratings → user/item similarity or popularity → ranked suggestions → evidence and held-out evaluation.",
+      "features": [
+        "Change listener ratings and see recommendations and before-and-after predictions update immediately.",
+        "Compare user-based, item-based and regularized popularity methods; inspect neighbor similarity and clearly labelled cold-start fallbacks.",
+        "Run leave-one-rating-out MAE and direct-coverage comparisons on the same small synthetic dataset.",
+        "Preserves the original coursework notebook on review analysis and collaborative filtering."
+      ],
+      "notes": "A learning demo built on fictional products and ratings, not an evaluation of the original Amazon dataset or a production recommender. The historical notebook relies on external data and its results have not been independently reproduced.",
+      "links": [
+        {
+          "label": "Explore the lab",
+          "url": "labs/signal/"
+        },
+        {
+          "label": "Source & methods",
+          "url": "https://github.com/yashwant938/CSE508_Winter2024_A3_MT23107"
+        }
+      ],
+      "highlights": [
+        "Three recommendation strategies, live rating controls, and transparent neighbor evidence.",
+        "Interactive holdout evaluation, cold-start fallback, and before-and-after predictions."
+      ],
+      "visual": {
+        "kind": "screenshot",
+        "path": "assets/screenshots/signal-recommender.png",
+        "alt": "Signal Recommendation Lab showing a fictional listener rating headphones alongside ranked suggestions and predicted scores.",
+        "caption": "Signal lab · live ratings and recommendation explanations"
+      }
+    },
+    {
       "id": "real-estate",
       "name": "Real Estate Aggregator",
       "categories": [

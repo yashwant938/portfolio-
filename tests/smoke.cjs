@@ -4,7 +4,7 @@ const path = require('node:path');
 const { chromium } = require('playwright');
 let browser;
 
-const ids = ['eld', 'legal-lens', 'real-estate', 'gpt2-summarization', 'cpp-systems'];
+const ids = ['eld', 'legal-lens', 'signal-lab', 'real-estate', 'gpt2-summarization', 'cpp-systems'];
 const visibleProjects = page => page.locator('article.project:visible').evaluateAll(nodes => nodes.map(n => n.id));
 async function loadImages(page) {
   await page.evaluate(async () => {
@@ -43,7 +43,7 @@ async function checkStructure(page) {
   const home = new URL(page.url());
   home.hash = '';
   assert.deepEqual(await visibleProjects(page), ids);
-  assert.equal(await page.locator('article.project').count(), 5);
+  assert.equal(await page.locator('article.project').count(), ids.length);
   assert.equal(await page.locator('#experience').evaluate(node =>
     Boolean(node.compareDocumentPosition(document.querySelector('#work')) & Node.DOCUMENT_POSITION_FOLLOWING)), true,
   'IBM experience precedes featured projects');
@@ -93,8 +93,8 @@ async function checkStructure(page) {
   assert.equal(await resumePanel.isVisible(), false, 'Outside click dismisses preview');
   const filters = {
     systems: ['eld', 'cpp-systems'],
-    ai: ['legal-lens', 'gpt2-summarization', 'cpp-systems'],
-    apps: ['legal-lens', 'real-estate', 'cpp-systems'],
+    ai: ['legal-lens', 'signal-lab', 'gpt2-summarization', 'cpp-systems'],
+    apps: ['legal-lens', 'signal-lab', 'real-estate', 'cpp-systems'],
     research: ['legal-lens', 'gpt2-summarization'],
     all: ids
   };
@@ -114,10 +114,14 @@ async function checkStructure(page) {
   await page.locator('[data-filter="systems"]').click();
   assert.deepEqual(await visibleProjects(page), []);
   assert.equal(await page.locator('#no-results').isVisible(), true);
-  assert.match(await page.locator('#filter-status').textContent(), /^0 of 5/);
+  assert.match(await page.locator('#filter-status').textContent(), /^0 of 6/);
   await page.locator('#reset-filters').click();
   assert.deepEqual(await visibleProjects(page), ids);
   assert.equal(await search.inputValue(), '');
+  await search.fill('Signal');
+  assert.deepEqual(await visibleProjects(page), ['signal-lab']);
+  await search.fill('');
+  assert.equal(await page.locator('#signal-lab a[href="labs/signal/"]').count() > 0, true, 'Signal demo is linked');
   const detail = page.locator('#legal-lens details').first();
   await detail.locator(':scope > summary').focus();
   await page.keyboard.press('Enter');
@@ -283,7 +287,7 @@ async function checkStructure(page) {
     legacyRoutes: ['cpp-concepts → cpp-systems', 'filesystem-lab → cpp-systems', 'contributions → expanded ELD', 'moodpet → archive.html#moodpet'],
     motion: 'pause control, body state, initial and changed reduced-motion preference passed',
     viewports, javascriptErrors: errors,
-    javascriptDisabled: 'all five projects, resume, and native details readable; script controls hidden'
+    javascriptDisabled: 'all six projects, resume, and native details readable; script controls hidden'
   };
   fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify(results, null, 2));
   console.log(JSON.stringify(results, null, 2));
