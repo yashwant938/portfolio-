@@ -43,7 +43,9 @@ Project details are grounded in public source checked on 14 October 2026, with
 ELD contribution status refreshed on 30 October 2026. Four ELD fixes are merged:
 #2011 (GNU options), #2065 (header layout), #2129 (native LTO saved objects), and
 #2207 (linker-script warning line numbers). #2127 and #2134 remain open.
-The hero count is generated from the contribution records. Reported ELD
+The hero count is generated from the contribution records. The ELD case study
+is maintained in `content/eld-case-study.html` and uses the merged PR #2207
+regression test and linker-script input. Reported ELD
 validation covers focused regressions across six target
 configurations, not the full test suite. Website checks do not rerun project
 or PR tests. No unmeasured MCP productivity, retrieval quality, model score, or

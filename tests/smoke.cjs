@@ -126,6 +126,12 @@ async function checkStructure(page) {
   assert.match(await resumePanel.textContent(), /4 merged fixes/);
   assert.equal(await page.locator('#eld .pr-status.merged').count(), 4);
   assert.equal(await page.locator('#eld .evidence-item').count(), 4);
+  const caseStudy = page.locator('#eld-case-study');
+  assert.equal(await caseStudy.isVisible(), true, 'ELD case study is visible without opening a disclosure');
+  assert.match(await caseStudy.textContent(), /PROVIDE\(bar = 5\)/);
+  assert.match(await caseStudy.textContent(), /script\.t:5:/);
+  assert.match(await caseStudy.textContent(), /12 focused passes, no skips/);
+  assert.equal(await caseStudy.locator('a[href="https://github.com/qualcomm/eld/pull/2207"]').count(), 1);
   for (const number of [2011, 2065, 2129, 2207]) {
     assert.ok(await page.locator('#eld details a[href="https://github.com/qualcomm/eld/pull/' + number + '"]').count() > 0);
     assert.ok(await resumePanel.locator('a[href="https://github.com/qualcomm/eld/pull/' + number + '"]').count() > 0);
@@ -174,7 +180,9 @@ async function checkStructure(page) {
   await page.screenshot({ path: path.join(output, 'homepage-desktop.png'), fullPage: true, animations: 'disabled' });
   await page.locator('#work').screenshot({ path: path.join(output, 'projects-desktop.png'), animations: 'disabled' });
   await page.locator('#eld').screenshot({ path: path.join(output, 'eld-contributions-desktop.png'), animations: 'disabled' });
+  await caseStudy.screenshot({ path: path.join(output, 'eld-case-study-desktop.png'), animations: 'disabled' });
   await page.setViewportSize({ width: 390, height: 900 });
+  await caseStudy.screenshot({ path: path.join(output, 'eld-case-study-mobile.png'), animations: 'disabled' });
   await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
   await page.screenshot({ path: path.join(output, 'homepage-mobile.png'), fullPage: true, animations: 'disabled' });
   for (const oldHash of ['cpp-concepts', 'filesystem-lab']) {
@@ -201,6 +209,7 @@ async function checkStructure(page) {
   const plainPage = await plain.newPage();
   await plainPage.goto(home.href, { waitUntil: 'networkidle' });
   assert.deepEqual(await visibleProjects(plainPage), ids);
+  assert.equal(await plainPage.locator('#eld-case-study').isVisible(), true, 'Case study is readable without JavaScript');
   assert.equal(await plainPage.locator('.project-controls').isVisible(), false);
   assert.equal(await plainPage.locator('#project-motion').isVisible(), false);
   await plainPage.locator('#resume > summary').click();

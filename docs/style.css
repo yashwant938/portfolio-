@@ -186,6 +186,27 @@ code { font-family: 'Cascadia Code', 'SFMono-Regular', Consolas, monospace; font
 .project-links { display: flex; flex-wrap: wrap; align-items: center; gap: 9px 19px; margin-top: 18px; }
 .project-links a { display: inline-flex; align-items: center; min-height: 30px; color: var(--ink); font-size: 13px; font-weight: 600; text-decoration: underline; text-decoration-color: #536448; text-underline-offset: 5px; }
 .project-links a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.case-study { margin-top: 24px; padding: 24px; border: 1px solid #455440; border-radius: 10px; background: linear-gradient(145deg, #1d2820, #141c19 70%); }
+.case-study-topline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; color: var(--accent); font-size: 10px; letter-spacing: 1.2px; font-weight: 700; }
+.case-study-status { padding: 3px 7px; border: 1px solid #4c6440; border-radius: 4px; background: #293921; color: #d1ecb1; font-size: 9px; letter-spacing: .7px; }
+.case-study h4 { margin: 12px 0 0; font-size: clamp(20px, 2vw, 24px); line-height: 1.35; letter-spacing: -.6px; color: var(--ink); }
+.case-study-intro, .case-study-step p { margin-top: 9px; color: #b7c4b9; font-size: 13px; line-height: 1.8; }
+.case-study-step { margin-top: 21px; padding-top: 17px; border-top: 1px solid #3a493a; }
+.case-study-label { color: var(--accent); font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+.case-study pre { overflow-x: auto; margin: 12px 0 0; padding: 15px 16px; border: 1px solid #38473b; border-radius: 7px; background: #101813; color: #e4eee1; font-size: 12px; line-height: 1.8; }
+.case-study pre code { font-size: inherit; overflow-wrap: normal; }
+.case-study pre span { color: #819382; user-select: none; }
+.case-study-output { display: grid; gap: 8px; margin-top: 12px; }
+.case-study-output > div { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 10px; padding: 11px 12px; border: 1px solid #38473b; border-radius: 7px; background: #111a15; }
+.case-study-output > div:last-child { border-color: #647e4e; background: #263721; }
+.case-study-output span { padding-top: 2px; color: #a3b39f; font-size: 9px; font-weight: 700; letter-spacing: .8px; }
+.case-study-output > div:last-child span, .case-study-output > div:last-child code { color: #d4edbd; }
+.case-study-output code { color: #c6d1c2; font-size: 11px; line-height: 1.65; overflow-wrap: anywhere; }
+.case-study-step .case-study-caption { margin-top: 7px; color: #99a79a; font-size: 11px; }
+.case-study-links { display: flex; flex-wrap: wrap; gap: 10px 19px; margin-top: 20px; }
+.case-study-links a { color: var(--accent); font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+.case-study-links a:hover { color: #e0f4c0; }
+@media (max-width: 520px) { .case-study { padding: 19px 16px; } .case-study-output > div { grid-template-columns: 1fr; gap: 3px; } }
 .project-details { margin-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
 .project-details summary { cursor: pointer; padding: 12px 0; color: #b8c5ac; font-size: 13px; font-weight: 600; list-style-position: inside; line-height: 1.7; }
 .project-details summary:hover { color: var(--accent); }

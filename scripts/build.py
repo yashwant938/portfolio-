@@ -37,12 +37,14 @@ def project_card(project, index):
         for item in project['contributions']:
             prs += f'<li>{link({"label": item["title"], "url": item["url"]})}<span class="pr-status {item["status"].lower()}">{item["status"]}</span></li>'
         prs += '</ul></div>'
+    case_study = (ROOT / 'content/eld-case-study.html').read_text(encoding='utf-8').strip() if project['id'] == 'eld' else ''
     return f'''<article class="project reveal" id="{project['id']}" data-category="{' '.join(project['categories'])}">
 <div class="project-media">{media(project)}</div>
 <div class="project-copy"><div class="project-meta"><span>{escape(project['eyebrow'])}</span><span>{index:02d} / 05</span></div>
 <h3>{escape(project['name'])}</h3><p class="project-summary">{escape(project['summary'])}</p>
 <ul class="project-highlights">{highlights}</ul><ul class="tech-stack" aria-label="Technologies">{stack}</ul>
 <div class="project-links">{' '.join(link(item) for item in project['links'])}</div>
+{case_study}
 <details class="project-details"><summary>Implementation &amp; evidence</summary><div class="detail-body"><p class="detail-flow">{escape(project['flow'])}</p><ul>{features}</ul>{prs}<p class="detail-note">{escape(project['notes'])}</p></div></details>
 </div></article>'''
 
