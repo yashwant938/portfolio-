@@ -122,6 +122,7 @@ async function checkStructure(page) {
   assert.deepEqual(await visibleProjects(page), ['signal-lab']);
   await search.fill('');
   assert.equal(await page.locator('#signal-lab a[href="labs/signal/"]').count() > 0, true, 'Signal demo is linked');
+  assert.equal(await page.locator('#signal-lab a[href="https://github.com/yashwant938/portfolio-/tree/main/projects/signal"]').count() > 0, true, 'Signal public source is linked');
   const detail = page.locator('#legal-lens details').first();
   await detail.locator(':scope > summary').focus();
   await page.keyboard.press('Enter');
