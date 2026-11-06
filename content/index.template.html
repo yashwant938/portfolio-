@@ -3,76 +3,243 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1020">
+  <meta name="theme-color" content="#F6F4EF">
   <meta name="description" content="Yashwant Singh Rana — software engineer with IBM compiler experience, merged Qualcomm ELD contributions, C++ systems projects, and retrieval-backed GenAI applications.">
-  <title>Yashwant Singh Rana | Software Engineer · Systems &amp; GenAI</title>
+  <title>Yashwant Singh Rana — Compiler, Systems &amp; Applied AI Engineer</title>
   <link rel="canonical" href="https://yashwant938.github.io/portfolio-/">
-  <meta property="og:title" content="Yashwant Singh Rana | Systems &amp; GenAI">
-  <meta property="og:description" content="IBM compiler engineering. Merged Qualcomm ELD fixes. C++ systems and GenAI projects, with code and evidence.">
+  <meta property="og:title" content="Yashwant Singh Rana — Compiler, Systems &amp; Applied AI Engineer">
+  <meta property="og:description" content="IBM Z C/C++ compiler engineering, merged Qualcomm ELD linker patches, C++17 systems, and retrieval-backed AI applications.">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="style.css?v={{STYLE_REV}}">
 </head>
 <body class="motion-paused">
 <a class="skip" href="#experience">Skip to experience</a>
+
 <header class="site-header">
   <div class="nav wrap">
-    <a class="wordmark" href="#top" aria-label="Yashwant home">yr<span>.</span></a>
-    <nav aria-label="Main navigation"><a href="#experience">Experience</a><a href="#work">Projects</a><a href="#about">About</a><a href="#contact">Contact <span aria-hidden="true">↗</span></a></nav>
+    <a class="wordmark" href="#top" aria-label="Yashwant Singh Rana home">
+      <span class="wordmark-name">Yashwant Singh Rana</span>
+      <span class="wordmark-sep" aria-hidden="true">/</span>
+      <span class="wordmark-role">Systems &amp; GenAI</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#experience">Experience</a>
+      <a href="#work">Selected Work</a>
+      <a href="#about">Background</a>
+      <a href="#contact">Contact</a>
+    </nav>
   </div>
 </header>
+
 <main id="top">
   <section class="hero wrap" aria-labelledby="hero-title">
     <div class="hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow">YASHWANT SINGH RANA</p>
-        <h1 id="hero-title">Software engineer.<br><span>Systems &amp; GenAI.</span></h1>
-        <p class="intro">Compiler engineering at IBM. Open-source contributions to Qualcomm ELD. Building with C++, Linux, and retrieval-backed AI.</p>
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Software Engineer · Compilers, C++ Systems &amp; Applied AI</p>
+        <h1 id="hero-title">Yashwant Singh Rana</h1>
+        <p class="hero-subtitle">Compiler &amp; systems engineer building low-level C++ toolchains and retrieval-backed AI applications.</p>
+        <p class="intro">Previously on the IBM Z C/C++ compiler team at <strong>IBM India Software Labs</strong>, and an open-source contributor to <strong>Qualcomm’s LLVM-based ELD linker</strong>. I focus on taking reproducible failures in systems software, isolating root causes, and shipping regression-tested fixes.</p>
         <div class="hero-actions">
           {{RESUME}}
-          <a class="button secondary" href="#work">View projects <span aria-hidden="true">↘</span></a>
+          <a class="button secondary" href="#work">Browse engineering work <span aria-hidden="true">↓</span></a>
         </div>
-        <div class="social-links"><a href="https://github.com/yashwant938" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://www.linkedin.com/in/yash-rana-3a7252265/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><span>M.Tech · IIIT Delhi</span></div>
+        <div class="social-links" aria-label="Profile links">
+          <a href="https://github.com/yashwant938" target="_blank" rel="noopener noreferrer">github.com/yashwant938 <span aria-hidden="true">↗</span></a>
+          <a href="https://www.linkedin.com/in/yash-rana-3a7252265/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+          <span class="social-meta">M.Tech · IIIT Delhi</span>
+        </div>
       </div>
-      <figure class="hero-portrait"><img src="assets/yash.jpeg" alt="Yashwant working at his desk" width="590" height="1280" fetchpriority="high"><figcaption>Based in Rishikesh, India</figcaption></figure>
+
+      <figure class="hero-portrait">
+        <div class="portrait-card">
+          <img src="assets/yash.jpeg" alt="Yashwant Singh Rana at his desk" width="590" height="1280" fetchpriority="high">
+          <figcaption>
+            <strong>Yashwant Singh Rana</strong>
+            <span>Rishikesh &amp; Bengaluru, India</span>
+          </figcaption>
+        </div>
+      </figure>
     </div>
+
     <div class="impact-strip" aria-label="Career highlights">
-      <div class="impact-stat"><strong>8+ <span>production defects</span></strong><span>Resolved in IBM compiler development</span></div>
-      <div class="impact-stat"><strong>{{MERGED_COUNT}} <span>merged fixes</span></strong><span>Qualcomm ELD · C++ / LLVM</span></div>
-      <div class="impact-stat"><strong>6 <span>target configurations</span></strong><span>Focused ELD regression coverage</span></div>
+      <div class="impact-stat">
+        <span class="impact-kicker">Compiler Engineering · IBM ISL</span>
+        <strong>8+ <span>production defects</span></strong>
+        <span>Resolved in IBM Z C/C++ compiler development</span>
+      </div>
+      <div class="impact-stat">
+        <span class="impact-kicker">Open Source · Qualcomm ELD</span>
+        <strong>{{MERGED_COUNT}} <span>merged fixes</span></strong>
+        <span>Qualcomm ELD · C++ / LLVM linker</span>
+      </div>
+      <div class="impact-stat">
+        <span class="impact-kicker">Cross-Target Verification</span>
+        <strong>6 <span>target configurations</span></strong>
+        <span>Focused ELD regression coverage (x86-64, Hexagon, ARM, AArch64, RV32, RV64)</span>
+      </div>
     </div>
   </section>
 
   <section class="section wrap" id="experience" aria-labelledby="experience-title">
-    <div class="section-heading"><div><span class="section-index">01 / EXPERIENCE</span><h2 id="experience-title">Engineering at IBM.</h2></div><p>India Software Labs · IBM Z C/C++ compilers</p></div>
+    <div class="section-heading">
+      <div>
+        <span class="section-index">01 · Career Ledger</span>
+        <h2 id="experience-title">Experience</h2>
+      </div>
+      <p>IBM India Software Labs · IBM Z C/C++ Compilers</p>
+    </div>
+
     <div class="experience-list">
-      <article class="experience-entry reveal"><div class="experience-date">JUL 2025 — SEP 2026<span class="location">Bengaluru, India</span></div><div><div class="role-heading"><h3>Software Engineer</h3><span class="role-title">IBM ISL</span></div><ul><li>Resolved <strong>8+ production defects</strong> across code generation, register allocation, and compiler optimization.</li><li>Implemented an <strong>MCP service for compiler diagnostics</strong>, connecting compiler evidence to AI-assisted developer workflows.</li><li>Debugged memory and multithreading failures with GDB and Linux tools; automated build and test workflows.</li></ul></div></article>
-      <article class="experience-entry reveal"><div class="experience-date">JAN 2025 — JUL 2025<span class="location">Bengaluru, India</span></div><div><div class="role-heading"><h3>Software Engineer Intern</h3><span class="role-title">IBM ISL</span></div><ul><li>Fixed frontend and backend compiler bugs in parsing, AST processing, and code generation.</li><li>Built Zowe automation scripts and contributed to an AI-assisted developer platform.</li></ul></div></article>
+      <article class="experience-entry reveal">
+        <div class="experience-date">
+          <time>Jul 2025 – Sep 2026</time>
+          <span class="location">Bengaluru, India · Full-time</span>
+        </div>
+        <div class="experience-body">
+          <div class="role-heading">
+            <h3>Software Engineer</h3>
+            <span class="role-title">IBM India Software Labs (ISL)</span>
+          </div>
+          <ul>
+            <li>Resolved <strong>8+ production defects</strong> across code generation, register allocation, and compiler optimization passes in the IBM Z C/C++ compiler toolchain.</li>
+            <li>Implemented an <strong>MCP service for compiler diagnostics</strong>, connecting compiler evidence to AI-assisted developer workflows.</li>
+            <li>Debugged memory and multithreading failures with GDB and Linux tools; automated build and test workflows.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="experience-entry reveal">
+        <div class="experience-date">
+          <time>Jan 2025 – Jul 2025</time>
+          <span class="location">Bengaluru, India · Internship</span>
+        </div>
+        <div class="experience-body">
+          <div class="role-heading">
+            <h3>Software Engineer Intern</h3>
+            <span class="role-title">IBM India Software Labs (ISL)</span>
+          </div>
+          <ul>
+            <li>Fixed frontend and backend compiler bugs in parsing, AST processing, and code generation.</li>
+            <li>Built Zowe automation scripts and contributed to an AI-assisted developer platform.</li>
+          </ul>
+        </div>
+      </article>
     </div>
   </section>
 
   <section class="section wrap" id="work" aria-labelledby="work-title">
-    <div class="section-heading"><div><span class="section-index">02 / SELECTED WORK</span><h2 id="work-title">{{PROJECT_COUNT}} projects. Code to explore.</h2></div><p>Systems, applied AI, and software engineering.</p></div>
-    <div class="project-controls" hidden>
-      <div class="filters" role="group" aria-label="Filter projects"><button type="button" class="active" data-filter="all" aria-pressed="true">All <sup>{{PROJECT_COUNT}}</sup></button><button type="button" data-filter="systems" aria-pressed="false">Systems</button><button type="button" data-filter="ai" aria-pressed="false">AI &amp; ML</button><button type="button" data-filter="apps" aria-pressed="false">Applications</button><button type="button" data-filter="research" aria-pressed="false">Research</button></div>
-      <label class="project-search"><span>Find a project</span><input type="search" id="project-search" placeholder="Search projects or technologies" autocomplete="off"></label>
+    <div class="section-heading">
+      <div>
+        <span class="section-index">02 · Selected Work</span>
+        <h2 id="work-title">Projects &amp; Open-Source Patches</h2>
+      </div>
+      <p>{{PROJECT_COUNT}} documented case studies across compilers, C++ systems, and applied AI.</p>
     </div>
-    <div class="catalog-toolbar"><p id="filter-status" class="catalog-status" role="status">{{PROJECT_COUNT}} featured projects</p><button id="project-motion" class="motion-control" type="button" aria-pressed="true" hidden>Enable motion</button></div>
+
+    <div class="project-controls" hidden>
+      <div class="filters" role="group" aria-label="Filter projects">
+        <button type="button" class="active" data-filter="all" aria-pressed="true">All <sup>{{PROJECT_COUNT}}</sup></button>
+        <button type="button" data-filter="systems" aria-pressed="false">Systems</button>
+        <button type="button" data-filter="ai" aria-pressed="false">AI &amp; ML</button>
+        <button type="button" data-filter="apps" aria-pressed="false">Applications</button>
+        <button type="button" data-filter="research" aria-pressed="false">Research</button>
+      </div>
+      <label class="project-search">
+        <span>Find a project</span>
+        <input type="search" id="project-search" placeholder="Filter by tool, language, or topic…" autocomplete="off">
+      </label>
+    </div>
+
+    <div class="catalog-toolbar">
+      <p id="filter-status" class="catalog-status" role="status">{{PROJECT_COUNT}} featured projects</p>
+      <button id="project-motion" class="motion-control" type="button" aria-pressed="true" hidden>Enable motion</button>
+    </div>
+
     <div class="projects">{{PROJECTS}}</div>
-    <div id="no-results" class="no-results" hidden><h3>No matching projects</h3><p>Try another technology or reset the filters.</p><button id="reset-filters" class="button secondary" type="button">Show all work</button></div>
+
+    <div id="no-results" class="no-results" hidden>
+      <h3>No matching projects</h3>
+      <p>Try another technology or reset the filters.</p>
+      <button id="reset-filters" class="button secondary" type="button">Show all work</button>
+    </div>
   </section>
 
   <section class="section wrap" id="about" aria-labelledby="about-title">
-    <div class="section-heading"><div><span class="section-index">03 / BACKGROUND</span><h2 id="about-title">Depth in systems. Range in AI.</h2></div></div>
+    <div class="section-heading">
+      <div>
+        <span class="section-index">03 · Background &amp; Stack</span>
+        <h2 id="about-title">Education &amp; Technical Focus</h2>
+      </div>
+    </div>
+
     <div class="about-grid">
-      <div><p>I work across compiler internals, C++ systems, and retrieval-backed applications. I enjoy turning a reproducible failure into a focused fix—and making the result easy to inspect and test.</p><div class="education-list"><h3>Education</h3><p><strong>M.Tech · IIIT Delhi</strong><br>2023–2025 · CGPA 8.37 / 10</p><p><strong>B.Tech · Graphic Era Hill University</strong><br>2019–2023 · CGPA 8.27 / 10</p></div></div>
-      <div class="skill-groups"><div class="skill-group"><h3>Systems &amp; tooling</h3><p>C / C++ · Linux · LLVM · GDB · CMake · Ninja · lit / FileCheck</p></div><div class="skill-group"><h3>GenAI &amp; machine learning</h3><p>RAG · BM25 · MiniLM · RRF · LLM APIs · PyTorch · Hugging Face</p></div><div class="skill-group"><h3>Application engineering</h3><p>Python · FastAPI · TypeScript · React / Next.js · SQL · Docker</p></div></div>
+      <div class="about-narrative">
+        <p class="lead-paragraph">I work across compiler internals, C++ systems, and retrieval-backed applications. I enjoy turning a reproducible failure into a focused fix—and making the result easy to inspect and test.</p>
+        <div class="education-list">
+          <h3>Academic Background</h3>
+          <div class="edu-row">
+            <div>
+              <strong>M.Tech in Computer Science &amp; Engineering · IIIT Delhi</strong>
+              <span>Indraprastha Institute of Information Technology, Delhi</span>
+            </div>
+            <span class="edu-meta">2023 – 2025 · CGPA 8.37 / 10</span>
+          </div>
+          <div class="edu-row">
+            <div>
+              <strong>B.Tech in Computer Science &amp; Engineering · Graphic Era Hill University</strong>
+              <span>Dehradun, Uttarakhand</span>
+            </div>
+            <span class="edu-meta">2019 – 2023 · CGPA 8.27 / 10</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-groups" aria-label="Technical skills">
+        <div class="skill-group">
+          <h3>Systems &amp; Compiler Tooling</h3>
+          <p>C / C++ · Linux · LLVM · GDB · CMake · Ninja · lit / FileCheck</p>
+        </div>
+        <div class="skill-group">
+          <h3>GenAI &amp; Machine Learning</h3>
+          <p>RAG · BM25 · MiniLM · RRF · LLM APIs · PyTorch · Hugging Face</p>
+        </div>
+        <div class="skill-group">
+          <h3>Application Engineering</h3>
+          <p>Python · FastAPI · TypeScript · React / Next.js · SQL · Docker</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="contact section" id="contact" aria-labelledby="contact-title"><div class="wrap contact-grid"><div><span class="section-index">04 / CONTACT</span><h2 id="contact-title">Let's build useful software.</h2><p>Interested in SDE, C++ / Systems, and GenAI opportunities.</p></div><div class="contact-actions"><a class="button primary" href="mailto:yashwantrana7310@gmail.com">Get in touch <span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/yash-rana-3a7252265/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn ↗</a></div></div></section>
+  <section class="contact section" id="contact" aria-labelledby="contact-title">
+    <div class="wrap contact-grid">
+      <div>
+        <span class="section-index">04 · Contact</span>
+        <h2 id="contact-title">Get in touch</h2>
+        <p>Interested in SDE, C++ / Systems, and GenAI opportunities. Direct email is the fastest way to reach me.</p>
+      </div>
+      <div class="contact-actions">
+        <a class="button primary" href="mailto:yashwantrana7310@gmail.com">yashwantrana7310@gmail.com <span aria-hidden="true">↗</span></a>
+        <div class="contact-sublinks">
+          <a href="https://www.linkedin.com/in/yash-rana-3a7252265/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn ↗</a>
+          <a href="https://github.com/yashwant938" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
-<footer><div class="wrap footer-inner"><span>© <span id="year">2026</span> Yashwant Singh Rana</span><nav aria-label="Footer navigation"><a href="archive.html#work">Project archive</a><a href="https://github.com/yashwant938?tab=repositories" target="_blank" rel="noopener noreferrer">All repositories ↗</a><a href="#top">Back to top ↑</a></nav></div></footer>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span>© <span id="year">2026</span> Yashwant Singh Rana · Handcrafted static HTML &amp; CSS</span>
+    <nav aria-label="Footer navigation">
+      <a href="archive.html#work">Project archive</a>
+      <a href="https://github.com/yashwant938?tab=repositories" target="_blank" rel="noopener noreferrer">All repositories ↗</a>
+      <a href="#top">Back to top ↑</a>
+    </nav>
+  </div>
+</footer>
 <script src="app.js?v={{SCRIPT_REV}}"></script>
 </body>
 </html>

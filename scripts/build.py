@@ -9,20 +9,61 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def link(item):
-    return (f'<a href="{escape(item["url"], quote=True)}" target="_blank" '
-            f'rel="noopener noreferrer">{escape(item["label"])} ↗</a>')
+    return (f'<a class="project-link" href="{escape(item["url"], quote=True)}" target="_blank" '
+            f'rel="noopener noreferrer">{escape(item["label"])} <span aria-hidden="true">↗</span></a>')
 
 
 def media(project):
     visual = project['visual']
     if visual['kind'] == 'screenshot':
         assert (ROOT / 'docs' / visual['path']).is_file()
-        return f'''<figure class="screenshot"><a href="{escape(project['links'][0]['url'], quote=True)}" target="_blank" rel="noopener noreferrer"><img src="{visual['path']}" alt="{escape(visual['alt'], quote=True)}" width="1440" height="1000" loading="lazy"></a><figcaption>{escape(visual['caption'])}</figcaption></figure>'''
+        return (
+            f'<figure class="screenshot">'
+            f'<div class="window-bar" aria-hidden="true">'
+            f'<span class="window-dots"><i></i><i></i><i></i></span>'
+            f'<span class="window-title">{escape(project["name"])} · Live Workspace</span>'
+            f'</div>'
+            f'<a href="{escape(project["links"][0]["url"], quote=True)}" target="_blank" rel="noopener noreferrer">'
+            f'<img src="{visual["path"]}" alt="{escape(visual["alt"], quote=True)}" width="1440" height="1000" loading="lazy">'
+            f'</a>'
+            f'<figcaption>{escape(visual["caption"])}</figcaption>'
+            f'</figure>'
+        )
     if visual['kind'] == 'evidence':
-        items = ''.join(f'<a class="evidence-item" href="{escape(item["url"], quote=True)}" target="_blank" rel="noopener noreferrer"><span>{escape(item["label"])} <span class="merged">Merged</span></span><strong>{escape(item["title"])}</strong><code>{escape(item["code"])}</code></a>' for item in visual['items'])
-        return f'<div class="evidence-panel"><span class="media-label">MERGED INTO QUALCOMM / ELD</span>{items}<p class="evidence-line">C++ changes. Reproducers. Regression tests.</p></div>'
-    steps = ''.join(f'<li class="workflow-step"><code>{i:02d}</code><div><strong>{escape(item["title"])}</strong><span>{escape(item["detail"])}</span></div></li>' for i, item in enumerate(visual['steps'], 1))
-    return f'<div class="workflow-panel"><span class="media-label">{escape(visual["label"])}</span><ol>{steps}</ol><p class="evidence-line">{escape(visual["caption"])}</p></div>'
+        items = ''.join(
+            f'<a class="evidence-item" href="{escape(item["url"], quote=True)}" target="_blank" rel="noopener noreferrer">'
+            f'<div class="evidence-top"><span class="evidence-pr">{escape(item["label"])}</span><span class="merged">Merged</span></div>'
+            f'<strong>{escape(item["title"])}</strong>'
+            f'<code>{escape(item["code"])}</code>'
+            f'</a>'
+            for item in visual['items']
+        )
+        return (
+            f'<aside class="evidence-panel" aria-label="Merged Qualcomm ELD pull requests">'
+            f'<div class="spec-header"><span class="media-label">qualcomm/eld · upstream patches</span><span class="spec-tag">C++ / LLVM</span></div>'
+            f'<div class="evidence-list">{items}</div>'
+            f'<p class="evidence-line">Targets: x86-64 · Hexagon · ARM · AArch64 · RV32 · RV64</p>'
+            f'</aside>'
+        )
+    flow_nodes = [part.strip() for part in project['flow'].split('→')]
+    flow_html = '<span class="flow-arrow" aria-hidden="true">→</span>'.join(
+        f'<span class="flow-node">{escape(node)}</span>' for node in flow_nodes
+    )
+    steps = ''.join(
+        f'<li class="workflow-step">'
+        f'<strong>{escape(item["title"])}</strong>'
+        f'<span>{escape(item["detail"])}</span>'
+        f'</li>'
+        for item in visual['steps']
+    )
+    return (
+        f'<aside class="workflow-panel" aria-label="{escape(visual["label"])} specification">'
+        f'<div class="spec-header"><span class="media-label">{escape(visual["label"])}</span><span class="spec-tag">Architecture</span></div>'
+        f'<div class="flow-schematic" aria-label="Data flow">{flow_html}</div>'
+        f'<ol>{steps}</ol>'
+        f'<p class="evidence-line">{escape(visual["caption"])}</p>'
+        f'</aside>'
+    )
 
 
 def project_card(project, index, total):
@@ -39,13 +80,27 @@ def project_card(project, index, total):
         prs += '</ul></div>'
     case_study = (ROOT / 'content/eld-case-study.html').read_text(encoding='utf-8').strip() if project['id'] == 'eld' else ''
     return f'''<article class="project reveal" id="{project['id']}" data-category="{' '.join(project['categories'])}">
+<div class="project-copy">
+  <div class="project-meta"><span class="project-index">{index:02d} / {total:02d}</span><span class="project-eyebrow">{escape(project['eyebrow'])}</span></div>
+  <h3>{escape(project['name'])}</h3>
+  <p class="project-summary">{escape(project['summary'])}</p>
+  <ul class="project-highlights">{highlights}</ul>
+  <div class="project-footer-bar">
+    <ul class="tech-stack" aria-label="Technologies">{stack}</ul>
+    <div class="project-links">{' '.join(link(item) for item in project['links'])}</div>
+  </div>
+  <details class="project-details">
+    <summary>Implementation &amp; evidence</summary>
+    <div class="detail-body">
+      <p class="detail-flow"><span>Pipeline:</span> {escape(project['flow'])}</p>
+      <ul>{features}</ul>
+      {prs}
+      <p class="detail-note">{escape(project['notes'])}</p>
+    </div>
+  </details>
+</div>
 <div class="project-media">{media(project)}</div>
-<div class="project-copy"><div class="project-meta"><span>{escape(project['eyebrow'])}</span><span>{index:02d} / {total:02d}</span></div>
-<h3>{escape(project['name'])}</h3><p class="project-summary">{escape(project['summary'])}</p>
-<ul class="project-highlights">{highlights}</ul><ul class="tech-stack" aria-label="Technologies">{stack}</ul>
-<div class="project-links">{' '.join(link(item) for item in project['links'])}</div>
-<details class="project-details"><summary>Implementation &amp; evidence</summary><div class="detail-body"><p class="detail-flow">{escape(project['flow'])}</p><ul>{features}</ul>{prs}<p class="detail-note">{escape(project['notes'])}</p></div></details>
-</div>{case_study}</article>'''
+{case_study}</article>'''
 
 
 def build():
