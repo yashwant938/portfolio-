@@ -79,14 +79,30 @@
         }
       };
 
-      window.applyStudioPalette = function (paletteKey) {
-        const tokens = PALETTES[paletteKey] || PALETTES["solar-yellow"];
+      const STORAGE_KEY = "cpp_studio_palette_lock_v1";
+
+      window.getSavedStudioPalette = function () {
+        try {
+          const saved = window.localStorage && window.localStorage.getItem(STORAGE_KEY);
+          if (saved && PALETTES[saved]) return saved;
+        } catch (_) {}
+        return "emerald-mint";
+      };
+
+      window.applyStudioPalette = function (paletteKey, persistChoice) {
+        const validKey = PALETTES[paletteKey] ? paletteKey : "emerald-mint";
+        const tokens = PALETTES[validKey];
         Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(k, v));
-        root.dataset.theme = paletteKey;
+        root.dataset.theme = validKey;
+        if (persistChoice) {
+          try {
+            if (window.localStorage) window.localStorage.setItem(STORAGE_KEY, validKey);
+          } catch (_) {}
+        }
         if (window.renderPaletteBar) window.renderPaletteBar();
       };
 
-      window.applyStudioPalette("solar-yellow");
+      window.applyStudioPalette(window.getSavedStudioPalette(), false);
     })();
   </script>
 </head>
@@ -120,6 +136,7 @@
     CppOOPTopics v3.0 · 3-Color Trinity UI (White+Solar Yellow OOP · White+Emerald CppNuts Threading · White+Indigo STL) · 22 Modules · 17 Labs · 10 Simulators · 30 Quiz Items
   </footer>
 
+  <script>window.DEFAULT_STUDIO_TRACK = "oop";</script>
   <script src="./src/data.js"></script>
   <script src="./src/app.js"></script>
 </body>

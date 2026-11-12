@@ -1,25 +1,25 @@
 /* ============================================================================
    CppOOPTopics — 3-Color Trinity Responsive Design System (Zero External CDNs)
-   Default Theme: Crisp Alabaster White + Solar Yellow + Charcoal Ink
-   Auto-Morphs Across OOP (Yellow), CppNuts Threading (Emerald), & STL (Indigo)
+   Default Theme: Crisp Mint White + Matcha Emerald Green + Deep Forest Ink
+   Persistent Theme Lock: Chosen theme stays locked forever until changed by user
    ============================================================================ */
 
 :root {
-  --background: #FFFDF5;
-  --content: #FEF9C3;
+  --background: #F4FBF7;
+  --content: #D1FAE5;
   --card: #FFFFFF;
-  --sidebar: #FFFBEB;
-  --border: #E4E4E7;
-  --foreground: #18181B;
-  --muted-foreground: #52525B;
-  --placeholder: #71717A;
-  --primary: #FACC15;
-  --primary-foreground: #18181B;
-  --secondary: #FEF08A;
-  --secondary-foreground: #713F12;
-  --accent: #EAB308;
-  --code-bg: #18181B;
-  --code-fg: #FEF9C3;
+  --sidebar: #ECFDF5;
+  --border: #D1E7DD;
+  --foreground: #06281E;
+  --muted-foreground: #3F6256;
+  --placeholder: #52796F;
+  --primary: #10B981;
+  --primary-foreground: #052E16;
+  --secondary: #D1FAE5;
+  --secondary-foreground: #065F46;
+  --accent: #059669;
+  --code-bg: #06281E;
+  --code-fg: #A7F3D0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color-scheme: light;
 }

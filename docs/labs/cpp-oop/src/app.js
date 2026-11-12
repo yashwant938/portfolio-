@@ -13,7 +13,7 @@
   const state = {
     activeView: "code-demo",
     activeTrack: "all", // "all" | "oop" | "threading" | "stl"
-    activePalette: "solar-yellow",
+    activePalette: (window.getSavedStudioPalette && window.getSavedStudioPalette()) || "emerald-mint",
     currentSlideIdx: 0,
     currentDemoIdx: 0,
     editorCode: DATA.codeDemos[0].code,
@@ -225,11 +225,12 @@
     renderPaletteBar();
     renderMain();
   };
+  const switchView = window.switchView;
 
   window.setPaletteManual = function (paletteKey) {
     state.activePalette = paletteKey;
     if (window.applyStudioPalette) {
-      window.applyStudioPalette(paletteKey);
+      window.applyStudioPalette(paletteKey, true);
     }
     renderPaletteBar();
   };
@@ -237,8 +238,6 @@
   window.setTrackFilter = function (track) {
     state.activeTrack = track;
     if (track === "threading") {
-      state.activePalette = "emerald-mint";
-      if (window.applyStudioPalette) window.applyStudioPalette("emerald-mint");
       if (state.currentSlideIdx < 10 || state.currentSlideIdx >= 18) state.currentSlideIdx = 10;
       if (state.currentDemoIdx < 8 || state.currentDemoIdx >= 14) {
         state.currentDemoIdx = 8;
@@ -250,8 +249,6 @@
         state.activeAnimTab = "threads5";
       }
     } else if (track === "stl") {
-      state.activePalette = "royal-indigo";
-      if (window.applyStudioPalette) window.applyStudioPalette("royal-indigo");
       if (state.currentSlideIdx < 18) state.currentSlideIdx = 18;
       if (state.currentDemoIdx < 14) {
         state.currentDemoIdx = 14;
@@ -261,8 +258,6 @@
       }
       state.activeAnimTab = "stl_sim";
     } else if (track === "oop") {
-      state.activePalette = "solar-yellow";
-      if (window.applyStudioPalette) window.applyStudioPalette("solar-yellow");
       if (state.currentSlideIdx >= 10) state.currentSlideIdx = 0;
       if (state.currentDemoIdx >= 8) {
         state.currentDemoIdx = 0;
@@ -273,9 +268,6 @@
       if (!["align", "vtable", "rvalue", "diamond", "smartptr"].includes(state.activeAnimTab)) {
         state.activeAnimTab = "align";
       }
-    } else {
-      state.activePalette = "solar-yellow";
-      if (window.applyStudioPalette) window.applyStudioPalette("solar-yellow");
     }
     renderTrackSwitcher();
     renderPaletteBar();
@@ -311,9 +303,9 @@
     if (!el) return;
     const tracks = [
       { id: "all", label: "All 3 Websites (22 Modules)" },
-      { id: "oop", label: "1. OOP & Memory (Solar Yellow · 10)" },
-      { id: "threading", label: "2. CppNuts Threading (Emerald · 8)" },
-      { id: "stl", label: "3. STL Containers (Royal Indigo · 4)" }
+      { id: "oop", label: "1. OOP & Memory (10)" },
+      { id: "threading", label: "2. CppNuts Threading (8)" },
+      { id: "stl", label: "3. STL Containers (4)" }
     ];
     el.innerHTML =
       `<span class="text-xs font-mono font-bold text-[var(--foreground)] mr-1">3-Website Switcher:</span>` +
@@ -334,13 +326,13 @@
     const el = document.getElementById("palette-switcher-bar");
     if (!el) return;
     const palettes = [
+      { id: "emerald-mint", label: "White + Green (Default)", dot: "#10B981" },
       { id: "solar-yellow", label: "White + Yellow", dot: "#FACC15" },
-      { id: "emerald-mint", label: "White + Emerald", dot: "#10B981" },
       { id: "royal-indigo", label: "White + Indigo", dot: "#6366F1" },
       { id: "cyber-dark", label: "Carbon + Yellow", dot: "#18181B" }
     ];
     el.innerHTML =
-      `<span class="text-xs font-mono text-[var(--muted-foreground)] mr-1">Theme:</span>` +
+      `<span class="text-xs font-mono text-[var(--muted-foreground)] mr-1">Theme (Locked):</span>` +
       palettes
         .map((p) => {
           const active = state.activePalette === p.id;
@@ -562,20 +554,6 @@
 
   window.openSlideIndex = function (idx) {
     state.currentSlideIdx = idx;
-    const s = DATA.slides[idx];
-    if (s) {
-      const tr = s.track || "oop";
-      if (tr === "threading" && window.applyStudioPalette) {
-        state.activePalette = "emerald-mint";
-        window.applyStudioPalette("emerald-mint");
-      } else if (tr === "stl" && window.applyStudioPalette) {
-        state.activePalette = "royal-indigo";
-        window.applyStudioPalette("royal-indigo");
-      } else if (window.applyStudioPalette) {
-        state.activePalette = "solar-yellow";
-        window.applyStudioPalette("solar-yellow");
-      }
-    }
     switchView("slides");
   };
 
@@ -946,17 +924,6 @@
     state.editorCode = d.code;
     state.terminalOutput = 'Ready. Click "Run Code" to compile and execute C++20.';
     state.terminalStatus = "idle";
-    const tr = d.track || "oop";
-    if (tr === "threading" && window.applyStudioPalette) {
-      state.activePalette = "emerald-mint";
-      window.applyStudioPalette("emerald-mint");
-    } else if (tr === "stl" && window.applyStudioPalette) {
-      state.activePalette = "royal-indigo";
-      window.applyStudioPalette("royal-indigo");
-    } else if (window.applyStudioPalette) {
-      state.activePalette = "solar-yellow";
-      window.applyStudioPalette("solar-yellow");
-    }
     renderMain();
   };
 
@@ -1134,16 +1101,6 @@
 
   window.setAnimTab = function (tabId) {
     state.activeAnimTab = tabId;
-    if (["threads5", "mutex_deadlock", "cv_queue", "future_pool"].includes(tabId) && window.applyStudioPalette) {
-      state.activePalette = "emerald-mint";
-      window.applyStudioPalette("emerald-mint");
-    } else if (tabId === "stl_sim" && window.applyStudioPalette) {
-      state.activePalette = "royal-indigo";
-      window.applyStudioPalette("royal-indigo");
-    } else if (window.applyStudioPalette) {
-      state.activePalette = "solar-yellow";
-      window.applyStudioPalette("solar-yellow");
-    }
     renderMain();
   };
 

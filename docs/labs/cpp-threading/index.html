@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>C++20 Systems Trinity Studio â€” OOP (Yellow) Â· Threading (Emerald) Â· STL (Indigo)</title>
+  <title>C++20 Systems Trinity Studio — OOP (Yellow) · Threading (Emerald) · STL (Indigo)</title>
   <link rel="stylesheet" href="./src/styles.css" />
   <script>
     (function () {
@@ -79,14 +79,30 @@
         }
       };
 
-      window.applyStudioPalette = function (paletteKey) {
-        const tokens = PALETTES[paletteKey] || PALETTES["solar-yellow"];
+      const STORAGE_KEY = "cpp_studio_palette_lock_v1";
+
+      window.getSavedStudioPalette = function () {
+        try {
+          const saved = window.localStorage && window.localStorage.getItem(STORAGE_KEY);
+          if (saved && PALETTES[saved]) return saved;
+        } catch (_) {}
+        return "emerald-mint";
+      };
+
+      window.applyStudioPalette = function (paletteKey, persistChoice) {
+        const validKey = PALETTES[paletteKey] ? paletteKey : "emerald-mint";
+        const tokens = PALETTES[validKey];
         Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(k, v));
-        root.dataset.theme = paletteKey;
+        root.dataset.theme = validKey;
+        if (persistChoice) {
+          try {
+            if (window.localStorage) window.localStorage.setItem(STORAGE_KEY, validKey);
+          } catch (_) {}
+        }
         if (window.renderPaletteBar) window.renderPaletteBar();
       };
 
-      window.DEFAULT_STUDIO_TRACK = "threading"; window.applyStudioPalette("emerald-mint");
+      window.applyStudioPalette(window.getSavedStudioPalette(), false);
     })();
   </script>
 </head>
@@ -96,7 +112,7 @@
     <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       <button onclick="switchView('landing')" class="text-left font-bold text-base md:text-lg text-[var(--foreground)] bg-transparent border-0 p-0 tracking-tight flex items-center gap-2.5">
         <span class="px-2.5 py-0.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-mono text-xs font-bold">C++20</span>
-        <span id="studio-brand-title">C++ Systems Trinity Studio Â· OOP, Threading &amp; STL</span>
+        <span id="studio-brand-title">C++ Systems Trinity Studio · OOP, Threading &amp; STL</span>
       </button>
       <div class="flex flex-wrap items-center gap-2">
         <nav id="top-nav-buttons" class="flex flex-wrap items-center gap-1.5"></nav>
@@ -117,11 +133,11 @@
 
   <!-- Footer -->
   <footer class="border-t-2 border-[var(--accent)] bg-[var(--card)] py-4 mt-12 text-center text-xs text-[var(--muted-foreground)] font-mono">
-    CppOOPTopics v3.0 Â· 3-Color Trinity UI (White+Solar Yellow OOP Â· White+Emerald CppNuts Threading Â· White+Indigo STL) Â· 22 Modules Â· 17 Labs Â· 10 Simulators Â· 30 Quiz Items
+    CppOOPTopics v3.0 · 3-Color Trinity UI (White+Solar Yellow OOP · White+Emerald CppNuts Threading · White+Indigo STL) · 22 Modules · 17 Labs · 10 Simulators · 30 Quiz Items
   </footer>
 
+  <script>window.DEFAULT_STUDIO_TRACK = "threading";</script>
   <script src="./src/data.js"></script>
   <script src="./src/app.js"></script>
 </body>
 </html>
-
