@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>C++ OOP in Compiler &amp; Systems Design — CppOOPTopics Lab</title>
+  <title>C++ OOP &amp; CppNuts Multithreading Studio — CppOOPTopics Lab</title>
   <link rel="stylesheet" href="./src/styles.css" />
   <script>
     (function () {
@@ -54,12 +54,13 @@
   </script>
 </head>
 <body class="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] antialiased">
-  <!-- Top Navigation Bar (Mirrors CompilerCppTopics) -->
+  <!-- Studio Command Header -->
   <header class="sticky top-0 z-30 bg-[var(--card)] border-b border-[var(--border)] shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-      <button onclick="switchView('landing')" class="text-left font-bold text-base md:text-lg text-[var(--foreground)] bg-transparent border-0 p-0 tracking-tight flex items-center gap-2">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <button onclick="switchView('landing')" class="text-left font-bold text-base md:text-lg text-[var(--foreground)] bg-transparent border-0 p-0 tracking-tight flex items-center gap-2.5">
         <span class="w-2.5 h-2.5 rounded-full bg-[var(--primary)]"></span>
-        <span>C++ OOP in Systems &amp; Compiler Design</span>
+        <span>C++20 OOP &amp; CppNuts Multithreading Studio</span>
+        <span class="px-2 py-0.5 rounded-md text-xs font-mono bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]">v2.0 Dual-Track</span>
       </button>
       <div class="flex flex-wrap items-center gap-2">
         <nav id="top-nav-buttons" class="flex flex-wrap items-center gap-1.5"></nav>
@@ -68,14 +69,23 @@
         </button>
       </div>
     </div>
+    <!-- Secondary Track Filter Bar -->
+    <div class="bg-[var(--sidebar)] border-t border-[var(--border)]">
+      <div class="max-w-7xl mx-auto px-4 md:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
+        <div id="track-switcher-bar" class="flex flex-wrap items-center gap-1.5"></div>
+        <div class="text-xs font-mono text-[var(--muted-foreground)]">
+          18 Concept Modules · 14 C++20 Code Labs · 9 Interactive Simulators · 25 Quiz Items
+        </div>
+      </div>
+    </div>
   </header>
 
   <!-- Main Workspace -->
-  <main id="app-main-container" class="flex-1 max-w-6xl w-full mx-auto px-4 md:px-6 py-6 md:py-8"></main>
+  <main id="app-main-container" class="flex-1 max-w-7xl w-full mx-auto px-4 md:px-6 py-6 md:py-8"></main>
 
   <!-- Footer -->
   <footer class="border-t border-[var(--border)] bg-[var(--card)] py-4 mt-12 text-center text-xs text-[var(--muted-foreground)] font-mono">
-    CppOOPTopics · Complete C++20/23 OOP, Greedy Alignment, Vtable, Move Semantics &amp; Smart Pointer Lab
+    CppOOPTopics · Complete C++20/23 OOP, Greedy Alignment, Vtable, Move Semantics &amp; CppNuts Multithreading Concurrency Lab
   </footer>
 
   <script src="./src/data.js"></script>

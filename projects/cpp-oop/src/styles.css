@@ -1,6 +1,6 @@
 /* ============================================================================
    CppOOPTopics — Self-Contained Responsive Design System (Zero External CDNs)
-   Supports Dark/Light Semantic Theme Variables & Mobile-to-Desktop Viewports
+   Supports Dark/Light Semantic Theme Variables & Dual-Track Systems Studio UI
    ============================================================================ */
 
 :root {
@@ -44,7 +44,7 @@ button {
   cursor: pointer;
 }
 
-button:focus-visible, select:focus-visible, textarea:focus-visible {
+button:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
@@ -70,9 +70,11 @@ pre {
 .items-center { align-items: center; }
 .items-start { align-items: flex-start; }
 .justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
 .grid { display: grid; }
 .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
 .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 
@@ -80,7 +82,11 @@ pre {
   .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .md\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .md\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  .md\:col-span-1 { grid-column: span 1 / span 1; }
+  .md\:col-span-2 { grid-column: span 2 / span 2; }
+  .md\:col-span-3 { grid-column: span 3 / span 3; }
   .md\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
   .md\:py-8 { padding-top: 2rem; padding-bottom: 2rem; }
   .md\:p-6 { padding: 1.5rem; }
@@ -95,21 +101,29 @@ pre {
 }
 
 /* Spacing & Sizing */
+.max-w-7xl { max-width: 80rem; }
 .max-w-6xl { max-width: 72rem; }
+.max-w-4xl { max-width: 56rem; }
 .max-w-3xl { max-width: 48rem; }
 .w-full { width: 100%; }
 .w-2 { width: 0.5rem; }
 .h-2 { height: 0.5rem; }
 .w-2\.5 { width: 0.625rem; }
 .h-2\.5 { height: 0.625rem; }
+.w-3 { width: 0.75rem; }
+.h-3 { height: 0.75rem; }
 .min-h-\[320px\] { min-height: 320px; }
+.max-h-\[540px\] { max-height: 540px; }
 .mx-auto { margin-left: auto; margin-right: auto; }
 .mt-0\.5 { margin-top: 0.125rem; }
 .mt-1 { margin-top: 0.25rem; }
 .mt-1\.5 { margin-top: 0.375rem; }
 .mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
 .mt-12 { margin-top: 3rem; }
 .mb-1 { margin-bottom: 0.25rem; }
+.mb-1\.5 { margin-bottom: 0.375rem; }
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-3 { margin-bottom: 0.75rem; }
 .mb-4 { margin-bottom: 1rem; }
@@ -117,6 +131,7 @@ pre {
 .mr-1 { margin-right: 0.25rem; }
 
 .p-2 { padding: 0.5rem; }
+.p-2\.5 { padding: 0.625rem; }
 .p-3 { padding: 0.75rem; }
 .p-3\.5 { padding: 0.875rem; }
 .p-4 { padding: 1rem; }
@@ -139,16 +154,20 @@ pre {
 .pt-3 { padding-top: 0.75rem; }
 .pb-3 { padding-bottom: 0.75rem; }
 
+.gap-1 { gap: 0.25rem; }
 .gap-1\.5 { gap: 0.375rem; }
 .gap-2 { gap: 0.5rem; }
 .gap-2\.5 { gap: 0.625rem; }
 .gap-3 { gap: 0.75rem; }
 .gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.25rem; }
 .gap-6 { gap: 1.5rem; }
 
 .space-y-1 > * + * { margin-top: 0.25rem; }
+.space-y-1\.5 > * + * { margin-top: 0.375rem; }
 .space-y-2 > * + * { margin-top: 0.5rem; }
 .space-y-2\.5 > * + * { margin-top: 0.625rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
 .space-y-3\.5 > * + * { margin-top: 0.875rem; }
 .space-y-4 > * + * { margin-top: 1rem; }
 .space-y-5 > * + * { margin-top: 1.25rem; }
@@ -157,20 +176,27 @@ pre {
 
 /* Colors & Semantic Tokens */
 .bg-\[var\(--background\)\] { background-color: var(--background); }
+.bg-\[var\(--content\)\] { background-color: var(--content); }
 .bg-\[var\(--card\)\] { background-color: var(--card); }
+.bg-\[var\(--sidebar\)\] { background-color: var(--sidebar); }
 .bg-\[var\(--primary\)\] { background-color: var(--primary); }
 .bg-\[var\(--secondary\)\] { background-color: var(--secondary); }
+.bg-\[var\(--accent\)\] { background-color: var(--accent); }
 .bg-transparent { background-color: transparent; }
 
 .text-\[var\(--foreground\)\] { color: var(--foreground); }
 .text-\[var\(--muted-foreground\)\] { color: var(--muted-foreground); }
+.text-\[var\(--primary\)\] { color: var(--primary); }
 .text-\[var\(--primary-foreground\)\] { color: var(--primary-foreground); }
 .text-\[var\(--secondary-foreground\)\] { color: var(--secondary-foreground); }
+.text-\[var\(--accent\)\] { color: var(--accent); }
 
 .border { border: 1px solid var(--border); }
+.border-0 { border: 0; }
 .border-b { border-bottom: 1px solid var(--border); }
 .border-t { border-top: 1px solid var(--border); }
 .border-r { border-right: 1px solid var(--border); }
+.border-l { border-left: 1px solid var(--border); }
 .border-dashed { border-style: dashed; }
 .border-\[var\(--border\)\] { border-color: var(--border); }
 .border-\[var\(--primary\)\] { border-color: var(--primary); }
@@ -184,8 +210,8 @@ pre {
 .rounded-full { border-radius: 9999px; }
 .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.25); }
 
-/* Typography */
-.text-xs { font-size: 0.75rem; line-height: 1.1rem; }
+/* Typography (Minimum 12px floor enforced) */
+.text-xs { font-size: 0.75rem; line-height: 1.15rem; }
 .text-sm { font-size: 0.875rem; line-height: 1.35rem; }
 .text-base { font-size: 1rem; line-height: 1.5rem; }
 .text-lg { font-size: 1.125rem; line-height: 1.65rem; }
@@ -207,12 +233,21 @@ pre {
 .whitespace-pre-wrap { white-space: pre-wrap; word-break: break-word; }
 .overflow-hidden { overflow: hidden; }
 .overflow-x-auto { overflow-x: auto; }
+.overflow-y-auto { overflow-y: auto; }
 .select-none { user-select: none; }
 .resize-y { resize: vertical; }
 .sticky { position: sticky; }
 .relative { position: relative; }
 .top-0 { top: 0; }
 .z-30 { z-index: 30; }
+.opacity-80 { opacity: 0.8; }
+.transition { transition: all 0.15s ease-in-out; }
+.hover\:opacity-95:hover { opacity: 0.95; }
+.hover\:opacity-90:hover { opacity: 0.9; }
+.hover\:opacity-80:hover { opacity: 0.8; }
+.hover\:border-\[var\(--primary\)\]:hover { border-color: var(--primary); }
+.hover\:bg-\[var\(--secondary\)\]:hover { background-color: var(--secondary); }
+.hover\:text-\[var\(--foreground\)\]:hover { color: var(--foreground); }
 .sr-only {
   position: absolute;
   width: 1px;

@@ -1,6 +1,7 @@
 // ============================================================================
-// CppOOPTopics — Complete Dataset: 12 Concept Slides, 8 Live C++20 Demos, 15 Quiz Items
-// Mirrors the architecture of CompilerCppTopics for Complete C++ OOP Mastery
+// CppOOPTopics — Complete Dataset: 18 Concept Slides, 14 Live C++20 Demos, 25 Quiz Items
+// Track 1: Complete C++20 OOP & Low-Level Memory Engineering
+// Track 2: Complete CppNuts C++20 Multithreading & Concurrency Series
 // ============================================================================
 
 window.CPP_OOP_DATA = {
@@ -74,6 +75,70 @@ window.CPP_OOP_DATA = {
       title: "CRTP, Deducing `this`, NVI & Pimpl",
       summary: "Static polymorphism via CRTP and C++23 explicit object parameters, Non-Virtual Interface (private virtual hooks), Pimpl ABI firewall, and Type Erasure.",
       metrics: ["CRTP / C++23 this", "NVI Pattern", "Pimpl Firewall"]
+    },
+    {
+      id: "threads_5_ways",
+      track: "threading",
+      badge: "11 · CPPNUTS THREADS & JTHREAD",
+      title: "5 Ways to Create Threads, join/detach & jthread",
+      summary: "Function pointers, lambdas, functors, non-static & static member functions, join() vs detach() vs joinable(), std::ref(), and C++20 std::jthread with stop_token.",
+      metrics: ["5 Callable Types", "join() / detach()", "C++20 std::jthread"]
+    },
+    {
+      id: "mutex_try_lock",
+      track: "threading",
+      badge: "12 · MUTEX & VARIADIC TRY_LOCK",
+      title: "Race Conditions, std::mutex & std::try_lock",
+      summary: "Why ++counter is a 3-instruction Read-Modify-Write data race, blocking lock() vs non-blocking try_lock(), and variadic std::try_lock(m1, m2, ..., mn) rollback.",
+      metrics: ["Critical Section", "mtx.try_lock()", "std::try_lock(m1,m2)"]
+    },
+    {
+      id: "timed_recursive_mutex",
+      track: "threading",
+      badge: "13 · TIMED & RECURSIVE MUTEX",
+      title: "std::timed_mutex & std::recursive_mutex",
+      summary: "Timeout-bounded locking via try_lock_for() and try_lock_until(), self-deadlock on standard mutexes, and re-entrant recursion depth counting with recursive_mutex.",
+      metrics: ["try_lock_for()", "try_lock_until()", "recursive_mutex"]
+    },
+    {
+      id: "lock_guard_unique_lock",
+      track: "threading",
+      badge: "14 · LOCK_GUARD VS UNIQUE_LOCK",
+      title: "lock_guard, unique_lock Tags & scoped_lock",
+      summary: "RAII lock wrappers compared: zero-overhead lock_guard vs movable unique_lock with defer_lock, try_to_lock, and adopt_lock strategies, plus C++17 scoped_lock.",
+      metrics: ["defer_lock", "try_to_lock / adopt", "std::scoped_lock"]
+    },
+    {
+      id: "deadlock_std_lock",
+      track: "threading",
+      badge: "15 · DEADLOCK & STD::LOCK",
+      title: "AB-BA Deadlock & Atomic Multi-Locking",
+      summary: "Coffman deadlock conditions, circular wait between two threads locking (A,B) vs (B,A), and try-and-back-off deadlock avoidance via std::lock(m1, m2).",
+      metrics: ["AB-BA Deadlock", "std::lock(l1, l2)", "Lock Hierarchy"]
+    },
+    {
+      id: "condition_variable_cv",
+      track: "threading",
+      badge: "16 · CONDITION VARIABLES",
+      title: "condition_variable, Even-Odd & Producer-Consumer",
+      summary: "Sleep/notify synchronization via wait(ul, predicate), OS spurious wakeup protection, CppNuts Even-Odd alternating threads, and Bounded Producer-Consumer rings.",
+      metrics: ["wait(ul, pred)", "Even-Odd Handoff", "Producer-Consumer"]
+    },
+    {
+      id: "future_promise_async",
+      track: "threading",
+      badge: "17 · FUTURE, PROMISE & ASYNC",
+      title: "std::future, std::promise & std::async",
+      summary: "Single-use shared-state channels between producer and consumer threads, std::shared_future, std::launch::async vs std::launch::deferred, and std::packaged_task.",
+      metrics: ["promise / future", "async vs deferred", "packaged_task"]
+    },
+    {
+      id: "atomics_thread_pool",
+      track: "threading",
+      badge: "18 · ATOMICS & THREAD POOL",
+      title: "std::atomic, shared_mutex, call_once & Thread Pool",
+      summary: "Hardware lock-free atomics and CAS loops, reader-writer std::shared_mutex, thread-safe lazy init with std::call_once, C++20 semaphores, and a production Thread Pool.",
+      metrics: ["std::atomic CAS", "shared_mutex / call_once", "C++20 Thread Pool"]
     }
   ],
 
@@ -266,6 +331,177 @@ public:
                            ▼
               private: virtual void doExecute() = 0 [Overridden by Derived classes!]`,
       trap: "TRAP: With the Pimpl idiom (`std::unique_ptr<Impl>`), you MUST declare `~Widget();` in the header and define `Widget::~Widget() = default;` in the `.cpp` file where `struct Impl` is a complete type—otherwise `unique_ptr`'s destructor fails to compile on an incomplete type!"
+    },
+    {
+      id: 11,
+      track: "threading",
+      tag: "MODULE 11 · CPPNUTS THREADING #1",
+      title: "5 Ways to Create Threads, `join()`, `detach()`, `joinable()` & C++20 `std::jthread`",
+      subtitle: "Hardware execution contexts, callable entry points, lifecycle invariants, and cooperative cancellation.",
+      bullets: [
+        "5 Callable Types in `std::thread`: (1) Function Pointer `std::thread(fn, arg)`, (2) Lambda Expression, (3) Functor (`operator()`), (4) Non-Static Member Function `std::thread(&Class::fn, &obj, arg)`, and (5) Static Member Function `std::thread(&Class::staticFn, arg)`.",
+        "`join()` vs `detach()`: `t.join()` blocks the calling thread until `t` finishes and releases OS kernel handles. `t.detach()` separates the OS thread into a background daemon thread outliving the `std::thread` object.",
+        "`t.joinable()` Guard: Calling `join()` or `detach()` TWICE on the same `std::thread` throws `std::system_error`. Always check `if (t.joinable())` before joining or detaching.",
+        "Passing Arguments & References: `std::thread` copies/moves all arguments into internal thread-local storage by default—even if the function signature takes `T&`! Wrap references explicitly with `std::ref(x)` or `std::cref(x)`.",
+        "C++20 `std::jthread`: RAII thread wrapper that automatically calls `request_stop()` and `join()` in its destructor (`~jthread()`) and supports cooperative cancellation via `std::stop_token`."
+      ],
+      diagram: `Thread Lifecycle & Destructor Invariant:
+  std::thread t(worker) ──► [joinable() == true]
+                                 │
+         ┌───────────────────────┼───────────────────────┐
+         ▼                       ▼                       ▼
+     t.join()                t.detach()        ~thread() while joinable()
+  (Blocks caller,         (Daemon background,            │
+   joinable = false)       joinable = false)             ▼
+                                              std::terminate() CRASH!`,
+      trap: "TRAP: If a `std::thread` object goes out of scope while `t.joinable() == true` (i.e., you neither called `join()` nor `detach()`), its destructor `~thread()` immediately invokes `std::terminate()`, crashing the entire process! And never `detach()` a thread that holds references/pointers to local stack variables."
+    },
+    {
+      id: 12,
+      track: "threading",
+      tag: "MODULE 12 · CPPNUTS THREADING #2",
+      title: "Race Conditions, Critical Sections, `std::mutex`, `try_lock()` & Variadic `std::try_lock`",
+      subtitle: "Why `++counter` is a 3-instruction Read-Modify-Write data race and how blocking vs non-blocking locks work.",
+      bullets: [
+        "Data Race Anatomy (`++counter`): Compiles to three separate CPU instructions: (1) `LOAD [counter] -> REG`, (2) `ADD REG, 1`, (3) `STORE REG -> [counter]`. If two threads interleave these steps, increments are silently lost (Undefined Behavior).",
+        "`std::mutex::lock()` vs `try_lock()`: `mtx.lock()` is blocking (puts the thread to sleep in the OS kernel wait queue if contended). `mtx.try_lock()` is non-blocking—it acquires the lock and returns `true` immediately if free, or returns `false` without blocking.",
+        "Variadic `std::try_lock(m1, m2, ..., mn)`: Global C++ standard function that attempts to lock multiple Lockable objects in order (`m1` -> `mn`) without blocking.",
+        "All-or-Nothing Rollback: If `std::try_lock(m1, m2, m3)` succeeds on all mutexes, it returns `-1`. If locking `m2` (index 1) fails, it automatically UNLOCKS `m1` (index 0) and returns the 0-based failed index (`1`)!"
+      ],
+      diagram: `Data Race on ++counter (Initial counter = 0):
+  Thread A: [LOAD 0] ──────────────────────► [INC -> 1] ──► [STORE 1]
+  Thread B:          [LOAD 0] ──► [INC -> 1] ──► [STORE 1]
+  Result: counter == 1 instead of 2! (Lost Update Bug)
+
+Variadic std::try_lock(m1, m2, m3):
+  [m1.try_lock() OK] ──► [m2.try_lock() FAIL!] ──► [Rollback: m1.unlock()] ──► returns index 1`,
+      trap: "TRAP: Never call raw `mtx.lock()` and `mtx.unlock()` manually in production code—if an exception is thrown or an early `return` executes inside the critical section, `mtx.unlock()` is skipped and every waiting thread deadlocks forever! Always use RAII wrappers."
+    },
+    {
+      id: 13,
+      track: "threading",
+      tag: "MODULE 13 · CPPNUTS THREADING #3",
+      title: "`std::timed_mutex` & `std::recursive_mutex`",
+      subtitle: "Bounded-wait lock acquisition (`try_lock_for`, `try_lock_until`) and re-entrant thread ownership.",
+      bullets: [
+        "`std::timed_mutex`: Extends `std::mutex` with timeout-bounded blocking: `try_lock_for(rel_time)` waits up to a duration (e.g., `100ms`), and `try_lock_until(abs_time)` waits until a specific `std::chrono::time_point`.",
+        "Difference from `try_lock()`: Plain `mtx.try_lock()` checks once and returns immediately; `timed_mutex::try_lock_for(50ms)` blocks and sleeps until either the mutex becomes available (`true`) or the 50ms timeout expires (`false`).",
+        "Self-Deadlock on `std::mutex`: If a thread that already holds `std::mutex m` calls `m.lock()` a second time (e.g., in a recursive function or when public method `A()` calls public method `B()`), the thread blocks waiting for itself forever (Undefined Behavior).",
+        "`std::recursive_mutex`: Tracks both the owning `thread::id` and an internal recursion counter. The same thread can call `lock()` `N` times and must call `unlock()` exactly `N` times before another thread can acquire it."
+      ],
+      diagram: `std::recursive_mutex Internal Ownership State:
+  [Unlocked: owner=none, count=0]
+       │ Thread T1 calls lock() (Depth 1)
+       ▼
+  [Locked:   owner=T1,   count=1] ──► T1 calls lock() (Depth 2) ──► [owner=T1, count=2]
+       ▲                                                                   │
+       └────────────────── T1 calls unlock() (Depth 2) ◄───────────────────┘`,
+      trap: "TRAP: While `std::recursive_mutex` prevents self-deadlock in recursive algorithms, needing it in regular class hierarchies is often a design smell indicating unclear lock invariants. Prefer the NVI pattern: public methods lock a standard `std::mutex` and call `private` unlocked helper methods!"
+    },
+    {
+      id: 14,
+      track: "threading",
+      tag: "MODULE 14 · CPPNUTS THREADING #4",
+      title: "`std::lock_guard` vs `std::unique_lock` (`defer_lock`, `try_to_lock`, `adopt_lock`) vs `std::scoped_lock`",
+      subtitle: "Choosing the right RAII lock wrapper and mastering the 3 `std::unique_lock` ownership tags.",
+      bullets: [
+        "`std::lock_guard<std::mutex>`: Lightweight, zero-overhead RAII wrapper. Locks in constructor, unlocks in destructor. Cannot be unlocked early, cannot be copied or moved, and cannot be used with `std::condition_variable`.",
+        "`std::unique_lock<std::mutex>`: Flexible RAII wrapper storing an `owns_lock()` boolean flag. Supports manual `ul.unlock()` / `ul.lock()`, move semantics, timed locking, and is REQUIRED by `std::condition_variable::wait()`.",
+        "The 3 Ownership Strategies for `std::unique_lock`: (1) `std::defer_lock` — does NOT lock in constructor (wrap an unlocked mutex to lock later via `ul.lock()` or `std::lock`); (2) `std::try_to_lock` — calls `mtx.try_lock()` in constructor without blocking (check `if (ul.owns_lock())`); (3) `std::adopt_lock` — assumes the calling thread ALREADY locked the mutex and takes RAII destruction ownership.",
+        "C++17 `std::scoped_lock(m1, m2, ...)`: Drop-in variadic replacement for `lock_guard` that locks any number of mutexes simultaneously using a deadlock-avoidance algorithm."
+      ],
+      diagram: `std::unique_lock<std::mutex> Ownership Tags:
+  ┌─────────────────────────┬───────────────────────────────────────────────────────┐
+  │ (default) ul(mtx)       │ Calls mtx.lock() immediately in constructor           │
+  │ ul(mtx, defer_lock)     │ Does NOT lock; owns_lock() == false until ul.lock()   │
+  │ ul(mtx, try_to_lock)    │ Calls mtx.try_lock(); check ul.owns_lock()!           │
+  │ ul(mtx, adopt_lock)     │ Assumes mtx is ALREADY locked; unlocks in ~ul()       │
+  └─────────────────────────┴───────────────────────────────────────────────────────┘`,
+      trap: "TRAP: Passing `std::adopt_lock` when the current thread has NOT already locked the mutex is Undefined Behavior! Conversely, passing `std::defer_lock` when the mutex IS already locked by the current thread will cause a self-deadlock when you later call `ul.lock()`."
+    },
+    {
+      id: 15,
+      track: "threading",
+      tag: "MODULE 15 · CPPNUTS THREADING #5",
+      title: "AB-BA Deadlock & Atomic Multi-Lock Acquisition (`std::lock` & `std::scoped_lock`)",
+      subtitle: "How circular lock ordering freezes production servers and how C++'s try-and-back-off algorithm breaks the cycle.",
+      bullets: [
+        "Classic AB-BA Deadlock: Thread 1 locks `mtxA` and waits for `mtxB`, while simultaneously Thread 2 locks `mtxB` and waits for `mtxA`. Neither thread can ever proceed (Coffman's Hold-and-Wait + Circular Wait conditions).",
+        "`std::lock(m1, m2, ...)` Deadlock Avoidance: Locks two or more mutexes using an internal try-and-back-off algorithm—if it locks `m1` but cannot lock `m2`, it releases `m1` and retries in a different order so no circular wait can form.",
+        "Two Idiomatic Patterns with `std::lock`: (1) C++11: `std::unique_lock<std::mutex> l1(m1, std::defer_lock), l2(m2, std::defer_lock); std::lock(l1, l2);` or (2) C++17: `std::scoped_lock lk(m1, m2);` (single-line RAII!).",
+        "Lock Hierarchy Rule: Even without `std::lock`, deadlocks are eliminated if every thread in the system acquires locks in a strict global address or layer order (e.g., always lock `&m1 < &m2`)."
+      ],
+      diagram: `AB-BA Deadlock (Circular Wait):
+  Thread 1: [Holds mtxA] ─────── waits for ──────► [mtxB]
+                 ▲                                    │
+                 └────────── waits for ─────── [Holds mtxB] :Thread 2
+
+C++17 Fix: std::scoped_lock lk(mtxA, mtxB); // Deadlock-free regardless of arg order!`,
+      trap: "TRAP: `std::lock(m1, m2)` only avoids deadlock when acquiring `m1` and `m2` TOGETHER in a single call. If Thread 1 calls `lock(m1)` in function `foo()` and later calls `lock(m2)` in `bar()`, `std::lock` cannot help—you must acquire both together or enforce a global lock hierarchy!"
+    },
+    {
+      id: 16,
+      track: "threading",
+      tag: "MODULE 16 · CPPNUTS THREADING #6",
+      title: "`std::condition_variable`, Spurious Wakeups, Even-Odd Threads & Producer-Consumer",
+      subtitle: "Event-driven thread synchronization without CPU-burning spin loops.",
+      bullets: [
+        "Why Condition Variables? Polling a mutex in a `while` loop burns 100% of a CPU core. `std::condition_variable` puts a waiting thread into a 0%-CPU OS sleep state until another thread modifies shared state and signals `notify_one()` or `notify_all()`.",
+        "How `cv.wait(ul, predicate)` Works: Equivalent to `while (!predicate()) cv.wait(ul);`. When `predicate()` is false, `wait()` atomically UNLOCKS `ul` and puts the thread to sleep. When notified, it wakes up, RE-LOCKS `ul`, and re-evaluates `predicate()`.",
+        "Spurious Wakeups & Lost Notifications: OS schedulers (POSIX `pthread_cond_wait` / Windows futexes) can wake a waiting thread even when no thread called `notify`! Always pass a stateful boolean predicate lambda to `cv.wait(ul, [&]{ return ready; })`.",
+        "Unlock Before Notify Optimization: Releasing the `unique_lock` (or closing the `lock_guard` scope) BEFORE calling `cv.notify_one()` prevents the woken thread from immediately blocking on the still-locked mutex ('hurry up and wait' pessimization)."
+      ],
+      diagram: `std::condition_variable::wait(ul, pred) Lifecycle:
+  Consumer: [Lock ul] ──► [pred() == false] ──► [Atomically Unlock ul + Sleep]
+                                                             │
+  Producer: [Lock lg] ──► [Mutate Queue] ──► [Unlock lg] ──► cv.notify_one()
+                                                             │
+  Consumer: [Wake Up] ◄── [Re-acquire ul] ◄── [Re-check pred() == true!] ──► Proceed`,
+      trap: "TRAP: Calling `cv.notify_one()` WITHOUT mutating a shared variable protected by the mutex causes a 'Lost Wakeup' if the notification fires before the consumer enters `cv.wait()`. The state variable (`bool ready` or `queue.size()`) is the memory of the notification!"
+    },
+    {
+      id: 17,
+      track: "threading",
+      tag: "MODULE 17 · CPPNUTS THREADING #7",
+      title: "`std::future`, `std::promise`, `std::async` (`async` vs `deferred`) & `std::packaged_task`",
+      subtitle: "Single-use asynchronous value channels, exception propagation across threads, and launch policies.",
+      bullets: [
+        "`std::promise<T>` & `std::future<T>`: A thread-safe single-use channel sharing a heap-allocated Shared State. The producer thread calls `promise.set_value(val)` (or `set_exception()`), and the consumer thread calls `future.get()` to block until the result is ready.",
+        "`future.get()` is Move-Once: Calling `future.get()` moves the value out of the shared state and invalidates the future (`future.valid() == false`). If multiple threads need to read the same result, convert it via `std::shared_future<T> sf = fut.share();`.",
+        "`std::async` Launch Policies: `std::launch::async` forces execution on a background thread immediately. `std::launch::deferred` performs lazy evaluation—no thread is spawned, and the function executes synchronously on the calling thread when `.get()` or `.wait()` is called.",
+        "`std::packaged_task<R(Args...)>`: Wraps any callable target so it can be invoked asynchronously (e.g., pushed into a Thread Pool `std::queue`) while returning its result through an associated `std::future<R>`."
+      ],
+      diagram: `Shared State Channel (std::promise ──► std::future):
+  Worker Thread                           Main Thread
+  ┌────────────────────────┐              ┌────────────────────────┐
+  │ promise.set_value(42)  │ ───writes──► │ [Heap Shared State]    │
+  └────────────────────────┘              │   value = 42, ready=1  │
+                                          └───────────┬────────────┘
+                                                      │ unblocks & moves
+                                                      ▼
+                                          int res = future.get();`,
+      trap: "TRAP: The `std::future` returned by `std::async(std::launch::async, fn)` has a BLOCKING destructor! If you ignore its return value (`std::async(std::launch::async, fn);` without assigning to a variable), the temporary `std::future` destructs at the semicolon and blocks right there—turning your async call into synchronous code!"
+    },
+    {
+      id: 18,
+      track: "threading",
+      tag: "MODULE 18 · CPPNUTS THREADING #8",
+      title: "`std::atomic`, `std::shared_mutex`, `std::call_once`, C++20 Semaphores & Thread Pool",
+      subtitle: "Hardware lock-free operations, reader-writer locks, one-time init, and production worker pools.",
+      bullets: [
+        "`std::atomic<T>`: Maps directly to lock-free CPU instructions (`LOCK XADD`, `CMPXCHG` / `LDREX`/`STREX`) without OS context switches. Supports `load()`, `store()`, `fetch_add()`, and `compare_exchange_weak/strong()`.",
+        "`std::shared_mutex` (C++17 Reader-Writer Lock): Allows unlimited concurrent readers via `std::shared_lock<std::shared_mutex>` while granting exclusive access to a single writer via `std::unique_lock<std::shared_mutex>`.",
+        "`std::call_once` & `std::once_flag`: Guarantees a callable initialization routine runs exactly once across all threads, even under heavy contention (ideal for thread-safe lazy hardware/DB initialization).",
+        "C++20 `std::counting_semaphore<Max>` / `std::latch` / `std::barrier`: Unlike a mutex (which must be unlocked by the same thread that locked it), a semaphore tracks a permit count (`acquire()` decrements, `release()` increments from any thread) to throttle concurrency.",
+        "Production Thread Pool Architecture: Pre-spawns `N` persistent worker threads (`std::thread::hardware_concurrency()`) sleeping on a `condition_variable` task queue (`std::queue<std::function<void()>>`), eliminating thread creation/destruction overhead."
+      ],
+      diagram: `Production Thread Pool Architecture:
+  [Enqueued Tasks: packaged_task 1..K] ──► [Mutex + Condition Variable Task Queue]
+                                                 │        │        │
+                                      notify_one()        │        │
+                                                 ▼        ▼        ▼
+                                            [Worker 1][Worker 2][Worker 3] ──► Fulfill std::future<R>`,
+      trap: "TRAP: `std::atomic<int> x` guarantees each individual operation (`++x`, `x += 5`) is atomic, but composing two atomic reads (`if (x > 0) x = x - 1;`) is NOT atomic (Time-Of-Check to Time-Of-Use race)! Use a `compare_exchange_weak` CAS loop for compound lock-free updates."
     }
   ],
 
@@ -709,6 +945,340 @@ int main() {
 [NVI Guard] Begin transaction & verify permissions
   -> [LedgerUpdate] Updating account balances...
 [NVI Guard] Commit transaction & emit telemetry`
+    },
+    {
+      id: "threads_5_ways",
+      track: "threading",
+      title: "09 · CppNuts #1: 5 Ways to Spawn Threads, join()/detach() & C++20 std::jthread",
+      subtitle: "Spawn threads via Function Pointer, Lambda, Functor, Non-Static & Static Member Functions, plus std::jthread.",
+      tags: ["std::thread (5 Ways)", "join() vs detach()", "C++20 std::jthread"],
+      code: `#include <iostream>
+#include <thread>
+#include <string>
+
+// 1. Function Pointer
+void worker_fn(int id) {
+    std::cout << "[1. Function Ptr] Worker #" << id << " finished\\n";
+}
+
+// 3. Functor (Function Object)
+struct PacketCompressor {
+    void operator()(const std::string& algo) const {
+        std::cout << "[3. Functor]      Compressed payload using " << algo << "\\n";
+    }
+};
+
+// 4 & 5. Non-Static & Static Member Functions
+class EngineController {
+public:
+    void calibrate(int rpm) {
+        std::cout << "[4. Member Fn]    Calibrated engine to " << rpm << " RPM\\n";
+    }
+    static void runDiagnostics(const std::string& subsystem) {
+        std::cout << "[5. Static Fn]    Diagnostics OK on " << subsystem << "\\n";
+    }
+};
+
+int main() {
+    EngineController ctrl;
+
+    std::thread t1(worker_fn, 101);
+    std::thread t2([](int a, int b) {
+        std::cout << "[2. Lambda]       Computed " << a << " + " << b << " = " << (a + b) << "\\n";
+    }, 20, 22);
+    std::thread t3(PacketCompressor{}, "LZ4-Fast");
+    std::thread t4(&EngineController::calibrate, &ctrl, 6500);
+    std::thread t5(&EngineController::runDiagnostics, "FuelInjection");
+
+    // Always guard with joinable() before join()!
+    if (t1.joinable()) t1.join();
+    if (t2.joinable()) t2.join();
+    if (t3.joinable()) t3.join();
+    if (t4.joinable()) t4.join();
+    if (t5.joinable()) t5.join();
+
+    std::cout << "All 5 threads joined cleanly (t1.joinable() = "
+              << std::boolalpha << t1.joinable() << ")\\n";
+}`,
+      expectedOutput: `[1. Function Ptr] Worker #101 finished
+[2. Lambda]       Computed 20 + 22 = 42
+[3. Functor]      Compressed payload using LZ4-Fast
+[4. Member Fn]    Calibrated engine to 6500 RPM
+[5. Static Fn]    Diagnostics OK on FuelInjection
+All 5 threads joined cleanly (t1.joinable() = false)`
+    },
+    {
+      id: "mutex_timed_recursive",
+      track: "threading",
+      title: "10 · CppNuts #2: Race Conditions, std::mutex, timed_mutex & recursive_mutex",
+      subtitle: "Eliminate data races with std::mutex, test bounded timeouts with timed_mutex, and re-enter recursive_mutex.",
+      tags: ["std::mutex", "std::timed_mutex", "std::recursive_mutex"],
+      code: `#include <iostream>
+#include <thread>
+#include <mutex>
+#include <chrono>
+
+std::mutex g_mtx;
+int shared_counter = 0;
+
+void safe_increment(int iterations) {
+    for (int i = 0; i < iterations; ++i) {
+        std::lock_guard<std::mutex> lk(g_mtx); // Critical section protected!
+        ++shared_counter;
+    }
+}
+
+std::recursive_mutex g_rec_mtx;
+int factorial_locked(int n) {
+    // Same thread locks g_rec_mtx recursively without self-deadlock!
+    std::lock_guard<std::recursive_mutex> lk(g_rec_mtx);
+    if (n <= 1) return 1;
+    return n * factorial_locked(n - 1);
+}
+
+std::timed_mutex g_timed_mtx;
+void try_timed_worker() {
+    using namespace std::chrono_literals;
+    if (g_timed_mtx.try_lock_for(25ms)) {
+        std::cout << "[timed_mutex] Acquired lock within 25ms timeout!\\n";
+        g_timed_mtx.unlock();
+    }
+}
+
+int main() {
+    std::thread t1(safe_increment, 10000);
+    std::thread t2(safe_increment, 10000);
+    t1.join();
+    t2.join();
+    std::cout << "[std::mutex]           shared_counter = " << shared_counter << " (Zero Race!)\\n";
+    std::cout << "[std::recursive_mutex] 5! recursive   = " << factorial_locked(5) << "\\n";
+
+    std::thread t3(try_timed_worker);
+    t3.join();
+}`,
+      expectedOutput: `[std::mutex]           shared_counter = 20000 (Zero Race!)
+[std::recursive_mutex] 5! recursive   = 120
+[timed_mutex] Acquired lock within 25ms timeout!`
+    },
+    {
+      id: "unique_lock_deadlock",
+      track: "threading",
+      title: "11 · CppNuts #3: unique_lock (defer/try/adopt), Variadic try_lock & Deadlock Fix",
+      subtitle: "Master std::unique_lock ownership strategies, variadic std::try_lock(m1, m2), and AB-BA deadlock prevention.",
+      tags: ["unique_lock Tags", "AB-BA Deadlock Fix", "std::lock / scoped_lock"],
+      code: `#include <iostream>
+#include <thread>
+#include <mutex>
+
+struct BankAccount {
+    std::string name;
+    int balance;
+    std::mutex mtx;
+    BankAccount(std::string n, int b) : name(std::move(n)), balance(b) {}
+};
+
+// Deadlock-free transfer even when called concurrently as transfer(A,B) and transfer(B,A)!
+void safe_transfer(BankAccount& from, BankAccount& to, int amount) {
+    // 1. defer_lock: wrap both mutexes WITHOUT locking yet
+    std::unique_lock<std::mutex> lockA(from.mtx, std::defer_lock);
+    std::unique_lock<std::mutex> lockB(to.mtx, std::defer_lock);
+
+    // 2. std::lock: atomically locks both using deadlock-avoidance algorithm!
+    std::lock(lockA, lockB);
+
+    from.balance -= amount;
+    to.balance += amount;
+}
+
+int main() {
+    BankAccount alice("Alice", 1000);
+    BankAccount bob("Bob", 1000);
+
+    // Opposite lock order (Alice->Bob vs Bob->Alice) — NO AB-BA Deadlock!
+    std::thread t1(safe_transfer, std::ref(alice), std::ref(bob), 300);
+    std::thread t2(safe_transfer, std::ref(bob), std::ref(alice), 150);
+    t1.join();
+    t2.join();
+
+    std::cout << "After concurrent bidirectional transfers:\\n";
+    std::cout << "  Alice balance = $" << alice.balance << " | Bob balance = $" << bob.balance << "\\n";
+
+    // Variadic std::try_lock(m1, m2): returns -1 when all locks succeed!
+    int status = std::try_lock(alice.mtx, bob.mtx);
+    std::cout << "Variadic std::try_lock(alice, bob) returned: " << status << " (both locked!)\\n";
+    if (status == -1) {
+        alice.mtx.unlock();
+        bob.mtx.unlock();
+    }
+}`,
+      expectedOutput: `After concurrent bidirectional transfers:
+  Alice balance = $850 | Bob balance = $1150
+Variadic std::try_lock(alice, bob) returned: -1 (both locked!)`
+    },
+    {
+      id: "condition_variable_even_odd",
+      track: "threading",
+      title: "12 · CppNuts #4: std::condition_variable — Even-Odd Alternating Threads",
+      subtitle: "The classic CppNuts concurrency interview problem: alternate Odd and Even threads strictly using cv.wait().",
+      tags: ["std::condition_variable", "Spurious Wakeup Guard", "Even-Odd Threads"],
+      code: `#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+std::mutex mtx;
+std::condition_variable cv;
+int counter = 1;
+const int MAX_COUNT = 10;
+
+void print_odd() {
+    while (true) {
+        std::unique_lock<std::mutex> ul(mtx);
+        cv.wait(ul, [] { return (counter % 2 == 1) || (counter > MAX_COUNT); });
+        if (counter > MAX_COUNT) break;
+        std::cout << "[Odd  Thread] -> " << counter << "\\n";
+        ++counter;
+        ul.unlock(); // Unlock before notify_all()!
+        cv.notify_all();
+    }
+}
+
+void print_even() {
+    while (true) {
+        std::unique_lock<std::mutex> ul(mtx);
+        cv.wait(ul, [] { return (counter % 2 == 0) || (counter > MAX_COUNT); });
+        if (counter > MAX_COUNT) break;
+        std::cout << "[Even Thread] -> " << counter << "\\n";
+        ++counter;
+        ul.unlock();
+        cv.notify_all();
+    }
+}
+
+int main() {
+    std::thread t_odd(print_odd);
+    std::thread t_even(print_even);
+    t_odd.join();
+    t_even.join();
+    std::cout << "Completed strict 1..10 alternating handoff!\\n";
+}`,
+      expectedOutput: `[Odd  Thread] -> 1
+[Even Thread] -> 2
+[Odd  Thread] -> 3
+[Even Thread] -> 4
+[Odd  Thread] -> 5
+[Even Thread] -> 6
+[Odd  Thread] -> 7
+[Even Thread] -> 8
+[Odd  Thread] -> 9
+[Even Thread] -> 10
+Completed strict 1..10 alternating handoff!`
+    },
+    {
+      id: "producer_consumer_queue",
+      track: "threading",
+      title: "13 · CppNuts #5: Bounded Producer-Consumer Queue with Condition Variables",
+      subtitle: "Thread-safe bounded ring queue using cv_not_full and cv_not_empty without busy waiting.",
+      tags: ["Producer-Consumer", "Bounded Queue", "notify_one()"],
+      code: `#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+
+class BoundedQueue {
+    std::queue<int> q_;
+    const std::size_t capacity_;
+    std::mutex mtx_;
+    std::condition_variable cv_not_full_;
+    std::condition_variable cv_not_empty_;
+
+public:
+    explicit BoundedQueue(std::size_t cap) : capacity_(cap) {}
+
+    void produce(int item) {
+        std::unique_lock<std::mutex> ul(mtx_);
+        cv_not_full_.wait(ul, [this] { return q_.size() < capacity_; });
+        q_.push(item);
+        std::cout << "[Producer] Enqueued " << item << " (size=" << q_.size() << "/" << capacity_ << ")\\n";
+        ul.unlock();
+        cv_not_empty_.notify_one();
+    }
+
+    int consume() {
+        std::unique_lock<std::mutex> ul(mtx_);
+        cv_not_empty_.wait(ul, [this] { return !q_.empty(); });
+        int item = q_.front();
+        q_.pop();
+        std::cout << "[Consumer] Dequeued " << item << " (size=" << q_.size() << "/" << capacity_ << ")\\n";
+        ul.unlock();
+        cv_not_full_.notify_one();
+        return item;
+    }
+};
+
+int main() {
+    BoundedQueue channel(2);
+    std::thread prod([&] {
+        for (int v : {10, 20, 30, 40}) channel.produce(v);
+    });
+    std::thread cons([&] {
+        for (int i = 0; i < 4; ++i) channel.consume();
+    });
+    prod.join();
+    cons.join();
+}`,
+      expectedOutput: `[Producer] Enqueued 10 (size=1/2)
+[Producer] Enqueued 20 (size=2/2)
+[Consumer] Dequeued 10 (size=1/2)
+[Consumer] Dequeued 20 (size=0/2)
+[Producer] Enqueued 30 (size=1/2)
+[Producer] Enqueued 40 (size=2/2)
+[Consumer] Dequeued 30 (size=1/2)
+[Consumer] Dequeued 40 (size=0/2)`
+    },
+    {
+      id: "future_promise_async_pool",
+      track: "threading",
+      title: "14 · CppNuts #6: std::promise/future, std::async (async vs deferred) & Thread Pool",
+      subtitle: "Fulfill promises across threads, compare launch::async vs launch::deferred, and dispatch to a Thread Pool.",
+      tags: ["std::promise / future", "std::async Policies", "C++20 Thread Pool"],
+      code: `#include <iostream>
+#include <thread>
+#include <future>
+#include <mutex>
+
+void compute_odd_sum(std::promise<long long>&& prom, int n) {
+    long long sum = 0;
+    for (int i = 1; i <= n; i += 2) sum += i;
+    prom.set_value(sum); // Signals the associated std::future immediately!
+}
+
+int main() {
+    // 1. std::promise + std::future
+    std::promise<long long> odd_prom;
+    std::future<long long> odd_fut = odd_prom.get_future();
+    std::thread worker(compute_odd_sum, std::move(odd_prom), 100);
+    std::cout << "[promise/future] Odd sum [1..100] = " << odd_fut.get() << "\\n";
+    worker.join();
+
+    // 2. std::async: launch::async vs launch::deferred
+    auto f_async = std::async(std::launch::async, [] { return 21 * 2; });
+    auto f_deferred = std::async(std::launch::deferred, [] { return 100 + 28; });
+    std::cout << "[launch::async]    Result = " << f_async.get() << " (ran on worker thread)\\n";
+    std::cout << "[launch::deferred] Result = " << f_deferred.get() << " (ran lazily on main thread)\\n";
+
+    // 3. std::packaged_task (Building block of Thread Pools)
+    std::packaged_task<int(int, int)> task([](int a, int b) { return a * b; });
+    std::future<int> task_fut = task.get_future();
+    std::thread pool_worker(std::move(task), 12, 12);
+    std::cout << "[packaged_task]    12 * 12 = " << task_fut.get() << "\\n";
+    pool_worker.join();
+}`,
+      expectedOutput: `[promise/future] Odd sum [1..100] = 2500
+[launch::async]    Result = 42 (ran on worker thread)
+[launch::deferred] Result = 128 (ran lazily on main thread)
+[packaged_task]    12 * 12 = 144`
     }
   ],
 
@@ -907,6 +1477,146 @@ int main() {
       ],
       answer: 1,
       explanation: "In C++, name lookup stops as soon as it finds the name `log` in `Derived` scope, BEFORE checking parameter types. Thus `Derived::log(std::string)` hides `Base::log(int)` unless `using Base::log;` is added to `Derived`."
+    },
+    {
+      id: 16,
+      track: "threading",
+      topic: "std::thread Lifecycle & ~thread()",
+      question: "What happens when a `std::thread t(worker);` object goes out of scope and its destructor `~thread()` executes BEFORE either `t.join()` or `t.detach()` is called?",
+      options: [
+        "The destructor automatically waits for `worker` to finish (`t.join()`)",
+        "The destructor automatically detaches the thread into the background (`t.detach()`)",
+        "`t.joinable()` is still `true`, so `~thread()` immediately calls `std::terminate()`, crashing the entire program",
+        "The OS kills the child thread silently and continues `main()`"
+      ],
+      answer: 2,
+      explanation: "In C++11, if a `std::thread` object is destroyed while `joinable() == true`, its destructor strictly invokes `std::terminate()`. C++20 introduced `std::jthread` specifically to provide RAII auto-join + cooperative `stop_token` cancellation on destruction."
+    },
+    {
+      id: 17,
+      track: "threading",
+      topic: "Passing References to std::thread",
+      question: "Given `void increment(int& x) { ++x; }`, why does `int val = 10; std::thread t(increment, val);` fail to compile or fail to modify `val`?",
+      options: [
+        "`std::thread` cannot execute functions that return `void`",
+        "`std::thread`'s constructor copies all arguments by value into thread-local storage by default (and tries to pass an rvalue copy to `int&`); you must wrap `val` with `std::ref(val)`",
+        "References cannot be shared across threads in C++",
+        "You must pass `&val` instead of `val` even when the parameter is `int&`"
+      ],
+      answer: 1,
+      explanation: "`std::thread` decays and copies its arguments into internal storage for safety, then invokes the callable with rvalue projections of those stored copies. Since a non-const lvalue reference (`int&`) cannot bind to an rvalue copy, compilation fails unless you pass `std::ref(val)`."
+    },
+    {
+      id: 18,
+      track: "threading",
+      topic: "Variadic std::try_lock(m1, m2, m3)",
+      question: "What does the standard function `int res = std::try_lock(m1, m2, m3);` do if `m1.try_lock()` succeeds, `m2.try_lock()` fails, and `m3` has not been tried yet?",
+      options: [
+        "It keeps `m1` locked, skips `m2`, tries `m3`, and returns `1`",
+        "It blocks on `m2` until `m2` becomes available",
+        "It immediately unlocks `m1` (all-or-nothing rollback) and returns `1` (the 0-based index of the mutex that failed to lock); if all succeed, it returns `-1`",
+        "It throws `std::system_error`"
+      ],
+      answer: 2,
+      explanation: "As emphasized in CppNuts, variadic `std::try_lock(m1, m2, ..., mn)` returns `-1` when ALL mutexes are locked. If any mutex fails at 0-based index `k`, it automatically unlocks all previously acquired mutexes (`0 .. k-1`) and returns `k`."
+    },
+    {
+      id: 19,
+      track: "threading",
+      topic: "std::recursive_mutex vs std::mutex",
+      question: "What happens if a thread that ALREADY holds a standard `std::mutex m` calls `m.lock()` a second time (e.g., inside a recursive function), and how does `std::recursive_mutex` solve this?",
+      options: [
+        "`std::mutex` ignores the second `lock()` call; `std::recursive_mutex` throws an exception",
+        "`std::mutex` causes Undefined Behavior / immediate self-deadlock; `std::recursive_mutex` allows the SAME owning thread to lock it `N` times, requiring `N` matching `unlock()` calls before releasing ownership",
+        "`std::recursive_mutex` automatically unlocks after the first return statement",
+        "Both behave identically in C++20"
+      ],
+      answer: 1,
+      explanation: "A non-recursive `std::mutex` cannot be locked twice by the same thread without unlocking first (it deadlocks waiting for itself). `std::recursive_mutex` records the owning `thread::id` and increments an ownership count on each re-entrant `lock()`, releasing the lock only when `unlock()` has been called an equal number of times."
+    },
+    {
+      id: 20,
+      track: "threading",
+      topic: "std::unique_lock Ownership Tags",
+      question: "Which correctly describes `std::defer_lock`, `std::try_to_lock`, and `std::adopt_lock` when constructing `std::unique_lock<std::mutex> ul(mtx, tag)`?",
+      options: [
+        "`defer_lock` locks lazily on destruction; `try_to_lock` blocks for 10ms; `adopt_lock` clones the mutex",
+        "`defer_lock` leaves `mtx` unlocked on construction so you can lock it later; `try_to_lock` calls non-blocking `mtx.try_lock()`; `adopt_lock` assumes the current thread ALREADY locked `mtx` and takes RAII unlock ownership",
+        "`adopt_lock` calls `mtx.lock()` immediately; `defer_lock` calls `mtx.try_lock()`",
+        "All three tags can also be used with `std::lock_guard`"
+      ],
+      answer: 1,
+      explanation: "`std::lock_guard` only supports `std::adopt_lock`. `std::unique_lock` supports all three: `defer_lock` (do not lock yet), `try_to_lock` (attempt non-blocking `try_lock()`, check `ul.owns_lock()`), and `adopt_lock` (manage an already-locked mutex)."
+    },
+    {
+      id: 21,
+      track: "threading",
+      topic: "AB-BA Deadlock & std::lock / std::scoped_lock",
+      question: "Thread 1 runs `transfer(accA, accB)` and Thread 2 simultaneously runs `transfer(accB, accA)`. How do `std::lock(l1, l2)` or C++17 `std::scoped_lock lk(accA.mtx, accB.mtx)` prevent AB-BA deadlock?",
+      options: [
+        "They disable OS thread preemption until `transfer()` finishes",
+        "They use a deadlock-avoidance try-and-back-off algorithm to acquire both mutexes atomically regardless of argument order",
+        "They merge `accA.mtx` and `accB.mtx` into a single global mutex",
+        "They spin without ever unlocking either mutex"
+      ],
+      answer: 1,
+      explanation: "`std::lock(m1, m2)` (and C++17 `std::scoped_lock(m1, m2)`) uses a try-and-back-off lock acquisition algorithm: if it locks the first mutex (`m1`) and `m2.try_lock()` fails, it unlocks `m1` before blocking on `m2`, breaking the Hold-and-Wait condition required for AB-BA deadlock."
+    },
+    {
+      id: 22,
+      track: "threading",
+      topic: "std::condition_variable & Spurious Wakeups",
+      question: "Why does `cv.wait(ul, [&]{ return !queue.empty(); })` require a `std::unique_lock<std::mutex>` (not `lock_guard`) AND a boolean predicate loop?",
+      options: [
+        "Because `condition_variable` copies the lock into the kernel",
+        "Because `wait()` must atomically UNLOCK the mutex before sleeping and RE-LOCK it upon waking (which `lock_guard` cannot do), and the predicate loop guards against OS spurious wakeups and stolen wakeups",
+        "Because `lock_guard` only works with `std::timed_mutex`",
+        "The predicate is only checked before going to sleep, never after waking up"
+      ],
+      answer: 1,
+      explanation: "`cv.wait(ul, pred)` is equivalent to `while (!pred()) cv.wait(ul);`. While sleeping, `wait()` must unlock `ul` so a producer thread can acquire the mutex and mutate the queue; when notified (or spuriously woken by the OS), `wait()` re-acquires `ul` and re-checks `pred()`."
+    },
+    {
+      id: 23,
+      track: "threading",
+      topic: "std::async Launch Policies (async vs deferred)",
+      question: "What is the exact difference between `std::async(std::launch::async, fn)` and `std::async(std::launch::deferred, fn)`?",
+      options: [
+        "`launch::async` runs on the main thread; `launch::deferred` runs on a GPU thread",
+        "`launch::async` starts `fn` eagerly on a separate thread of execution; `launch::deferred` does NOT spawn a thread—it evaluates `fn` lazily and synchronously on the thread that first calls `.get()` or `.wait()`",
+        "`launch::deferred` runs `fn` after `main()` returns",
+        "Both always spawn a new OS thread immediately"
+      ],
+      answer: 1,
+      explanation: "`std::launch::async` guarantees asynchronous execution on another thread, whereas `std::launch::deferred` delays execution until `future.get()` or `future.wait()` is called, executing `fn` synchronously on the caller's thread."
+    },
+    {
+      id: 24,
+      track: "threading",
+      topic: "std::promise & std::future Channel",
+      question: "How many times can you call `.get()` on a `std::future<T>` associated with a `std::promise<T>`, and what happens if multiple threads need to read the same asynchronous result?",
+      options: [
+        "Unlimited times; `.get()` returns a `const T&`",
+        "Exactly ONCE (`.get()` moves the result out of the shared state and makes `fut.valid() == false`); to allow multiple threads to read the result, convert it to `std::shared_future<T>` via `fut.share()`",
+        "Twice: once in the worker thread and once in `main()`",
+        "Calling `.get()` resets the `std::promise` for reuse"
+      ],
+      answer: 1,
+      explanation: "`std::future<T>::get()` moves the stored value out of the shared state, leaving `valid() == false` (a second `.get()` is Undefined Behavior or throws `std::future_error`). `std::shared_future<T>` allows multiple threads to copy/read the shared result safely."
+    },
+    {
+      id: 25,
+      track: "threading",
+      topic: "std::atomic vs Mutex & Lock-Free CAS",
+      question: "Given `std::atomic<int> counter{10};`, why is `if (counter > 0) counter -= 1;` NOT thread-safe across multiple threads even though `counter` is `std::atomic`?",
+      options: [
+        "Because `std::atomic<int>` does not support `operator-=`",
+        "Because reading `counter > 0` (`load`) and subtracting `1` (`fetch_sub`) are two separate atomic steps—another thread can modify `counter` in between (TOCTOU race); atomic conditional updates require a `compare_exchange_weak` CAS loop",
+        "Because `std::atomic` only works on 64-bit integers",
+        "It IS completely thread-safe and free of race conditions"
+      ],
+      answer: 1,
+      explanation: "Each individual operation on `std::atomic<int>` (`load()` and `fetch_sub()`) is atomic, but the gap between the `if (counter > 0)` check and the `counter -= 1` update is a classic Time-Of-Check to Time-Of-Use (TOCTOU) race. A Compare-And-Swap (`compare_exchange_weak`) loop is required to make the check-and-decrement a single atomic transaction."
     }
   ]
 };

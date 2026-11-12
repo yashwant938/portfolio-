@@ -336,7 +336,7 @@
         "apps"
       ],
       "eyebrow": "C++ / INTERACTIVE LEARNING",
-      "summary": "Interactive C++ STL, OOP & memory-layout labs and a C++17 filesystem lab exploring containers, vtables, alignment, move semantics, and concurrency.",
+      "summary": "Interactive C++ STL, OOP & memory-layout studio, CppNuts C++20 multithreading & concurrency lab, and a C++17 filesystem lab exploring containers, vtables, alignment, move semantics, and synchronization.",
       "stack": [
         "C++20",
         "C++17",
@@ -345,21 +345,21 @@
         "React",
         "Monaco"
       ],
-      "flow": "Concepts & OOP: lesson → memory/vtable/alignment simulation or compiler workbench. Systems: sequential or bounded-worker copy → verified outputs and timings.",
+      "flow": "Concepts, OOP & Concurrency: lesson → memory/vtable/thread simulation or compiler workbench. Systems: sequential or bounded-worker copy → verified outputs and timings.",
       "features": [
-        "Created data-driven STL container and OOP memory simulations (greedy struct alignment, vtable/vptr dispatch, lvalue/rvalue move semantics, diamond virtual inheritance, friend rules, and smart pointer control blocks).",
-        "Added 6 native C++20 OOP & memory internals labs alongside an instrumented vector example backed by Wandbox runs.",
+        "Created data-driven STL container, OOP memory, and CppNuts concurrency simulations (greedy struct alignment, vtable/vptr dispatch, lvalue/rvalue move semantics, diamond virtual inheritance, 5 thread creation ways, mutex/deadlock avoidance, condition variables, and thread pools).",
+        "Added 10 native C++20 OOP & multithreading labs (6 OOP memory labs + 4 CppNuts concurrency labs) alongside 14 browser workbench programs backed by Wandbox runs.",
         "Built a bounded-worker file-copy experiment with a sequential mode and verified repeated benchmarks.",
         "Implemented educational command classes for cd, ls, cp, mv, and rm; the original threaded commands remain separate."
       ],
-      "notes": "The live vector example visualizes instrumented program output, not debugger or memory-address traces. The OOP & memory lab provides interactive teaching simulations and 8 verified C++20 workbench examples. The separate copy benchmark uses small synthetic workloads; the original Q3 commands still use unbounded threads. Live compiler access requires Wandbox.",
+      "notes": "The live vector example visualizes instrumented program output, not debugger or memory-address traces. The Dual-Track OOP & Multithreading studio provides 9 interactive teaching simulations and 14 verified C++20 workbench examples. The separate copy benchmark uses small synthetic workloads; the original Q3 commands still use unbounded threads. Live compiler access requires Wandbox.",
       "links": [
         {
           "label": "Live demo",
           "url": "https://yashwant938.github.io/CompilerCppTopics/"
         },
         {
-          "label": "OOP & memory lab",
+          "label": "OOP & threading lab",
           "url": "labs/cpp-oop/"
         },
         {
@@ -367,7 +367,7 @@
           "url": "https://github.com/yashwant938/CompilerCppTopics"
         },
         {
-          "label": "OOP source",
+          "label": "OOP & threading source",
           "url": "https://github.com/yashwant938/portfolio-/tree/main/projects/cpp-oop"
         },
         {
@@ -380,7 +380,7 @@
         }
       ],
       "highlights": [
-        "Interactive STL & OOP memory simulations (alignment, vtable, lvalue/rvalue, smart pointers) plus live compiler workbench.",
+        "Interactive STL, OOP memory & CppNuts multithreading simulations (alignment, vtable, mutex/deadlock, condition_variable, thread pool) plus live C++20 compiler workbench.",
         "Bounded-worker file copy, tested against a sequential mode on repeatable workloads."
       ],
       "visual": {
