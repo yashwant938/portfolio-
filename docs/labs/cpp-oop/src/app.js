@@ -302,13 +302,12 @@
     const el = document.getElementById("track-switcher-bar");
     if (!el) return;
     const tracks = [
-      { id: "all", label: "All 3 Websites (22 Modules)" },
+      { id: "all", label: "All Modules (22)" },
       { id: "oop", label: "1. OOP & Memory (10)" },
-      { id: "threading", label: "2. CppNuts Threading (8)" },
-      { id: "stl", label: "3. STL Containers (4)" }
+      { id: "threading", label: "2. CppNuts Threading (8)" }
     ];
     el.innerHTML =
-      `<span class="text-xs font-mono font-bold text-[var(--foreground)] mr-1">3-Website Switcher:</span>` +
+      `<span class="text-xs font-mono font-bold text-[var(--foreground)] mr-1">Track Switcher:</span>` +
       tracks
         .map((t) => {
           const active = state.activeTrack === t.id;
@@ -319,7 +318,8 @@
                 : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)]"
             }">${t.label}</button>`;
         })
-        .join("");
+        .join("") +
+      `<a href="https://yashwant938.github.io/CompilerCppTopics/" class="px-3 py-1 rounded-lg text-xs font-mono font-bold transition border bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--accent)] hover:opacity-90">3. Full Original STL Studio ↗</a>`;
   }
 
   window.renderPaletteBar = function () {
@@ -477,18 +477,18 @@
           <div class="bg-[var(--card)] border-2 border-[var(--border)] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2">
-                <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-[var(--secondary)] text-[var(--secondary-foreground)]">WEBSITE 3 · WHITE + ROYAL INDIGO</span>
-                <span class="text-xs font-mono text-[var(--muted-foreground)]">4 Modules</span>
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-[var(--secondary)] text-[var(--secondary-foreground)]">WEBSITE 3 · FULL ORIGINAL STL STUDIO</span>
+                <span class="text-xs font-mono text-[var(--muted-foreground)]">CompilerCppTopics</span>
               </div>
-              <h2 class="text-lg font-bold text-[var(--foreground)] mb-1">C++20 STL Containers &amp; Internals Studio</h2>
+              <h2 class="text-lg font-bold text-[var(--foreground)] mb-1">C++ STL in Compiler Design (Full Original Studio)</h2>
               <p class="text-xs md:text-sm text-[var(--muted-foreground)] leading-relaxed mb-4">
-                24-byte <code class="font-mono">std::vector</code> header &amp; 2x geometric growth, <code class="font-mono">std::unordered_map</code> hash bucket chains &amp; load factor rehash, <code class="font-mono">std::map</code> Red-Black trees vs <code class="font-mono">std::priority_queue</code> binary heaps, <code class="font-mono">std::deque</code> chunk maps, and C++20 <code class="font-mono">std::span</code>.
+                Full original STL studio with Reveal.js slides, Monaco workbench, Logical &amp; Raw Memory Architecture visualizers, live <code class="font-mono">std::vector</code> trace, 20-question timed quiz &amp; leaderboard, Floating Multi-Language IDE, and Gemini AI Tutor.
               </p>
             </div>
             <div class="flex flex-wrap gap-2">
-              <button onclick="setTrackFilter('stl'); switchView('code-demo')" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
-                Activate Royal Indigo STL UI
-              </button>
+              <a href="https://yashwant938.github.io/CompilerCppTopics/" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
+                Open Full Original STL Website ↗
+              </a>
               <button onclick="setTrackFilter('stl'); switchView('animation')" class="px-3 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] text-xs font-semibold">
                 STL Bucket/Vector Lab
               </button>

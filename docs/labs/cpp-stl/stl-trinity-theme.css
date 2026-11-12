@@ -1,0 +1,209 @@
+/* ============================================================================
+   C++ STL in Compiler Design — Green & White Default Theme + 4-Palette Lock
+   Default: Crisp Mint White + Matcha Emerald Green (#F4FBF7 / #10B981 / #06281E)
+   ============================================================================ */
+
+:root {
+  --background: #F4FBF7;
+  --content: #D1FAE5;
+  --card: #FFFFFF;
+  --sidebar: #ECFDF5;
+  --border: #D1E7DD;
+  --foreground: #06281E;
+  --muted-foreground: #3F6256;
+  --placeholder: #52796F;
+  --primary: #10B981;
+  --primary-foreground: #052E16;
+  --secondary: #D1FAE5;
+  --secondary-foreground: #065F46;
+  --accent: #059669;
+  --code-bg: #06281E;
+  --code-fg: #A7F3D0;
+}
+
+/* Global Canvas & Root Wrapper */
+html, body, #root, #root > div.min-h-screen {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Offset main content slightly for the 2-tier header + theme switcher */
+#root > div.min-h-screen > main {
+  padding-top: 7.25rem !important;
+}
+
+/* Top Navbar */
+header.fixed {
+  background: var(--card) !important;
+  border-bottom: 2px solid var(--accent) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+header.fixed .text-cyan-300 {
+  color: var(--foreground) !important;
+  font-weight: 700 !important;
+}
+
+header.fixed nav button {
+  border: 1px solid var(--border) !important;
+}
+
+header.fixed nav button.bg-cyan-400\/20 {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--accent) !important;
+  font-weight: 700 !important;
+}
+
+header.fixed nav button.bg-slate-800 {
+  background: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+}
+
+/* Cards, Containers & Sections */
+.glass-card,
+section.rounded-3xl.bg-slate-950\/80,
+section.rounded-\[2rem\],
+.rounded-\[2rem\].bg-slate-950\/80,
+.rounded-xl.bg-slate-900\/70,
+.rounded-lg.bg-slate-900\/60,
+.rounded-lg.bg-slate-800\/80 {
+  background: var(--card) !important;
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: 1px solid var(--accent) !important;
+  box-shadow: none !important;
+  font-weight: 700 !important;
+}
+
+.btn-primary:hover {
+  opacity: 0.92 !important;
+}
+
+.btn-secondary {
+  background: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+  border: 1px solid var(--border) !important;
+  font-weight: 600 !important;
+}
+
+/* Typography & Accents */
+.text-white,
+.text-slate-100,
+.text-slate-200,
+h1, h2, h3, h4 {
+  color: var(--foreground) !important;
+}
+
+/* Hero Gradient Title -> Solid Crisp Theme Accent/Foreground */
+h1.bg-clip-text.text-transparent {
+  background: none !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  color: var(--foreground) !important;
+}
+
+.text-slate-300,
+.text-slate-400,
+.text-slate-500 {
+  color: var(--muted-foreground) !important;
+}
+
+.text-cyan-300,
+.text-cyan-200,
+.text-cyan-200\/90,
+.text-cyan-100 {
+  color: var(--secondary-foreground) !important;
+}
+
+/* Badges, Pills & Slide Nav Items */
+.bg-cyan-500\/10,
+.bg-cyan-500\/15,
+.bg-slate-900\/70.text-cyan-100,
+span.rounded-full.bg-slate-800 {
+  background: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+  border-color: var(--accent) !important;
+}
+
+aside.glass-card button.border-cyan-400\/60 {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--accent) !important;
+  font-weight: 700 !important;
+}
+
+aside.glass-card button.border-slate-700 {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+/* Quiz Option Buttons & Progress Bar */
+.glass-card button.bg-slate-900.border-slate-700 {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+.glass-card button.bg-slate-900.border-slate-700:hover {
+  background: var(--secondary) !important;
+  border-color: var(--accent) !important;
+}
+
+.h-2.rounded-full.bg-cyan-400 {
+  background: var(--primary) !important;
+}
+
+/* Selects & Inputs */
+select.bg-slate-900 {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+/* Reveal.js Presentation Deck */
+.reveal.stl-reveal {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.reveal.stl-reveal h2 {
+  color: var(--secondary-foreground) !important;
+}
+
+.reveal.stl-reveal p,
+.reveal.stl-reveal li {
+  color: var(--foreground) !important;
+}
+
+/* Keep Output Terminal & Code Surfaces High-Contrast Dark */
+.mt-4.overflow-hidden.rounded-xl.bg-slate-950 {
+  background: var(--code-bg) !important;
+  border: 2px solid var(--accent) !important;
+}
+
+.mt-4.overflow-hidden.rounded-xl.bg-slate-950 pre {
+  color: var(--code-fg) !important;
+}
+
+/* Preserve readable white text inside dark simulation player stage */
+.bg-\[\#0d0d0d\] .text-white,
+.bg-\[\#1c1c1e\] .text-white,
+.bg-\[\#151515\] .text-white,
+.bg-\[\#252526\] .text-white {
+  color: #FAFAFA !important;
+}
+.bg-\[\#0d0d0d\] .text-slate-200,
+.bg-\[\#1c1c1e\] .text-slate-300,
+.bg-\[\#252526\] .text-slate-200 {
+  color: #E4E4E7 !important;
+}
