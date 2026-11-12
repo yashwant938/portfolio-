@@ -1,0 +1,10 @@
+{
+  "name": "cpp-oop-topics",
+  "version": "1.0.0",
+  "description": "Interactive C++20/23 OOP & Memory Internals Learning Lab (Greedy Alignment, Vtable, Lvalue/Rvalue, Virtual Inheritance, Friends, Smart Pointers) modeled after CompilerCppTopics",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "test": "node tests/verify.mjs"
+  }
+}

@@ -336,30 +336,39 @@
         "apps"
       ],
       "eyebrow": "C++ / INTERACTIVE LEARNING",
-      "summary": "Interactive C++ lessons and a C++17 filesystem lab exploring containers, recursive operations, and concurrency.",
+      "summary": "Interactive C++ STL, OOP & memory-layout labs and a C++17 filesystem lab exploring containers, vtables, alignment, move semantics, and concurrency.",
       "stack": [
+        "C++20",
         "C++17",
         "Linux",
         "std::thread",
         "React",
         "Monaco"
       ],
-      "flow": "Concepts: lesson → simulation or compiler-backed vector trace. Systems: sequential or bounded-worker copy → verified outputs and timings.",
+      "flow": "Concepts & OOP: lesson → memory/vtable/alignment simulation or compiler workbench. Systems: sequential or bounded-worker copy → verified outputs and timings.",
       "features": [
-        "Created data-driven memory and container teaching simulations, clearly distinguished from actual program output.",
-        "Added an instrumented vector example that displays values, size and capacity printed by a real Wandbox run.",
+        "Created data-driven STL container and OOP memory simulations (greedy struct alignment, vtable/vptr dispatch, lvalue/rvalue move semantics, diamond virtual inheritance, friend rules, and smart pointer control blocks).",
+        "Added 6 native C++20 OOP & memory internals labs alongside an instrumented vector example backed by Wandbox runs.",
         "Built a bounded-worker file-copy experiment with a sequential mode and verified repeated benchmarks.",
         "Implemented educational command classes for cd, ls, cp, mv, and rm; the original threaded commands remain separate."
       ],
-      "notes": "The live vector example visualizes instrumented program output, not debugger or memory-address traces. The separate copy benchmark uses small synthetic workloads; the original Q3 commands still use unbounded threads. Compiler access requires Wandbox.",
+      "notes": "The live vector example visualizes instrumented program output, not debugger or memory-address traces. The OOP & memory lab provides interactive teaching simulations and 8 verified C++20 workbench examples. The separate copy benchmark uses small synthetic workloads; the original Q3 commands still use unbounded threads. Live compiler access requires Wandbox.",
       "links": [
         {
           "label": "Live demo",
           "url": "https://yashwant938.github.io/CompilerCppTopics/"
         },
         {
+          "label": "OOP & memory lab",
+          "url": "labs/cpp-oop/"
+        },
+        {
           "label": "Concepts source",
           "url": "https://github.com/yashwant938/CompilerCppTopics"
+        },
+        {
+          "label": "OOP source",
+          "url": "https://github.com/yashwant938/portfolio-/tree/main/projects/cpp-oop"
         },
         {
           "label": "Systems source",
@@ -371,7 +380,7 @@
         }
       ],
       "highlights": [
-        "Interactive teaching simulations plus a live vector trace from compiler output.",
+        "Interactive STL & OOP memory simulations (alignment, vtable, lvalue/rvalue, smart pointers) plus live compiler workbench.",
         "Bounded-worker file copy, tested against a sequential mode on repeatable workloads."
       ],
       "visual": {
