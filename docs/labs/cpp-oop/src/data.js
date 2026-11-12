@@ -139,6 +139,38 @@ window.CPP_OOP_DATA = {
       title: "std::atomic, shared_mutex, call_once & Thread Pool",
       summary: "Hardware lock-free atomics and CAS loops, reader-writer std::shared_mutex, thread-safe lazy init with std::call_once, C++20 semaphores, and a production Thread Pool.",
       metrics: ["std::atomic CAS", "shared_mutex / call_once", "C++20 Thread Pool"]
+    },
+    {
+      id: "stl_vector_memory",
+      track: "stl",
+      badge: "19 · STL VECTOR & CAPACITY",
+      title: "std::vector Contiguous Buffer, 2x Growth & Invalidation",
+      summary: "3-pointer header (begin, end, capacity_end), geometric 2x reallocation, noexcept move vs copy fallback, reserve() vs resize(), and iterator/pointer invalidation rules.",
+      metrics: ["24-Byte Header", "2x Reallocation", "Iterator Invalidation"]
+    },
+    {
+      id: "stl_unordered_map_buckets",
+      track: "stl",
+      badge: "20 · STL UNORDERED_MAP & HASH",
+      title: "std::unordered_map Hash Buckets, Load Factor & Rehash",
+      summary: "Bucket array of singly-linked nodes, hash(key) % bucket_count, max_load_factor() = 1.0 threshold, O(1) average vs O(N) collision chains, and custom struct hash functors.",
+      metrics: ["Hash Bucket Chains", "Load Factor & Rehash", "Custom std::hash"]
+    },
+    {
+      id: "stl_map_priority_queue",
+      track: "stl",
+      badge: "21 · STL MAP (RB-TREE) & HEAP",
+      title: "std::map Red-Black Tree vs std::priority_queue Binary Heap",
+      summary: "Balanced O(log N) Red-Black Tree nodes with parent/left/right pointers and lower_bound() range queries vs cache-friendly array-backed Binary Max/Min Heaps.",
+      metrics: ["Red-Black Tree O(log N)", "lower_bound()", "Binary Max/Min Heap"]
+    },
+    {
+      id: "stl_deque_span_ranges",
+      track: "stl",
+      badge: "22 · STL DEQUE, SPAN & RANGES",
+      title: "std::deque Segmented Blocks, C++20 std::span & Ranges",
+      summary: "How std::deque achieves O(1) push_front and push_back via a central map of fixed-size chunks without invalidating element references, plus C++20 non-owning std::span.",
+      metrics: ["Segmented Chunk Map", "C++20 std::span<T>", "std::views Pipelines"]
     }
   ],
 
@@ -502,6 +534,83 @@ C++17 Fix: std::scoped_lock lk(mtxA, mtxB); // Deadlock-free regardless of arg o
                                                  ▼        ▼        ▼
                                             [Worker 1][Worker 2][Worker 3] ──► Fulfill std::future<R>`,
       trap: "TRAP: `std::atomic<int> x` guarantees each individual operation (`++x`, `x += 5`) is atomic, but composing two atomic reads (`if (x > 0) x = x - 1;`) is NOT atomic (Time-Of-Check to Time-Of-Use race)! Use a `compare_exchange_weak` CAS loop for compound lock-free updates."
+    },
+    {
+      id: 19,
+      track: "stl",
+      tag: "MODULE 19 · STL CONTAINERS #1",
+      title: "`std::vector<T>` Internals, Geometric 2x Growth & Iterator Invalidation",
+      subtitle: "The 24-byte stack control header, contiguous heap cache locality, and reallocation mechanics.",
+      bullets: [
+        "24-Byte Stack Header (64-bit ABI): Every `std::vector<T>` stores three 8-byte pointers on the stack: `start_` (`begin()`), `finish_` (`end()`, `size = finish_ - start_`), and `end_of_storage_` (`capacity = end_of_storage_ - start_`).",
+        "Geometric Growth (2x on GCC/Clang, 1.5x on MSVC): When `size() == capacity()`, `push_back()` allocates a new buffer of `2 * capacity()`, moves (if `T(T&&)` is `noexcept`) or copies existing elements, destroys old elements, and frees the old heap block.",
+        "`emplace_back()` vs `push_back()`: `emplace_back(args...)` forwards constructor arguments directly into uninitialized heap memory via placement `new (finish_) T(std::forward<Args>(args)...)`, avoiding temporary object creation.",
+        "`reserve(n)` vs `resize(n)`: `reserve(n)` only grows raw uninitialized capacity (`size()` stays unchanged); `resize(n)` constructs `n` actual default-initialized `T` objects."
+      ],
+      diagram: `std::vector<int> Stack Header (24B) & Heap Reallocation:
+  Stack [start_ | finish_ | end_of_storage_] (size=4, cap=4)
+           │
+           ▼
+  Old Heap: [ 10 | 20 | 30 | 40 ]  ──(push_back(50) triggers 2x alloc)──►
+  New Heap: [ 10 | 20 | 30 | 40 | 50 | -- | -- | -- ] (size=5, cap=8)
+  WARNING : All pointers, references, and iterators to Old Heap are now DANGLING!`,
+      trap: "TRAP: Holding a pointer or reference to an element (`int& ref = v[0];`) across a `v.push_back(...)` that exceeds `v.capacity()` causes Use-After-Free Undefined Behavior because the entire underlying array is relocated to a new heap address!"
+    },
+    {
+      id: 20,
+      track: "stl",
+      tag: "MODULE 20 · STL CONTAINERS #2",
+      title: "`std::unordered_map` Hash Buckets, Load Factor & Rehashing",
+      subtitle: "How compiler symbol tables achieve O(1) lookup and what happens during bucket collisions.",
+      bullets: [
+        "Bucket Array + Separate Chaining: `std::unordered_map<K, V>` maintains a contiguous array of bucket pointers (`bucket_count()`), where each bucket points to a heap-allocated linked list of key-value nodes.",
+        "Index Calculation: For any key `k`, the container computes `std::size_t h = Hash{}(k);` and maps it to bucket index `h % bucket_count()`.",
+        "Load Factor & Rehash: `load_factor() = size() / bucket_count()`. When `load_factor() > max_load_factor()` (default `1.0`), the table allocates a larger prime/power-of-2 bucket array and re-links all nodes (`rehash()`).",
+        "Pointer vs Iterator Stability: Rehashing invalidates all **iterators**, but C++11 guarantees that **pointers and references** to `std::pair<const K, V>` elements remain valid across `rehash()` because nodes are relinked without being reallocated!"
+      ],
+      diagram: `std::unordered_map Bucket Array (bucket_count = 4, size = 3):
+  Bucket [0] ──► nullptr
+  Bucket [1] ──► [Node: "x" -> 10] ──► [Node: "y" -> 20] (Collision Chain!)
+  Bucket [2] ──► nullptr
+  Bucket [3] ──► [Node: "main" -> 0x400] ──► nullptr`,
+      trap: "TRAP: `map[key]` (`operator[]`) silently INSERTS a default-constructed value `V{}` if `key` does not exist—mutating the map, increasing `size()`, and potentially triggering a `rehash()`! In read-only or `const` paths, always use `map.find(key)` or C++20 `map.contains(key)`."
+    },
+    {
+      id: 21,
+      track: "stl",
+      tag: "MODULE 21 · STL CONTAINERS #3",
+      title: "`std::map` (Red-Black Tree) vs `std::priority_queue` (Binary Heap)",
+      subtitle: "Ordered O(log N) tree traversal vs cache-friendly array-backed heap scheduling.",
+      bullets: [
+        "`std::map<K, V>` / `std::set<K>`: Implemented as a self-balancing Red-Black Binary Search Tree. Each node allocates 3 pointers (`parent`, `left`, `right`) + color bit + payload on the heap.",
+        "Logarithmic Range Queries: `map.lower_bound(k)` (first element `>= k`) and `map.upper_bound(k)` (first element `> k`) run in `O(log N)` time, making `std::map` ideal for interval tables, order books, and memory allocators.",
+        "`std::priority_queue<T>`: Container adapter (wrapping `std::vector<T>` by default) that maintains a Binary Max-Heap (`std::less<T>`) or Min-Heap (`std::greater<T>`) in contiguous memory.",
+        "Why `priority_queue` Beats `std::set` for Schedulers: Because `priority_queue` lives inside a contiguous `std::vector`, `push()` (`std::push_heap`) and `pop()` (`std::pop_heap`) have zero per-node heap allocations and superior CPU L1 cache locality."
+      ],
+      diagram: `Red-Black Tree (std::map)               Binary Max-Heap in std::vector (priority_queue)
+         [20: Black]                    Index:   [0]  [1]  [2]  [3]  [4]
+        /           \\                   Array:  [ 90 | 70 | 50 | 30 | 20 ]
+   [10: Red]     [30: Red]              Children of [i] are at [2i+1] and [2i+2]!`,
+      trap: "TRAP: Passing `std::binary_search` or `std::lower_bound(map.begin(), map.end(), k)` as a free `<algorithm>` function on a `std::map` or `std::set` takes `O(N)` linear time because tree iterators are bidirectional, not random-access! Always call the member method `map.lower_bound(k)` for `O(log N)`."
+    },
+    {
+      id: 22,
+      track: "stl",
+      tag: "MODULE 22 · STL CONTAINERS #4",
+      title: "`std::deque` Segmented Map, C++20 `std::span` & Ranges",
+      subtitle: "Chunked double-ended queues without reallocation spikes and non-owning contiguous views.",
+      bullets: [
+        "`std::deque<T>` Architecture: Instead of one giant contiguous array, `std::deque` uses a central pointer array (`map`) pointing to fixed-size contiguous chunks (e.g., 512B or 4KB pages).",
+        "Why `std::queue` Uses `std::deque` by Default: Pushing/popping at BOTH ends (`push_front`, `push_back`, `pop_front`) is `O(1)` without ever copying existing elements to a new buffer.",
+        "C++20 `std::span<T>`: A lightweight 16-byte non-owning view (`{T* ptr, std::size_t size}`) over any contiguous sequence (`std::vector`, `std::array`, raw C array) with zero heap allocation.",
+        "C++20 `std::ranges` & Views: Lazy composable pipelines (`v | std::views::filter(...) | std::views::transform(...)`) that evaluate elements on-the-fly without allocating intermediate vectors."
+      ],
+      diagram: `std::deque<T> Central Map of Fixed-Size Chunks:
+  Map Array: [ ChunkPtr0 | ChunkPtr1 | ChunkPtr2 ]
+                  │           │           │
+                  ▼           ▼           ▼
+               [..|10|20]  [30|40|50]  [60|70|..]  <-- O(1) push_front & push_back!`,
+      trap: "TRAP: While `std::deque::push_back()` and `push_front()` do NOT invalidate pointers or references to existing elements, they DO invalidate all existing `std::deque` iterators! And never pass a `std::deque` to a C API expecting a contiguous `T*` buffer."
     }
   ],
 
@@ -1279,6 +1388,119 @@ int main() {
 [launch::async]    Result = 42 (ran on worker thread)
 [launch::deferred] Result = 128 (ran lazily on main thread)
 [packaged_task]    12 * 12 = 144`
+    },
+    {
+      id: "stl_vector_growth",
+      track: "stl",
+      title: "15 · STL #1: std::vector Geometric Growth, reserve() & noexcept Move",
+      subtitle: "Trace exact capacity doubling steps, pointer addresses, and zero-reallocation reserve().",
+      tags: ["std::vector", "Capacity 2x Growth", "emplace_back"],
+      code: `#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> v;
+    std::cout << "sizeof(std::vector<int>) header = " << sizeof(v) << " Bytes (3 pointers)\\n";
+
+    std::size_t prev_cap = v.capacity();
+    for (int i = 1; i <= 9; ++i) {
+        v.push_back(i * 10);
+        if (v.capacity() != prev_cap) {
+            std::cout << "  [Realloc] size=" << v.size()
+                      << " -> capacity grew from " << prev_cap
+                      << " to " << v.capacity() << "\\n";
+            prev_cap = v.capacity();
+        }
+    }
+
+    std::vector<int> fast;
+    fast.reserve(100); // Pre-allocate 100 slots in ONE heap call!
+    std::cout << "After reserve(100): size=" << fast.size()
+              << ", capacity=" << fast.capacity() << "\\n";
+}`,
+      expectedOutput: `sizeof(std::vector<int>) header = 24 Bytes (3 pointers)
+  [Realloc] size=1 -> capacity grew from 0 to 1
+  [Realloc] size=2 -> capacity grew from 1 to 2
+  [Realloc] size=3 -> capacity grew from 2 to 4
+  [Realloc] size=5 -> capacity grew from 4 to 8
+  [Realloc] size=9 -> capacity grew from 8 to 16
+After reserve(100): size=0, capacity=100`
+    },
+    {
+      id: "stl_unordered_map_symbol",
+      track: "stl",
+      title: "16 · STL #2: std::unordered_map Compiler Symbol Table & Custom Hash",
+      subtitle: "Inspect hash buckets, load factors, O(1) symbol lookups, and custom struct hashing.",
+      tags: ["std::unordered_map", "Hash Buckets", "Symbol Table"],
+      code: `#include <iostream>
+#include <unordered_map>
+#include <string>
+
+struct SymbolInfo {
+    std::string type;
+    int stack_offset;
+};
+
+int main() {
+    std::unordered_map<std::string, SymbolInfo> symtab;
+    symtab.reserve(8);
+
+    symtab.emplace("argc", SymbolInfo{"int", -4});
+    symtab.emplace("argv", SymbolInfo{"char**", -16});
+    symtab.emplace("vptr", SymbolInfo{"void**", 0});
+
+    std::cout << "Symbol count = " << symtab.size()
+              << " | Bucket count = " << symtab.bucket_count() << "\\n";
+
+    // Safe lookup with find() (never inserts accidental defaults!)
+    if (auto it = symtab.find("vptr"); it != symtab.end()) {
+        std::cout << "Found symbol '" << it->first << "' -> type=" << it->second.type
+                  << ", offset=" << it->second.stack_offset
+                  << " (in bucket #" << symtab.bucket(it->first) << ")\\n";
+    }
+}`,
+      expectedOutput: `Symbol count = 3 | Bucket count = 11
+Found symbol 'vptr' -> type=void**, offset=0 (in bucket #4)`
+    },
+    {
+      id: "stl_map_heap_ranges",
+      track: "stl",
+      title: "17 · STL #3: std::map Red-Black Tree lower_bound() & Min-Heap Scheduler",
+      subtitle: "Combine O(log N) ordered interval lookups in std::map with a Min-Heap priority_queue.",
+      tags: ["std::map RB-Tree", "lower_bound()", "std::priority_queue"],
+      code: `#include <iostream>
+#include <map>
+#include <queue>
+#include <vector>
+#include <functional>
+
+int main() {
+    // 1. Ordered Red-Black Tree (std::map) with O(log N) lower_bound
+    std::map<int, std::string> addr_symbols = {
+        {0x1000, "main()"},
+        {0x2000, "Account::withdraw()"},
+        {0x3000, "ThreadPool::enqueue()"}
+    };
+
+    auto it = addr_symbols.lower_bound(0x1800); // First symbol >= 0x1800
+    if (it != addr_symbols.end()) {
+        std::cout << "[std::map lower_bound(0x1800)] -> 0x" << std::hex << it->first
+                  << std::dec << " : " << it->second << "\\n";
+    }
+
+    // 2. Binary Min-Heap Scheduler (std::priority_queue with std::greater)
+    std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
+    for (int latency_us : {45, 12, 88, 5, 29}) min_heap.push(latency_us);
+
+    std::cout << "[Min-Heap Dispatch Order (us)]: ";
+    while (!min_heap.empty()) {
+        std::cout << min_heap.top() << " ";
+        min_heap.pop();
+    }
+    std::cout << "\\n";
+}`,
+      expectedOutput: `[std::map lower_bound(0x1800)] -> 0x2000 : Account::withdraw()
+[Min-Heap Dispatch Order (us)]: 5 12 29 45 88 `
     }
   ],
 
@@ -1617,6 +1839,76 @@ int main() {
       ],
       answer: 1,
       explanation: "Each individual operation on `std::atomic<int>` (`load()` and `fetch_sub()`) is atomic, but the gap between the `if (counter > 0)` check and the `counter -= 1` update is a classic Time-Of-Check to Time-Of-Use (TOCTOU) race. A Compare-And-Swap (`compare_exchange_weak`) loop is required to make the check-and-decrement a single atomic transaction."
+    },
+    {
+      id: 26,
+      track: "stl",
+      topic: "std::vector Reallocation & Iterator Invalidation",
+      question: "When `std::vector<int> v` has `size() == 4` and `capacity() == 4`, what happens to existing pointers (`int* p = &v[0]`) and iterators when `v.push_back(50)` executes?",
+      options: [
+        "Only the `end()` iterator is invalidated; `p` remains valid",
+        "All iterators, pointers, and references to elements in `v` are invalidated because `v` allocates a new 2x buffer on the heap and frees the old array",
+        "`v` links a second 4-element chunk without moving existing elements",
+        "`push_back` throws `std::length_error` unless `reserve()` was called"
+      ],
+      answer: 1,
+      explanation: "When `size() == capacity()`, `std::vector` must allocate a brand-new contiguous heap block (typically doubling capacity to 8), move/copy the 4 elements over, and deallocate the old block—invalidating every pointer, reference, and iterator into the old buffer."
+    },
+    {
+      id: 27,
+      track: "stl",
+      topic: "std::unordered_map operator[] Trap",
+      question: "What happens when you check `if (symtab[\"missing_key\"] == 0)` on a `std::unordered_map<std::string, int> symtab` that does NOT contain `\"missing_key\"`?",
+      options: [
+        "It throws `std::out_of_range`",
+        "It returns `false` without modifying `symtab`",
+        "It silently INSERTS `{\"missing_key\", 0}` into `symtab`, increments `symtab.size()`, and may trigger a `rehash()` that invalidates all iterators!",
+        "It fails to compile"
+      ],
+      answer: 2,
+      explanation: "`std::unordered_map::operator[]` is a mutating lookup-or-insert operator: if the key is absent, it default-constructs the mapped value (`0`) and inserts the node. Always use `find()` or C++20 `contains()` for non-mutating queries."
+    },
+    {
+      id: 28,
+      track: "stl",
+      topic: "std::map::lower_bound vs std::lower_bound",
+      question: "Why should you call `my_map.lower_bound(key)` instead of `std::lower_bound(my_map.begin(), my_map.end(), val)` on a `std::map<int, int>`?",
+      options: [
+        "`std::lower_bound` does not compile on `std::map`",
+        "`my_map.lower_bound(key)` traverses the Red-Black Tree pointers in `O(log N)` time, whereas `std::lower_bound` performs `O(N)` linear iterator increments because `std::map` iterators are Bidirectional, not Random-Access",
+        "Both run in `O(1)` time",
+        "`my_map.lower_bound(key)` rebalances the tree"
+      ],
+      answer: 1,
+      explanation: "Although `std::lower_bound` does `O(log N)` comparisons, advancing a bidirectional iterator (`std::advance`) across a node-based Red-Black tree takes `O(N)` pointer hops. The member function `map::lower_bound` walks down from the root in `O(log N)` steps."
+    },
+    {
+      id: 29,
+      track: "stl",
+      topic: "std::deque vs std::vector Memory Layout",
+      question: "How does `std::deque<T>` support `O(1)` `push_front()` AND `O(1)` `push_back()` without invalidating pointers or references to existing elements?",
+      options: [
+        "It uses a doubly-linked list where every element is a separate heap node",
+        "It uses a central map array of pointers to fixed-size contiguous memory chunks, allocating new chunks at the front or back as needed",
+        "It leaves 50% empty space at the start of a single contiguous array",
+        "It uses `realloc()` in the OS kernel"
+      ],
+      answer: 1,
+      explanation: "`std::deque` is a segmented array: a central array of pointers ('map') points to fixed-size contiguous blocks. Growing at the front or back simply allocates a new block and hooks it into the map without moving existing elements."
+    },
+    {
+      id: 30,
+      track: "stl",
+      topic: "reserve() vs resize() on std::vector",
+      question: "After executing `std::vector<int> v; v.reserve(50);`, what are `v.size()` and `v.capacity()`, and is `v[0] = 10;` valid?",
+      options: [
+        "`size() == 50`, `capacity() >= 50`, and `v[0] = 10` is valid",
+        "`size() == 0`, `capacity() >= 50`, and accessing `v[0]` is Undefined Behavior (out-of-bounds of `size()`) because no elements have been constructed yet",
+        "`size() == 50`, `capacity() == 0`",
+        "`reserve(50)` zero-initializes 50 integers"
+      ],
+      answer: 1,
+      explanation: "`reserve(50)` only allocates raw uninitialized heap storage for at least 50 elements while keeping `size() == 0`. Elements must still be constructed via `push_back()`, `emplace_back()`, or `resize()`."
     }
   ]
 };

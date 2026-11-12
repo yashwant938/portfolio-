@@ -1,7 +1,10 @@
 // ============================================================================
-// CppOOPTopics — Dual-Track Systems Studio Frontend Controller
-// Track 1: Complete C++20 OOP & Low-Level Memory Engineering
-// Track 2: Complete CppNuts C++20 Multithreading & Concurrency Lab
+// CppOOPTopics v3.0 — 3-Color Trinity Studio Frontend Controller
+// Combo #5 Auto-Morphing Palettes:
+//   - Track 1 (OOP & Memory)       -> Crisp White + Solar Yellow (#FACC15)
+//   - Track 2 (CppNuts Threading)  -> Crisp White + Matcha Emerald (#10B981)
+//   - Track 3 (STL Containers)     -> Pearl White + Royal Indigo (#6366F1)
+//   - Bonus Mode                   -> Carbon Black + Cyber Gold (#FACC15)
 // ============================================================================
 
 (function () {
@@ -9,7 +12,8 @@
 
   const state = {
     activeView: "code-demo",
-    activeTrack: "all", // "all" | "oop" | "threading"
+    activeTrack: "all", // "all" | "oop" | "threading" | "stl"
+    activePalette: "solar-yellow",
     currentSlideIdx: 0,
     currentDemoIdx: 0,
     editorCode: DATA.codeDemos[0].code,
@@ -43,11 +47,11 @@
 
     // Sim 6: CppNuts 5 Ways to Create Threads + join/detach/jthread
     threadSpawnWayIdx: 0,
-    threadMode: "join", // "join" | "detach" | "forgot_join" | "jthread"
+    threadMode: "join",
 
     // Sim 7: CppNuts Mutex Lock Types & AB-BA Deadlock vs std::lock
     deadlockFixed: true,
-    uniqueLockTag: "defer_lock", // "default" | "defer_lock" | "try_to_lock" | "adopt_lock"
+    uniqueLockTag: "defer_lock",
     recursiveDepth: 1,
 
     // Sim 8: CppNuts Condition Variable (Producer-Consumer + Even-Odd)
@@ -61,7 +65,7 @@
     ],
 
     // Sim 9: CppNuts Promise/Future, Async Policy & Thread Pool
-    asyncPolicy: "async", // "async" | "deferred"
+    asyncPolicy: "async",
     promiseFulfilled: false,
     poolTasks: [
       { id: 1, expr: "10 * 10", worker: "Worker #1 (TID 4101)", status: "Completed -> 100" },
@@ -70,6 +74,17 @@
       { id: 4, expr: "40 * 40", worker: "Worker #4 (TID 4104)", status: "Queued in std::queue" }
     ],
     nextPoolTaskId: 5,
+
+    // Sim 10: STL std::vector 2x Reallocation & std::unordered_map Hash Buckets
+    stlVecItems: [10, 20, 30, 40],
+    stlVecCap: 4,
+    stlVecReallocCount: 3,
+    stlBuckets: [
+      [{ k: "main", v: "0x1000" }],
+      [{ k: "argc", v: "ebp-4" }, { k: "argv", v: "ebp-16" }],
+      [],
+      [{ k: "vptr", v: "0x00" }]
+    ],
 
     // Quiz
     quizAnswers: {},
@@ -207,45 +222,73 @@
     state.activeView = view;
     renderNav();
     renderTrackSwitcher();
+    renderPaletteBar();
     renderMain();
+  };
+
+  window.setPaletteManual = function (paletteKey) {
+    state.activePalette = paletteKey;
+    if (window.applyStudioPalette) {
+      window.applyStudioPalette(paletteKey);
+    }
+    renderPaletteBar();
   };
 
   window.setTrackFilter = function (track) {
     state.activeTrack = track;
     if (track === "threading") {
-      if (state.currentSlideIdx < 10) state.currentSlideIdx = 10;
-      if (state.currentDemoIdx < 8) {
+      state.activePalette = "emerald-mint";
+      if (window.applyStudioPalette) window.applyStudioPalette("emerald-mint");
+      if (state.currentSlideIdx < 10 || state.currentSlideIdx >= 18) state.currentSlideIdx = 10;
+      if (state.currentDemoIdx < 8 || state.currentDemoIdx >= 14) {
         state.currentDemoIdx = 8;
         state.editorCode = DATA.codeDemos[8].code;
         state.terminalStatus = "idle";
-        state.terminalOutput = 'Ready. Click "Compile & Run C++20" to execute CppNuts Multithreading demo.';
+        state.terminalOutput = 'Ready. Click "Run Code" to execute CppNuts Multithreading demo.';
       }
       if (!["threads5", "mutex_deadlock", "cv_queue", "future_pool"].includes(state.activeAnimTab)) {
         state.activeAnimTab = "threads5";
       }
+    } else if (track === "stl") {
+      state.activePalette = "royal-indigo";
+      if (window.applyStudioPalette) window.applyStudioPalette("royal-indigo");
+      if (state.currentSlideIdx < 18) state.currentSlideIdx = 18;
+      if (state.currentDemoIdx < 14) {
+        state.currentDemoIdx = 14;
+        state.editorCode = DATA.codeDemos[14].code;
+        state.terminalStatus = "idle";
+        state.terminalOutput = 'Ready. Click "Run Code" to execute C++20 STL demo.';
+      }
+      state.activeAnimTab = "stl_sim";
     } else if (track === "oop") {
+      state.activePalette = "solar-yellow";
+      if (window.applyStudioPalette) window.applyStudioPalette("solar-yellow");
       if (state.currentSlideIdx >= 10) state.currentSlideIdx = 0;
       if (state.currentDemoIdx >= 8) {
         state.currentDemoIdx = 0;
         state.editorCode = DATA.codeDemos[0].code;
         state.terminalStatus = "idle";
-        state.terminalOutput = 'Ready. Click "Compile & Run C++20" to execute C++20 OOP demo.';
+        state.terminalOutput = 'Ready. Click "Run Code" to execute C++20 OOP demo.';
       }
-      if (["threads5", "mutex_deadlock", "cv_queue", "future_pool"].includes(state.activeAnimTab)) {
+      if (!["align", "vtable", "rvalue", "diamond", "smartptr"].includes(state.activeAnimTab)) {
         state.activeAnimTab = "align";
       }
+    } else {
+      state.activePalette = "solar-yellow";
+      if (window.applyStudioPalette) window.applyStudioPalette("solar-yellow");
     }
     renderTrackSwitcher();
+    renderPaletteBar();
     renderMain();
   };
 
   function renderNav() {
     const views = [
       { id: "landing", label: "Landing" },
-      { id: "slides", label: "Slides" },
-      { id: "code-demo", label: "Code Demo" },
-      { id: "animation", label: "Animation" },
-      { id: "quiz", label: "Quiz" },
+      { id: "slides", label: "Slides (22)" },
+      { id: "code-demo", label: "Code Demo (17)" },
+      { id: "animation", label: "Animation (10)" },
+      { id: "quiz", label: "Quiz (30)" },
       { id: "result", label: "Result" }
     ];
     const navEl = document.getElementById("top-nav-buttons");
@@ -256,7 +299,7 @@
         return `<button onclick="switchView('${v.id}')" data-nav="${v.id}"
           class="px-3.5 py-1.5 rounded-lg text-xs md:text-sm font-medium transition border ${
             active
-              ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-sm font-semibold"
+              ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] shadow-sm font-bold"
               : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)] hover:opacity-90"
           }">${v.label}</button>`;
       })
@@ -267,24 +310,54 @@
     const el = document.getElementById("track-switcher-bar");
     if (!el) return;
     const tracks = [
-      { id: "all", label: "All Tracks (18 Modules · 14 Labs)" },
-      { id: "oop", label: "Track 1: OOP & Memory Internals (10)" },
-      { id: "threading", label: "Track 2: CppNuts Multithreading (8)" }
+      { id: "all", label: "All 3 Websites (22 Modules)" },
+      { id: "oop", label: "1. OOP & Memory (Solar Yellow · 10)" },
+      { id: "threading", label: "2. CppNuts Threading (Emerald · 8)" },
+      { id: "stl", label: "3. STL Containers (Royal Indigo · 4)" }
     ];
     el.innerHTML =
-      `<span class="text-xs font-mono text-[var(--muted-foreground)] mr-1">Active Track:</span>` +
+      `<span class="text-xs font-mono font-bold text-[var(--foreground)] mr-1">3-Website Switcher:</span>` +
       tracks
         .map((t) => {
           const active = state.activeTrack === t.id;
           return `<button onclick="setTrackFilter('${t.id}')" data-track="${t.id}"
             class="px-3 py-1 rounded-lg text-xs font-mono transition border ${
               active
-                ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-semibold"
+                ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold shadow-sm"
                 : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)]"
             }">${t.label}</button>`;
         })
         .join("");
   }
+
+  window.renderPaletteBar = function () {
+    const el = document.getElementById("palette-switcher-bar");
+    if (!el) return;
+    const palettes = [
+      { id: "solar-yellow", label: "White + Yellow", dot: "#FACC15" },
+      { id: "emerald-mint", label: "White + Emerald", dot: "#10B981" },
+      { id: "royal-indigo", label: "White + Indigo", dot: "#6366F1" },
+      { id: "cyber-dark", label: "Carbon + Yellow", dot: "#18181B" }
+    ];
+    el.innerHTML =
+      `<span class="text-xs font-mono text-[var(--muted-foreground)] mr-1">Theme:</span>` +
+      palettes
+        .map((p) => {
+          const active = state.activePalette === p.id;
+          return `<button onclick="setPaletteManual('${p.id}')" data-palette="${p.id}"
+            class="px-2.5 py-1 rounded-lg text-xs font-semibold transition border inline-flex items-center gap-1.5 ${
+              active
+                ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
+                : "bg-[var(--card)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
+            }">
+            <span class="w-2.5 h-2.5 rounded-full border border-[var(--border)]" style="background:${p.dot}"></span>
+            <span>${p.label}</span>
+          </button>`;
+        })
+        .join("");
+  };
+
+  const renderPaletteBar = window.renderPaletteBar;
 
   // ==================== VIEW 1: LANDING ====================
   function renderLanding() {
@@ -296,127 +369,146 @@
     return `
       <div class="space-y-8">
         <!-- Studio Hero Card -->
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 md:p-8 shadow-sm">
+        <div class="bg-[var(--card)] border-2 border-[var(--accent)] rounded-2xl p-6 md:p-8 shadow-sm">
           <div class="flex flex-wrap items-center gap-2 mb-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--secondary)] border border-[var(--border)] text-[var(--foreground)] text-xs font-semibold">
-              <span class="w-2 h-2 rounded-full bg-[var(--primary)]"></span>
-              DUAL-TRACK SYSTEMS WORKSPACE · C++20/23 OOP + CPPNUTS MULTITHREADING
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
+              <span class="w-2 h-2 rounded-full bg-[var(--primary-foreground)]"></span>
+              3-COLOR TRINITY STUDIO · OOP (SOLAR YELLOW) · THREADING (EMERALD) · STL (INDIGO)
             </div>
-            <span class="px-2.5 py-1 rounded-full bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] text-xs font-mono">
+            <span class="px-2.5 py-1 rounded-full bg-[var(--secondary)] text-[var(--secondary-foreground)] text-xs font-mono font-semibold">
               10 Native CMake Executables (lab01–lab10)
             </span>
           </div>
 
           <h1 class="text-2xl md:text-4xl font-bold text-[var(--foreground)] tracking-tight mb-3">
-            C++ Object-Oriented Memory &amp; CppNuts Concurrency Engineering Studio
+            C++20 OOP, CppNuts Multithreading &amp; STL Containers Trinity Studio
           </h1>
           <p class="text-[var(--muted-foreground)] max-w-4xl text-sm md:text-base leading-relaxed mb-6">
-            Master every low-level systems pillar across two complete tracks:
-            <strong class="text-[var(--foreground)]">Track 1 (OOP &amp; Compiler Memory)</strong> covers Greedy Struct Alignment, EBO, Vtable &amp; Multi-Vptr Thunks, Lvalue/Prvalue/Xvalue Move Semantics, Diamond Virtual Base, Friend Mechanics, and Smart Pointer Control Blocks.
-            <strong class="text-[var(--foreground)]">Track 2 (CppNuts Multithreading Series)</strong> covers 5 Thread Creation Ways, <code class="font-mono text-[var(--foreground)]">join/detach/jthread</code>, <code class="font-mono text-[var(--foreground)]">mutex / try_lock / timed_mutex / recursive_mutex</code>, <code class="font-mono text-[var(--foreground)]">lock_guard vs unique_lock (defer/try/adopt) vs scoped_lock</code>, AB-BA Deadlock &amp; <code class="font-mono text-[var(--foreground)]">std::lock</code>, <code class="font-mono text-[var(--foreground)]">condition_variable</code> Even-Odd &amp; Producer-Consumer, <code class="font-mono text-[var(--foreground)]">future / promise / async</code>, and a C++20 Thread Pool.
+            Three complete interactive C++ engineering websites unified with auto-switching signature color palettes:
+            <strong class="text-[var(--foreground)]">Website 1 (White + Solar Yellow · OOP &amp; Memory)</strong> covers Greedy Alignment, Vtables, Move Semantics, Diamond Base, and Smart Pointers;
+            <strong class="text-[var(--foreground)]">Website 2 (White + Matcha Emerald · CppNuts Multithreading)</strong> covers 5 Thread Creation Ways, <code class="font-mono text-[var(--foreground)]">join/detach/jthread</code>, <code class="font-mono text-[var(--foreground)]">mutex / unique_lock / scoped_lock</code>, Deadlock, <code class="font-mono text-[var(--foreground)]">condition_variable</code>, and Thread Pools;
+            <strong class="text-[var(--foreground)]">Website 3 (White + Royal Indigo · STL Containers)</strong> covers <code class="font-mono text-[var(--foreground)]">std::vector</code> 2x Growth, <code class="font-mono text-[var(--foreground)]">unordered_map</code> Hash Buckets, Red-Black Trees, and Heaps.
           </p>
 
           <!-- 5-Metric Studio Strip -->
           <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
             <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
               <div class="text-xs text-[var(--muted-foreground)] font-medium">Concept Encyclopedia</div>
-              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">18 Modules</div>
-              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">10 OOP + 8 Threading</div>
+              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">22 Modules</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">10 OOP · 8 Thread · 4 STL</div>
             </div>
             <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
               <div class="text-xs text-[var(--muted-foreground)] font-medium">Compiler Workbench</div>
-              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">14 C++20 Labs</div>
-              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">8 OOP + 6 Threading</div>
+              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">17 C++20 Labs</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">8 OOP · 6 Thread · 3 STL</div>
             </div>
             <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
               <div class="text-xs text-[var(--muted-foreground)] font-medium">Visual Simulators</div>
-              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">9 Interactive</div>
-              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">5 Memory + 4 Threading</div>
+              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">10 Interactive</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">5 OOP · 4 Thread · 1 STL</div>
             </div>
             <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
               <div class="text-xs text-[var(--muted-foreground)] font-medium">Mastery Gauntlet</div>
-              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">25 Questions</div>
-              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">15 OOP + 10 Threading</div>
+              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">30 Questions</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">15 OOP · 10 Thread · 5 STL</div>
             </div>
             <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
-              <div class="text-xs text-[var(--muted-foreground)] font-medium">Native C++20 Suite</div>
-              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">10 CMake Targets</div>
-              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">lab01 .. lab10.cpp</div>
+              <div class="text-xs text-[var(--muted-foreground)] font-medium">3-Color Trinity UI</div>
+              <div class="text-xl font-bold text-[var(--foreground)] font-mono mt-0.5">4 Palettes</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">Yellow · Emerald · Indigo</div>
             </div>
           </div>
 
           <div class="flex flex-wrap gap-2.5">
-            <button onclick="switchView('code-demo')" class="px-5 py-2.5 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold text-xs md:text-sm transition shadow-sm hover:opacity-95">
-              &#9654; Open 14-Lab C++20 Compiler IDE
+            <button onclick="switchView('code-demo')" class="px-5 py-2.5 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] border border-[var(--accent)] font-bold text-xs md:text-sm transition shadow-sm hover:opacity-95">
+              &#9654; Open 17-Lab C++20 Compiler IDE
             </button>
-            <button onclick="openThreadingSimulators()" class="px-5 py-2.5 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--primary)] font-semibold text-xs md:text-sm transition hover:opacity-90">
-              &#9889; Launch CppNuts Threading Simulators
+            <button onclick="setTrackFilter('threading'); openThreadingSimulators()" class="px-5 py-2.5 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--accent)] font-bold text-xs md:text-sm transition hover:opacity-90">
+              &#9889; Launch CppNuts Threading Studio (Emerald)
             </button>
-            <button onclick="switchView('animation')" class="px-4 py-2.5 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs md:text-sm transition hover:opacity-90">
-              All 9 Memory &amp; Concurrency Simulators
+            <button onclick="setTrackFilter('stl'); switchView('animation')" class="px-4 py-2.5 rounded-xl bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] font-semibold text-xs md:text-sm transition hover:opacity-90">
+              Launch STL Studio (Indigo)
             </button>
             <button onclick="switchView('slides')" class="px-4 py-2.5 rounded-xl bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] font-medium text-xs md:text-sm transition hover:opacity-90">
-              18 Concept Slides
+              22 Concept Slides
             </button>
             <button onclick="switchView('quiz')" class="px-4 py-2.5 rounded-xl bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] font-medium text-xs md:text-sm transition hover:opacity-90">
-              25-Question Quiz
+              30-Question Quiz
             </button>
           </div>
         </div>
 
-        <!-- Track Comparison Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+        <!-- 3-Website Trinity Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-[var(--card)] border-2 border-[var(--accent)] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2">
-                <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-semibold bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]">TRACK 1 · MODULES 01–10</span>
-                <span class="text-xs font-mono text-[var(--muted-foreground)]">labs 01–06.cpp</span>
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-[var(--primary)] text-[var(--primary-foreground)]">WEBSITE 1 · WHITE + SOLAR YELLOW</span>
+                <span class="text-xs font-mono text-[var(--muted-foreground)]">10 Modules</span>
               </div>
-              <h2 class="text-lg font-bold text-[var(--foreground)] mb-1">C++20 Object-Oriented &amp; Compiler Memory Track</h2>
+              <h2 class="text-lg font-bold text-[var(--foreground)] mb-1">C++20 OOP &amp; Compiler Memory Studio</h2>
               <p class="text-xs md:text-sm text-[var(--muted-foreground)] leading-relaxed mb-4">
                 Greedy struct alignment, padding elimination, Empty Base Optimization, friend mechanics, value categories (lvalue/prvalue/xvalue), Rule of 5, virtual base diamond inheritance, vptr/vtable dispatch thunks, and smart pointer control blocks.
               </p>
             </div>
             <div class="flex flex-wrap gap-2">
-              <button onclick="setTrackFilter('oop'); switchView('slides')" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs font-semibold">
-                Explore OOP Slides (10)
+              <button onclick="setTrackFilter('oop'); switchView('code-demo')" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
+                Activate Solar Yellow OOP UI
               </button>
-              <button onclick="setTrackFilter('oop'); switchView('code-demo')" class="px-3.5 py-1.5 rounded-lg bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] text-xs font-medium">
-                OOP Code Demos (8)
+              <button onclick="setTrackFilter('oop'); switchView('animation')" class="px-3 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] text-xs font-semibold">
+                5 Memory Labs
               </button>
             </div>
           </div>
 
-          <div class="bg-[var(--card)] border border-[var(--primary)] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div class="bg-[var(--card)] border-2 border-[var(--border)] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2">
-                <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-semibold bg-[var(--primary)] text-[var(--primary-foreground)]">TRACK 2 · MODULES 11–18 (NEW!)</span>
-                <span class="text-xs font-mono text-[var(--muted-foreground)]">labs 07–10.cpp</span>
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-[var(--secondary)] text-[var(--secondary-foreground)]">WEBSITE 2 · WHITE + EMERALD MINT</span>
+                <span class="text-xs font-mono text-[var(--muted-foreground)]">8 Modules</span>
               </div>
-              <h2 class="text-lg font-bold text-[var(--foreground)] mb-1">CppNuts C++20 Multithreading &amp; Concurrency Track</h2>
+              <h2 class="text-lg font-bold text-[var(--foreground)] mb-1">CppNuts C++20 Multithreading Studio</h2>
               <p class="text-xs md:text-sm text-[var(--muted-foreground)] leading-relaxed mb-4">
-                5 thread creation callables, <code class="font-mono">join/detach/jthread</code>, race conditions, <code class="font-mono">mutex / try_lock / timed_mutex / recursive_mutex</code>, <code class="font-mono">unique_lock</code> strategies (<code class="font-mono">defer/try/adopt</code>), AB-BA deadlock &amp; <code class="font-mono">std::lock</code>, <code class="font-mono">condition_variable</code> Even-Odd &amp; Producer-Consumer, <code class="font-mono">future/promise/async</code>, and Thread Pool.
+                5 thread creation callables, <code class="font-mono">join/detach/jthread</code>, race conditions, <code class="font-mono">mutex / try_lock / timed_mutex / recursive_mutex</code>, <code class="font-mono">unique_lock</code> tags, AB-BA deadlock &amp; <code class="font-mono">std::lock</code>, <code class="font-mono">condition_variable</code> Even-Odd &amp; Producer-Consumer, <code class="font-mono">future/promise/async</code>, and Thread Pool.
               </p>
             </div>
             <div class="flex flex-wrap gap-2">
-              <button onclick="setTrackFilter('threading'); switchView('slides')" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold">
-                Explore CppNuts Threading Slides (8)
+              <button onclick="setTrackFilter('threading'); switchView('code-demo')" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
+                Activate Emerald Threading UI
               </button>
-              <button onclick="setTrackFilter('threading'); switchView('code-demo')" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs font-semibold">
-                Threading Code Demos (6)
+              <button onclick="setTrackFilter('threading'); openThreadingSimulators()" class="px-3 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] text-xs font-semibold">
+                4 Concurrency Labs
               </button>
-              <button onclick="openThreadingSimulators()" class="px-3.5 py-1.5 rounded-lg bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)] text-xs font-medium">
-                Threading Simulators (4)
+            </div>
+          </div>
+
+          <div class="bg-[var(--card)] border-2 border-[var(--border)] rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-[var(--secondary)] text-[var(--secondary-foreground)]">WEBSITE 3 · WHITE + ROYAL INDIGO</span>
+                <span class="text-xs font-mono text-[var(--muted-foreground)]">4 Modules</span>
+              </div>
+              <h2 class="text-lg font-bold text-[var(--foreground)] mb-1">C++20 STL Containers &amp; Internals Studio</h2>
+              <p class="text-xs md:text-sm text-[var(--muted-foreground)] leading-relaxed mb-4">
+                24-byte <code class="font-mono">std::vector</code> header &amp; 2x geometric growth, <code class="font-mono">std::unordered_map</code> hash bucket chains &amp; load factor rehash, <code class="font-mono">std::map</code> Red-Black trees vs <code class="font-mono">std::priority_queue</code> binary heaps, <code class="font-mono">std::deque</code> chunk maps, and C++20 <code class="font-mono">std::span</code>.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="setTrackFilter('stl'); switchView('code-demo')" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
+                Activate Royal Indigo STL UI
+              </button>
+              <button onclick="setTrackFilter('stl'); switchView('animation')" class="px-3 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] text-xs font-semibold">
+                STL Bucket/Vector Lab
               </button>
             </div>
           </div>
         </div>
 
-        <!-- 18-Module Curriculum Grid -->
+        <!-- 22-Module Curriculum Grid -->
         <div>
           <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
             <h2 class="text-lg md:text-xl font-bold text-[var(--foreground)]">
-              Complete Curriculum (${filteredTopics.length} Modules Shown)
+              Complete 3-Track Curriculum (${filteredTopics.length} Modules Shown)
             </h2>
             <span class="text-xs text-[var(--muted-foreground)] font-mono">Click any module card to jump to its interactive slide</span>
           </div>
@@ -424,17 +516,19 @@
             ${filteredTopics
               .map((t) => {
                 const realIdx = DATA.topicsOverview.findIndex((item) => item.id === t.id);
-                const isThread = t.track === "threading";
+                const tr = t.track || "oop";
+                const trackLabel =
+                  tr === "threading"
+                    ? "Track 2 · CppNuts Threading"
+                    : tr === "stl"
+                    ? "Track 3 · STL Containers"
+                    : "Track 1 · OOP & Memory";
                 return `
-              <div class="bg-[var(--card)] border ${isThread ? "border-[var(--primary)]" : "border-[var(--border)]"} rounded-xl p-5 shadow-sm flex flex-col justify-between hover:border-[var(--primary)] transition">
+              <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm flex flex-col justify-between hover:border-[var(--primary)] transition">
                 <div>
                   <div class="flex items-center justify-between gap-2 mb-1.5">
                     <span class="text-xs font-mono text-[var(--muted-foreground)] font-semibold">${t.badge}</span>
-                    <span class="px-2 py-0.5 rounded text-xs font-mono ${
-                      isThread
-                        ? "bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold"
-                        : "bg-[var(--secondary)] text-[var(--secondary-foreground)]"
-                    }">${isThread ? "CppNuts Threading" : "OOP & Memory"}</span>
+                    <span class="px-2.5 py-0.5 rounded text-xs font-mono bg-[var(--secondary)] text-[var(--secondary-foreground)] font-semibold">${trackLabel}</span>
                   </div>
                   <h3 class="text-base md:text-lg font-bold text-[var(--foreground)] mb-2">${t.title}</h3>
                   <p class="text-[var(--muted-foreground)] text-xs md:text-sm leading-relaxed mb-4">${t.summary}</p>
@@ -444,11 +538,11 @@
                     ${t.metrics
                       .map(
                         (m) =>
-                          `<span class="px-2.5 py-0.5 rounded-md text-xs font-mono bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]">${m}</span>`
+                          `<span class="px-2.5 py-0.5 rounded-md text-xs font-mono bg-[var(--background)] text-[var(--foreground)] border border-[var(--border)]">${m}</span>`
                       )
                       .join("")}
                   </div>
-                  <button onclick="openSlideIndex(${realIdx})" class="text-xs font-semibold text-[var(--foreground)] underline hover:opacity-80">
+                  <button onclick="openSlideIndex(${realIdx})" class="px-3 py-1 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold hover:opacity-90">
                     Open Module &rarr;
                   </button>
                 </div>
@@ -468,39 +562,58 @@
 
   window.openSlideIndex = function (idx) {
     state.currentSlideIdx = idx;
+    const s = DATA.slides[idx];
+    if (s) {
+      const tr = s.track || "oop";
+      if (tr === "threading" && window.applyStudioPalette) {
+        state.activePalette = "emerald-mint";
+        window.applyStudioPalette("emerald-mint");
+      } else if (tr === "stl" && window.applyStudioPalette) {
+        state.activePalette = "royal-indigo";
+        window.applyStudioPalette("royal-indigo");
+      } else if (window.applyStudioPalette) {
+        state.activePalette = "solar-yellow";
+        window.applyStudioPalette("solar-yellow");
+      }
+    }
     switchView("slides");
   };
 
   // ==================== VIEW 2: SLIDES (SPLIT-PANE STUDIO DECK) ====================
   function renderSlides() {
     const s = DATA.slides[state.currentSlideIdx];
-    const isThreadingSlide = s.track === "threading";
+    const tr = s.track || "oop";
+    const trackBadge =
+      tr === "threading"
+        ? "Track 2 · CppNuts Multithreading (Emerald)"
+        : tr === "stl"
+        ? "Track 3 · STL Containers (Royal Indigo)"
+        : "Track 1 · C++20 OOP & Memory (Solar Yellow)";
 
     return `
       <div class="space-y-5">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 class="text-2xl md:text-3xl font-bold text-[var(--foreground)]">Interactive Concept Encyclopedia</h1>
-            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">18 deep-dive architecture modules covering C++20 OOP memory internals and the complete CppNuts Multithreading series.</p>
+            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">22 deep-dive architecture modules across OOP Memory (01–10), CppNuts Multithreading (11–18), and STL Containers (19–22).</p>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="stepSlide(-1)" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs md:text-sm font-medium">
+            <button onclick="stepSlide(-1)" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs md:text-sm font-semibold">
               &larr; Prev
             </button>
-            <span class="px-3 py-1.5 rounded-lg bg-[var(--card)] border border-[var(--border)] text-[var(--foreground)] font-mono text-xs">
+            <span class="px-3 py-1.5 rounded-lg bg-[var(--card)] border border-[var(--border)] text-[var(--foreground)] font-mono text-xs font-bold">
               Slide ${state.currentSlideIdx + 1} / ${DATA.slides.length}
             </span>
-            <button onclick="stepSlide(1)" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold text-xs md:text-sm">
+            <button onclick="stepSlide(1)" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-xs md:text-sm">
               Next &rarr;
             </button>
           </div>
         </div>
 
-        <!-- Split-Pane Studio Layout: Left Module Directory (1 col) + Right Main Stage (2 cols) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
           <!-- Left Module Navigator -->
           <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm space-y-3 max-h-[540px] overflow-y-auto">
-            <div class="text-xs font-mono font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-1">
+            <div class="text-xs font-mono font-bold text-[var(--foreground)] uppercase tracking-wider px-1">
               Track 1 · OOP &amp; Memory (01–10)
             </div>
             <div class="space-y-1">
@@ -510,7 +623,7 @@
                   (sl, i) => `
                 <button onclick="openSlideIndex(${i})" class="w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition border flex items-center justify-between gap-2 ${
                     i === state.currentSlideIdx
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-semibold"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                       : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
                   }">
                   <span class="truncate">${String(i + 1).padStart(2, "0")}. ${sl.title}</span>
@@ -519,18 +632,38 @@
                 .join("")}
             </div>
 
-            <div class="text-xs font-mono font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-1 pt-3 border-t border-[var(--border)]">
+            <div class="text-xs font-mono font-bold text-[var(--foreground)] uppercase tracking-wider px-1 pt-3 border-t border-[var(--border)]">
               Track 2 · CppNuts Threading (11–18)
             </div>
             <div class="space-y-1">
               ${DATA.slides
-                .slice(10)
+                .slice(10, 18)
                 .map((sl, offset) => {
                   const i = offset + 10;
                   return `
                 <button onclick="openSlideIndex(${i})" class="w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition border flex items-center justify-between gap-2 ${
                     i === state.currentSlideIdx
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-semibold"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
+                      : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
+                  }">
+                  <span class="truncate">${String(i + 1).padStart(2, "0")}. ${sl.title}</span>
+                </button>`;
+                })
+                .join("")}
+            </div>
+
+            <div class="text-xs font-mono font-bold text-[var(--foreground)] uppercase tracking-wider px-1 pt-3 border-t border-[var(--border)]">
+              Track 3 · STL Containers (19–22)
+            </div>
+            <div class="space-y-1">
+              ${DATA.slides
+                .slice(18)
+                .map((sl, offset) => {
+                  const i = offset + 18;
+                  return `
+                <button onclick="openSlideIndex(${i})" class="w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition border flex items-center justify-between gap-2 ${
+                    i === state.currentSlideIdx
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                       : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
                   }">
                   <span class="truncate">${String(i + 1).padStart(2, "0")}. ${sl.title}</span>
@@ -541,14 +674,10 @@
           </div>
 
           <!-- Right Main Concept Stage -->
-          <div class="md:col-span-2 bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-5">
+          <div class="md:col-span-2 bg-[var(--card)] border-2 border-[var(--accent)] rounded-2xl p-6 shadow-sm space-y-5">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="text-xs font-mono text-[var(--muted-foreground)] font-semibold uppercase tracking-wider">${s.tag}</div>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-mono ${
-                isThreadingSlide
-                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold"
-                  : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]"
-              }">${isThreadingSlide ? "Track 2 · CppNuts Multithreading" : "Track 1 · C++20 OOP & Memory"}</span>
+              <div class="text-xs font-mono text-[var(--muted-foreground)] font-bold uppercase tracking-wider">${s.tag}</div>
+              <span class="px-3 py-0.5 rounded-full text-xs font-mono bg-[var(--primary)] text-[var(--primary-foreground)] font-bold">${trackBadge}</span>
             </div>
 
             <div>
@@ -561,29 +690,29 @@
                 .map(
                   (b) => `
                 <li class="flex items-start gap-3 text-[var(--foreground)] text-xs md:text-sm leading-relaxed">
-                  <span class="mt-1.5 w-2 h-2 rounded-full bg-[var(--primary)] shrink-0"></span>
+                  <span class="mt-1.5 w-2.5 h-2.5 rounded-full bg-[var(--primary)] border border-[var(--accent)] shrink-0"></span>
                   <span>${b}</span>
                 </li>`
                 )
                 .join("")}
             </ul>
 
-            <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4">
-              <div class="text-xs font-mono text-[var(--muted-foreground)] uppercase tracking-wider mb-2">
+            <div class="code-surface border-2 border-[var(--accent)] rounded-xl p-4">
+              <div class="text-xs font-mono opacity-80 uppercase tracking-wider mb-2">
                 Under-the-Hood Memory / Thread Execution Diagram
               </div>
-              <pre class="text-xs font-mono text-[var(--foreground)] overflow-x-auto leading-relaxed">${escapeHtml(s.diagram)}</pre>
+              <pre class="text-xs font-mono overflow-x-auto leading-relaxed">${escapeHtml(s.diagram)}</pre>
             </div>
 
-            <div class="bg-[var(--secondary)] border border-[var(--border)] rounded-xl p-4 text-[var(--secondary-foreground)] text-xs md:text-sm">
-              <strong class="font-semibold">Professor's Interview &amp; Production Trap:</strong> ${s.trap}
+            <div class="bg-[var(--secondary)] border border-[var(--accent)] rounded-xl p-4 text-[var(--secondary-foreground)] text-xs md:text-sm">
+              <strong class="font-bold">Professor's Interview &amp; Production Trap:</strong> ${s.trap}
             </div>
 
             <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[var(--border)]">
-              <button onclick="jumpFromSlideToDemo(${state.currentSlideIdx})" class="px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold">
+              <button onclick="jumpFromSlideToDemo(${state.currentSlideIdx})" class="px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
                 &#9654; Open Related Code Demo in IDE
               </button>
-              <button onclick="jumpFromSlideToSim(${state.currentSlideIdx})" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs font-semibold">
+              <button onclick="jumpFromSlideToSim(${state.currentSlideIdx})" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs font-bold">
                 &#9889; Open Interactive Simulator &rarr;
               </button>
             </div>
@@ -595,12 +724,12 @@
 
   window.stepSlide = function (delta) {
     const len = DATA.slides.length;
-    state.currentSlideIdx = (state.currentSlideIdx + delta + len) % len;
-    renderMain();
+    const nextIdx = (state.currentSlideIdx + delta + len) % len;
+    window.openSlideIndex(nextIdx);
   };
 
   window.jumpFromSlideToDemo = function (slideIdx) {
-    const map = [0, 1, 1, 2, 2, 6, 3, 4, 5, 7, 8, 9, 9, 10, 10, 11, 13, 13];
+    const map = [0, 1, 1, 2, 2, 6, 3, 4, 5, 7, 8, 9, 9, 10, 10, 11, 13, 13, 14, 15, 16, 14];
     const demoIdx = map[slideIdx] !== undefined ? map[slideIdx] : 0;
     selectCodeDemo(String(demoIdx));
     switchView("code-demo");
@@ -625,7 +754,11 @@
       "mutex_deadlock",
       "cv_queue",
       "future_pool",
-      "future_pool"
+      "future_pool",
+      "stl_sim",
+      "stl_sim",
+      "stl_sim",
+      "stl_sim"
     ];
     state.activeAnimTab = map[slideIdx] || "align";
     switchView("animation");
@@ -636,30 +769,35 @@
     const demo = DATA.codeDemos[state.currentDemoIdx];
     const lines = state.editorCode.split("\n");
     const lineNumbers = lines.map((_, idx) => idx + 1).join("\n");
-    const isThreadingDemo = demo.track === "threading";
+    const tr = demo.track || "oop";
+    const trackLabel =
+      tr === "threading"
+        ? "Track 2 · CppNuts Concurrency (Emerald)"
+        : tr === "stl"
+        ? "Track 3 · STL Containers (Royal Indigo)"
+        : "Track 1 · OOP & Memory (Solar Yellow)";
 
     return `
       <div class="space-y-5">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-[var(--foreground)]">Dual-Track C++20 Compiler Workbench</h1>
-            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">14 runnable C++20 programs across OOP Memory Internals (01–08) and CppNuts Multithreading &amp; Concurrency (09–14).</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-[var(--foreground)]">3-Track C++20 Compiler Workbench</h1>
+            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">17 runnable C++20 programs across OOP Memory (01–08), CppNuts Multithreading (09–14), and STL Containers (15–17).</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="openThreadingSimulators()" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--primary)] text-xs md:text-sm font-semibold transition hover:opacity-90">
+            <button onclick="openThreadingSimulators()" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--accent)] text-xs md:text-sm font-bold transition hover:opacity-90">
               &#9889; CppNuts Threading Simulators
             </button>
-            <button onclick="switchView('animation')" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs md:text-sm font-semibold transition hover:opacity-90">
-              All 9 Visual Simulators &rarr;
+            <button onclick="switchView('animation')" class="px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs md:text-sm font-bold transition hover:opacity-90">
+              All 10 Visual Simulators &rarr;
             </button>
           </div>
         </div>
 
-        <!-- Split-Pane Studio IDE: Left File Tree (1 col) + Right Editor & Terminal (2 cols) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
           <!-- Left Categorized File Explorer -->
           <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 shadow-sm space-y-3 max-h-[540px] overflow-y-auto">
-            <div class="text-xs font-mono font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-1">
+            <div class="text-xs font-mono font-bold text-[var(--foreground)] uppercase tracking-wider px-1">
               Track 1 · OOP &amp; Memory Labs (01–08)
             </div>
             <div class="space-y-1">
@@ -669,7 +807,7 @@
                   (d, i) => `
                 <button onclick="selectCodeDemo('${i}')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition border ${
                     i === state.currentDemoIdx
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-semibold"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                       : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
                   }">
                   <div class="truncate">${d.title}</div>
@@ -678,18 +816,38 @@
                 .join("")}
             </div>
 
-            <div class="text-xs font-mono font-semibold text-[var(--muted-foreground)] uppercase tracking-wider px-1 pt-3 border-t border-[var(--border)]">
+            <div class="text-xs font-mono font-bold text-[var(--foreground)] uppercase tracking-wider px-1 pt-3 border-t border-[var(--border)]">
               Track 2 · CppNuts Threading Labs (09–14)
             </div>
             <div class="space-y-1">
               ${DATA.codeDemos
-                .slice(8)
+                .slice(8, 14)
                 .map((d, offset) => {
                   const i = offset + 8;
                   return `
                 <button onclick="selectCodeDemo('${i}')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition border ${
                     i === state.currentDemoIdx
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-semibold"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
+                      : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
+                  }">
+                  <div class="truncate">${d.title}</div>
+                </button>`;
+                })
+                .join("")}
+            </div>
+
+            <div class="text-xs font-mono font-bold text-[var(--foreground)] uppercase tracking-wider px-1 pt-3 border-t border-[var(--border)]">
+              Track 3 · STL Container Labs (15–17)
+            </div>
+            <div class="space-y-1">
+              ${DATA.codeDemos
+                .slice(14)
+                .map((d, offset) => {
+                  const i = offset + 14;
+                  return `
+                <button onclick="selectCodeDemo('${i}')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-mono transition border ${
+                    i === state.currentDemoIdx
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                       : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
                   }">
                   <div class="truncate">${d.title}</div>
@@ -700,15 +858,11 @@
           </div>
 
           <!-- Right Editor + Terminal Stage -->
-          <div class="md:col-span-2 bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 md:p-6 shadow-sm space-y-4">
+          <div class="md:col-span-2 bg-[var(--card)] border-2 border-[var(--accent)] rounded-2xl p-5 md:p-6 shadow-sm space-y-4">
             <div class="flex flex-wrap items-start justify-between gap-4 pb-3 border-b border-[var(--border)]">
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="px-2.5 py-0.5 rounded-md text-xs font-mono ${
-                    isThreadingDemo
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold"
-                      : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]"
-                  }">${isThreadingDemo ? "Track 2 · CppNuts Concurrency" : "Track 1 · OOP & Memory"}</span>
+                  <span class="px-2.5 py-0.5 rounded-md text-xs font-mono bg-[var(--primary)] text-[var(--primary-foreground)] font-bold">${trackLabel}</span>
                   <span class="text-xs font-mono text-[var(--muted-foreground)]">Compiler Workbench</span>
                 </div>
                 <h2 class="text-lg md:text-xl font-bold text-[var(--foreground)]">${demo.title}</h2>
@@ -717,7 +871,7 @@
                   ${demo.tags
                     .map(
                       (tag) =>
-                        `<span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]">${tag}</span>`
+                        `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]">${tag}</span>`
                     )
                     .join("")}
                 </div>
@@ -739,33 +893,33 @@
 
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex flex-wrap gap-2">
-                <button onclick="runCodeWorkbench()" id="run-code-btn" class="px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold text-xs md:text-sm transition shadow-sm hover:opacity-95">
+                <button onclick="runCodeWorkbench()" id="run-code-btn" class="px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] border border-[var(--accent)] font-bold text-xs md:text-sm transition shadow-sm hover:opacity-95">
                   &#9654; Run Code
                 </button>
-                <button onclick="resetCodeWorkbench()" class="px-3.5 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-medium text-xs md:text-sm transition">
+                <button onclick="resetCodeWorkbench()" class="px-3.5 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs md:text-sm transition">
                   Reset Example
                 </button>
-                <button onclick="copyCodeWorkbench()" id="copy-code-btn" class="px-3.5 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-medium text-xs md:text-sm transition">
+                <button onclick="copyCodeWorkbench()" id="copy-code-btn" class="px-3.5 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs md:text-sm transition">
                   Copy Code
                 </button>
               </div>
               <span class="text-xs font-mono text-[var(--muted-foreground)]">Flags: -std=c++20 -O2 -Wall -Wextra -pthread</span>
             </div>
 
-            <!-- Code Editor Container -->
-            <div class="relative bg-[var(--background)] border border-[var(--border)] rounded-xl overflow-hidden flex font-mono text-xs md:text-sm">
-              <pre class="select-none py-4 px-3 text-right text-[var(--muted-foreground)] bg-[var(--secondary)] border-r border-[var(--border)] leading-6">${lineNumbers}</pre>
+            <!-- Dark High-Contrast Code Editor Container -->
+            <div class="relative code-surface border-2 border-[var(--accent)] rounded-xl overflow-hidden flex font-mono text-xs md:text-sm">
+              <pre class="select-none py-4 px-3 text-right opacity-80 border-r border-[var(--border)] leading-6">${lineNumbers}</pre>
               <textarea id="code-editor-textarea" oninput="updateEditorCode(this.value)" spellcheck="false"
-                class="w-full bg-transparent text-[var(--foreground)] p-4 leading-6 focus:outline-none resize-y min-h-[320px] font-mono text-xs md:text-sm">${escapeHtml(
+                class="w-full bg-transparent p-4 leading-6 focus:outline-none resize-y min-h-[320px] font-mono text-xs md:text-sm">${escapeHtml(
                   state.editorCode
                 )}</textarea>
             </div>
 
             <!-- Output Terminal -->
-            <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl overflow-hidden">
-              <div class="px-4 py-2 bg-[var(--secondary)] border-b border-[var(--border)] flex items-center justify-between">
-                <span class="text-xs font-semibold text-[var(--secondary-foreground)]">Output Terminal</span>
-                <span class="text-xs font-mono text-[var(--muted-foreground)]">
+            <div class="code-surface border-2 border-[var(--accent)] rounded-xl overflow-hidden">
+              <div class="px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-between">
+                <span class="text-xs font-bold">Output Terminal</span>
+                <span class="text-xs font-mono font-bold">
                   ${
                     state.terminalStatus === "running"
                       ? "Compiling with C++20 -pthread..."
@@ -775,7 +929,7 @@
                   }
                 </span>
               </div>
-              <pre id="terminal-output-pre" class="p-4 text-xs md:text-sm font-mono text-[var(--foreground)] whitespace-pre-wrap leading-relaxed">${escapeHtml(
+              <pre id="terminal-output-pre" class="p-4 text-xs md:text-sm font-mono whitespace-pre-wrap leading-relaxed">${escapeHtml(
                 state.terminalOutput
               )}</pre>
             </div>
@@ -788,9 +942,21 @@
   window.selectCodeDemo = function (idxStr) {
     const idx = parseInt(idxStr, 10);
     state.currentDemoIdx = idx;
-    state.editorCode = DATA.codeDemos[idx].code;
+    const d = DATA.codeDemos[idx];
+    state.editorCode = d.code;
     state.terminalOutput = 'Ready. Click "Run Code" to compile and execute C++20.';
     state.terminalStatus = "idle";
+    const tr = d.track || "oop";
+    if (tr === "threading" && window.applyStudioPalette) {
+      state.activePalette = "emerald-mint";
+      window.applyStudioPalette("emerald-mint");
+    } else if (tr === "stl" && window.applyStudioPalette) {
+      state.activePalette = "royal-indigo";
+      window.applyStudioPalette("royal-indigo");
+    } else if (window.applyStudioPalette) {
+      state.activePalette = "solar-yellow";
+      window.applyStudioPalette("solar-yellow");
+    }
     renderMain();
   };
 
@@ -857,7 +1023,7 @@
     renderMain();
   };
 
-  // ==================== VIEW 4: ANIMATION (9 INTERACTIVE SIMULATORS) ====================
+  // ==================== VIEW 4: ANIMATION (10 INTERACTIVE SIMULATORS) ====================
   function renderAnimation() {
     const oopTabs = [
       { id: "align", label: "1. Greedy Alignment & Padding" },
@@ -872,15 +1038,18 @@
       { id: "cv_queue", label: "8. CppNuts: Condition Variable & Producer-Consumer" },
       { id: "future_pool", label: "9. CppNuts: Future/Promise, Async & Thread Pool" }
     ];
+    const stlTabs = [
+      { id: "stl_sim", label: "10. STL: std::vector 2x Realloc & unordered_map Buckets" }
+    ];
 
     return `
       <div class="space-y-5">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-[var(--foreground)]">Interactive Memory &amp; Concurrency Simulation Lab</h1>
-            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">9 step-by-step visualizers: 5 OOP Compiler Memory Labs + 4 CppNuts Multithreading &amp; Synchronization Labs.</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-[var(--foreground)]">Interactive Memory, Concurrency &amp; STL Simulation Lab</h1>
+            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">10 step-by-step visualizers across OOP Memory (Solar Yellow), CppNuts Threading (Emerald), and STL Containers (Indigo).</p>
           </div>
-          <button onclick="switchView('code-demo')" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs md:text-sm font-semibold">
+          <button onclick="switchView('code-demo')" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs md:text-sm font-bold">
             &larr; Back to Code Demo IDE
           </button>
         </div>
@@ -888,14 +1057,14 @@
         <!-- Grouped Simulator Selector Bar -->
         <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 space-y-3 shadow-sm">
           <div>
-            <div class="text-xs font-mono text-[var(--muted-foreground)] font-semibold uppercase mb-1.5">Track 1 · OOP &amp; Compiler Memory Simulators (1–5)</div>
+            <div class="text-xs font-mono text-[var(--muted-foreground)] font-bold uppercase mb-1.5">Track 1 · OOP &amp; Compiler Memory Simulators (1–5 · Solar Yellow)</div>
             <div class="flex flex-wrap gap-1.5">
               ${oopTabs
                 .map(
                   (t) => `
                 <button onclick="setAnimTab('${t.id}')" data-anim-tab="${t.id}" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition border ${
                     state.activeAnimTab === t.id
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                       : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
                   }">${t.label}</button>`
                 )
@@ -904,14 +1073,30 @@
           </div>
 
           <div class="pt-2 border-t border-[var(--border)]">
-            <div class="text-xs font-mono text-[var(--muted-foreground)] font-semibold uppercase mb-1.5">Track 2 · CppNuts Multithreading &amp; Concurrency Simulators (6–9)</div>
+            <div class="text-xs font-mono text-[var(--muted-foreground)] font-bold uppercase mb-1.5">Track 2 · CppNuts Multithreading Simulators (6–9 · Emerald Mint)</div>
             <div class="flex flex-wrap gap-1.5">
               ${threadingTabs
                 .map(
                   (t) => `
                 <button onclick="setAnimTab('${t.id}')" data-anim-tab="${t.id}" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition border ${
                     state.activeAnimTab === t.id
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
+                      : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
+                  }">${t.label}</button>`
+                )
+                .join("")}
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-[var(--border)]">
+            <div class="text-xs font-mono text-[var(--muted-foreground)] font-bold uppercase mb-1.5">Track 3 · STL Containers &amp; Hash Table Simulator (10 · Royal Indigo)</div>
+            <div class="flex flex-wrap gap-1.5">
+              ${stlTabs
+                .map(
+                  (t) => `
+                <button onclick="setAnimTab('${t.id}')" data-anim-tab="${t.id}" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition border ${
+                    state.activeAnimTab === t.id
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                       : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]"
                   }">${t.label}</button>`
                 )
@@ -920,7 +1105,7 @@
           </div>
         </div>
 
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 md:p-6 shadow-sm">
+        <div class="bg-[var(--card)] border-2 border-[var(--accent)] rounded-2xl p-5 md:p-6 shadow-sm">
           ${
             state.activeAnimTab === "align"
               ? renderAlignSimulator()
@@ -938,7 +1123,9 @@
               ? renderMutexDeadlockSimulator()
               : state.activeAnimTab === "cv_queue"
               ? renderCvQueueSimulator()
-              : renderFuturePoolSimulator()
+              : state.activeAnimTab === "future_pool"
+              ? renderFuturePoolSimulator()
+              : renderStlSimulator()
           }
         </div>
       </div>
@@ -947,6 +1134,16 @@
 
   window.setAnimTab = function (tabId) {
     state.activeAnimTab = tabId;
+    if (["threads5", "mutex_deadlock", "cv_queue", "future_pool"].includes(tabId) && window.applyStudioPalette) {
+      state.activePalette = "emerald-mint";
+      window.applyStudioPalette("emerald-mint");
+    } else if (tabId === "stl_sim" && window.applyStudioPalette) {
+      state.activePalette = "royal-indigo";
+      window.applyStudioPalette("royal-indigo");
+    } else if (window.applyStudioPalette) {
+      state.activePalette = "solar-yellow";
+      window.applyStudioPalette("solar-yellow");
+    }
     renderMain();
   };
 
@@ -978,10 +1175,10 @@
             <p class="text-[var(--muted-foreground)] text-xs mt-0.5">Add fields or click "Apply Greedy Ordering (8B &rarr; 1B)" to eliminate internal alignment holes.</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="applyGreedySort()" id="btn-greedy-sort" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold text-xs">
+            <button onclick="applyGreedySort()" id="btn-greedy-sort" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-xs">
               Apply Greedy Ordering (8B &rarr; 1B)
             </button>
-            <button onclick="resetPoorStruct()" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs font-medium">
+            <button onclick="resetPoorStruct()" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs font-semibold">
               Reset to Poor Layout (24B)
             </button>
           </div>
@@ -1027,7 +1224,7 @@
               <div class="rounded-lg p-2 border border-[var(--border)] text-center font-mono text-xs ${
                   cell.isPad
                     ? "bg-[var(--background)] text-[var(--muted-foreground)] border-dashed"
-                    : "bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold"
+                    : "bg-[var(--primary)] text-[var(--primary-foreground)] font-bold"
                 }">
                 <div class="opacity-80 text-xs">[+${cell.byteOffset}]</div>
                 <div class="truncate">${cell.label}</div>
@@ -1098,32 +1295,32 @@
         <div class="flex flex-wrap items-center justify-between gap-2">
           <h2 class="text-lg md:text-xl font-bold text-[var(--foreground)]">Vtable, Vptr &amp; Multi-Base Thunk Explorer</h2>
           <div class="flex flex-wrap gap-2">
-            <button onclick="setVtableScenario('polymorphic_call')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.vtableScenario === "polymorphic_call" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">1. Standard Virtual Call</button>
-            <button onclick="setVtableScenario('ctor_trap')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.vtableScenario === "ctor_trap" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">2. Ctor Virtual Trap</button>
-            <button onclick="setVtableScenario('multi_vptr')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.vtableScenario === "multi_vptr" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">3. Multiple Inheritance (2 vptrs)</button>
+            <button onclick="setVtableScenario('polymorphic_call')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.vtableScenario === "polymorphic_call" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">1. Standard Virtual Call</button>
+            <button onclick="setVtableScenario('ctor_trap')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.vtableScenario === "ctor_trap" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">2. Ctor Virtual Trap</button>
+            <button onclick="setVtableScenario('multi_vptr')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.vtableScenario === "multi_vptr" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">3. Multiple Inheritance (2 vptrs)</button>
           </div>
         </div>
 
-        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3 font-mono text-xs text-[var(--foreground)]">
+        <div class="code-surface border-2 border-[var(--accent)] rounded-xl p-3 font-mono text-xs">
           ${escapeHtml(cur.code)}
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4">
-            <div class="text-[var(--muted-foreground)] font-sans font-semibold mb-2">1. STACK POINTERS</div>
+            <div class="text-[var(--muted-foreground)] font-sans font-bold mb-2">1. STACK POINTERS</div>
             <pre class="whitespace-pre-wrap text-[var(--foreground)] leading-relaxed">${escapeHtml(cur.stack)}</pre>
           </div>
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4">
-            <div class="text-[var(--muted-foreground)] font-sans font-semibold mb-2">2. HEAP OBJECT LAYOUT</div>
+            <div class="text-[var(--muted-foreground)] font-sans font-bold mb-2">2. HEAP OBJECT LAYOUT</div>
             <pre class="whitespace-pre-wrap text-[var(--foreground)] leading-relaxed">${escapeHtml(cur.heap)}</pre>
           </div>
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4">
-            <div class="text-[var(--muted-foreground)] font-sans font-semibold mb-2">3. .RODATA VTABLE</div>
+            <div class="text-[var(--muted-foreground)] font-sans font-bold mb-2">3. .RODATA VTABLE</div>
             <pre class="whitespace-pre-wrap text-[var(--foreground)] leading-relaxed">${escapeHtml(cur.rodata)}</pre>
           </div>
         </div>
 
-        <div class="bg-[var(--secondary)] border border-[var(--border)] rounded-xl p-3.5 text-xs text-[var(--secondary-foreground)] font-mono">
+        <div class="bg-[var(--secondary)] border border-[var(--accent)] rounded-xl p-3.5 text-xs text-[var(--secondary-foreground)] font-mono font-semibold">
           &rarr; ${escapeHtml(cur.trace)}
         </div>
       </div>
@@ -1149,7 +1346,7 @@
             (item, i) => `
             <button onclick="selectExpr(${i})" class="px-3 py-1.5 rounded-lg text-xs font-mono border ${
               i === state.selectedExprIdx
-                ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold"
+                ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                 : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)]"
             }">${escapeHtml(item.expr)}</button>`
           ).join("")}
@@ -1174,7 +1371,7 @@
           </div>
         </div>
 
-        <div class="bg-[var(--secondary)] border border-[var(--border)] rounded-xl p-4 text-xs md:text-sm text-[var(--secondary-foreground)]">
+        <div class="bg-[var(--secondary)] border border-[var(--accent)] rounded-xl p-4 text-xs md:text-sm text-[var(--secondary-foreground)]">
           <strong>Compiler Rule:</strong> ${ex.rule}
         </div>
       </div>
@@ -1196,22 +1393,22 @@
             <p class="text-[var(--muted-foreground)] text-xs">Compare duplicate base subobjects vs. <code class="font-mono">: virtual public</code> shared base unification.</p>
           </div>
           <div class="flex gap-2">
-            <button onclick="toggleDiamondVirtual(true)" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.diamondVirtual ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">With : virtual public Device</button>
-            <button onclick="toggleDiamondVirtual(false)" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${!state.diamondVirtual ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">Without virtual (Ambiguous!)</button>
+            <button onclick="toggleDiamondVirtual(true)" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.diamondVirtual ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">With : virtual public Device</button>
+            <button onclick="toggleDiamondVirtual(false)" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${!state.diamondVirtual ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">Without virtual (Ambiguous!)</button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4">
-            <div class="text-[var(--muted-foreground)] font-sans font-semibold mb-2">Inheritance Subobject Graph</div>
-            <pre class="text-[var(--foreground)] leading-relaxed">${
+          <div class="code-surface border-2 border-[var(--accent)] rounded-xl p-4">
+            <div class="opacity-80 font-sans font-bold mb-2">Inheritance Subobject Graph</div>
+            <pre class="leading-relaxed">${
               state.diamondVirtual
                 ? `         PoweredDevice (id_)\n            ▲           ▲\n   (virtual)│           │(virtual)\n         Scanner     Printer\n            ▲           ▲\n            └─────┬─────┘\n               Copier\n-> Most-derived class (Copier) constructs PoweredDevice ONCE!`
                 : `  PoweredDevice (id_)   PoweredDevice (id_)\n          ▲                     ▲\n          │                     │\n       Scanner               Printer\n          ▲                     ▲\n          └──────────┬──────────┘\n                  Copier\n-> ERROR: Copier contains TWO separate PoweredDevice::id_ copies!`
             }</pre>
           </div>
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4">
-            <div class="text-[var(--muted-foreground)] font-sans font-semibold mb-2">Memory Layout of Copier</div>
+            <div class="text-[var(--muted-foreground)] font-sans font-bold mb-2">Memory Layout of Copier</div>
             <pre class="text-[var(--foreground)] leading-relaxed">${
               state.diamondVirtual
                 ? `[0x00] Scanner::vbptr (offset to shared base)\n[0x08] Scanner::dpi_ = 600\n[0x10] Printer::vbptr (offset to shared base)\n[0x18] Printer::ppm_ = 40\n[0x20] Shared PoweredDevice::id_ = 2026 (Single subobject!)`
@@ -1238,7 +1435,7 @@
             <p class="text-[var(--muted-foreground)] text-xs">Simulate atomic reference counts for <code class="font-mono">std::shared_ptr</code> and <code class="font-mono">std::weak_ptr</code>.</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="spAction('copy_shared')" class="px-3 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold text-xs">+ Copy shared_ptr</button>
+            <button onclick="spAction('copy_shared')" class="px-3 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-xs">+ Copy shared_ptr</button>
             <button onclick="spAction('add_weak')" class="px-3 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs">+ Create weak_ptr</button>
             <button onclick="spAction('drop_shared')" class="px-3 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs">- Reset 1 shared_ptr</button>
             <button onclick="spAction('drop_weak')" class="px-3 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs">- Reset 1 weak_ptr</button>
@@ -1266,7 +1463,7 @@
           </div>
         </div>
 
-        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5 font-mono text-xs text-[var(--foreground)] space-y-1">
+        <div class="code-surface border-2 border-[var(--accent)] rounded-xl p-3.5 font-mono text-xs space-y-1">
           ${state.spLog.slice(-4).map((l) => `<div>&gt; ${escapeHtml(l)}</div>`).join("")}
         </div>
       </div>
@@ -1359,15 +1556,14 @@
           <p class="text-[var(--muted-foreground)] text-xs mt-0.5">Inspect how C++ invokes all 5 callable types and compare <code class="font-mono">join()</code>, <code class="font-mono">detach()</code>, <code class="font-mono">~thread()</code> crash, and C++20 <code class="font-mono">std::jthread</code>.</p>
         </div>
 
-        <!-- Part A: 5 Ways to Create Threads -->
         <div class="space-y-3">
-          <div class="text-xs font-mono font-semibold text-[var(--muted-foreground)] uppercase">1. Select Callable Type (5 Ways in C++)</div>
+          <div class="text-xs font-mono font-bold text-[var(--muted-foreground)] uppercase">1. Select Callable Type (5 Ways in C++)</div>
           <div class="flex flex-wrap gap-2">
             ${THREAD_SPAWN_WAYS.map(
               (w, idx) => `
               <button onclick="selectThreadWay(${idx})" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${
                 idx === state.threadSpawnWayIdx
-                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]"
+                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                   : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)]"
               }">${w.title}</button>`
             ).join("")}
@@ -1376,18 +1572,17 @@
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
             <div class="font-mono text-xs md:text-sm font-bold text-[var(--foreground)]">${escapeHtml(way.syntax)}</div>
             <div class="text-xs text-[var(--muted-foreground)]">${way.detail}</div>
-            <div class="text-xs font-mono text-[var(--primary)] pt-1 border-t border-[var(--border)]">${escapeHtml(way.stackFrame)}</div>
+            <div class="text-xs font-mono text-[var(--foreground)] font-semibold pt-1 border-t border-[var(--border)]">${escapeHtml(way.stackFrame)}</div>
           </div>
         </div>
 
-        <!-- Part B: join() vs detach() vs ~thread() vs jthread -->
         <div class="space-y-3 pt-2 border-t border-[var(--border)]">
-          <div class="text-xs font-mono font-semibold text-[var(--muted-foreground)] uppercase">2. Simulate Thread Completion &amp; Destructor Behavior</div>
+          <div class="text-xs font-mono font-bold text-[var(--muted-foreground)] uppercase">2. Simulate Thread Completion &amp; Destructor Behavior</div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="setThreadLifecycleMode('join')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.threadMode === "join" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">t.join()</button>
-            <button onclick="setThreadLifecycleMode('detach')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.threadMode === "detach" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">t.detach()</button>
-            <button onclick="setThreadLifecycleMode('forgot_join')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.threadMode === "forgot_join" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">Forgot join/detach (~thread Trap!)</button>
-            <button onclick="setThreadLifecycleMode('jthread')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.threadMode === "jthread" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">C++20 std::jthread</button>
+            <button onclick="setThreadLifecycleMode('join')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.threadMode === "join" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">t.join()</button>
+            <button onclick="setThreadLifecycleMode('detach')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.threadMode === "detach" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">t.detach()</button>
+            <button onclick="setThreadLifecycleMode('forgot_join')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.threadMode === "forgot_join" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">Forgot join/detach (~thread Trap!)</button>
+            <button onclick="setThreadLifecycleMode('jthread')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.threadMode === "jthread" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">C++20 std::jthread</button>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
@@ -1405,9 +1600,9 @@
             </div>
           </div>
 
-          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 font-mono text-xs">
-            <div class="text-[var(--muted-foreground)] mb-1.5">${modeInfo.title} — Execution Timeline:</div>
-            <pre class="text-[var(--foreground)] leading-relaxed">${escapeHtml(modeInfo.timeline)}</pre>
+          <div class="code-surface border-2 border-[var(--accent)] rounded-xl p-4 font-mono text-xs">
+            <div class="opacity-80 mb-1.5">${modeInfo.title} — Execution Timeline:</div>
+            <pre class="leading-relaxed">${escapeHtml(modeInfo.timeline)}</pre>
           </div>
         </div>
       </div>
@@ -1458,16 +1653,15 @@
             <p class="text-[var(--muted-foreground)] text-xs">Compare circular AB-BA deadlock vs. <code class="font-mono">std::lock</code> / <code class="font-mono">std::scoped_lock</code>, and test <code class="font-mono">unique_lock</code> tags + <code class="font-mono">recursive_mutex</code>.</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="setDeadlockFixed(false)" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${!state.deadlockFixed ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">Simulate AB-BA Deadlock (Frozen!)</button>
-            <button onclick="setDeadlockFixed(true)" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.deadlockFixed ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">Fix with std::lock + defer_lock</button>
+            <button onclick="setDeadlockFixed(false)" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${!state.deadlockFixed ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">Simulate AB-BA Deadlock (Frozen!)</button>
+            <button onclick="setDeadlockFixed(true)" class="px-3 py-1.5 rounded-lg text-xs font-semibold border ${state.deadlockFixed ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--border)]"}">Fix with std::lock + defer_lock</button>
           </div>
         </div>
 
-        <!-- Part A: AB-BA Deadlock vs std::lock -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4">
-            <div class="text-[var(--muted-foreground)] font-sans font-semibold mb-2">Thread 1 vs Thread 2 Lock Acquisition Graph</div>
-            <pre class="text-[var(--foreground)] leading-relaxed">${
+          <div class="code-surface border-2 border-[var(--accent)] rounded-xl p-4">
+            <div class="opacity-80 font-sans font-bold mb-2">Thread 1 vs Thread 2 Lock Acquisition Graph</div>
+            <pre class="leading-relaxed">${
               state.deadlockFixed
                 ? `Thread 1: std::unique_lock lA(mtxA, defer_lock);\n          std::unique_lock lB(mtxB, defer_lock);\n          std::lock(lA, lB); // Try-and-back-off!\n\nThread 2: std::scoped_lock lk(mtxB, mtxA);\n\nSTATUS: ZERO DEADLOCK! Both transfers complete.`
                 : `Thread 1: locks mtxA ──► waits forever for mtxB\n             ▲                         │\n             └─── waits forever ◄── locks mtxB :Thread 2\n\nSTATUS: CIRCULAR WAIT DEADLOCK! Process frozen at 0% CPU.`
@@ -1475,28 +1669,27 @@
           </div>
 
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
-            <div class="text-[var(--muted-foreground)] font-sans font-semibold">std::recursive_mutex Re-Entrant Depth Tester</div>
+            <div class="text-[var(--muted-foreground)] font-sans font-bold">std::recursive_mutex Re-Entrant Depth Tester</div>
             <div class="text-xs font-sans text-[var(--muted-foreground)]">Same thread can call <code class="font-mono">lock()</code> recursively <code class="font-mono">N</code> times without self-deadlock:</div>
             <div class="flex items-center gap-2 pt-1">
-              <button onclick="stepRecursiveDepth(1)" class="px-3 py-1 rounded bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold">+ recursive lock()</button>
+              <button onclick="stepRecursiveDepth(1)" class="px-3 py-1 rounded bg-[var(--primary)] text-[var(--primary-foreground)] font-bold">+ recursive lock()</button>
               <button onclick="stepRecursiveDepth(-1)" class="px-3 py-1 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]">- unlock()</button>
-              <span class="px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)]">
+              <span class="px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)] font-bold">
                 Owner: ${state.recursiveDepth > 0 ? "Thread T1" : "None (Unlocked)"} · Depth = ${state.recursiveDepth}
               </span>
             </div>
           </div>
         </div>
 
-        <!-- Part B: std::unique_lock Ownership Tags -->
         <div class="pt-3 border-t border-[var(--border)] space-y-3">
-          <div class="text-xs font-mono font-semibold text-[var(--muted-foreground)] uppercase">Interactive std::unique_lock Ownership Tag Explorer</div>
+          <div class="text-xs font-mono font-bold text-[var(--muted-foreground)] uppercase">Interactive std::unique_lock Ownership Tag Explorer</div>
           <div class="flex flex-wrap gap-2">
             ${["default", "defer_lock", "try_to_lock", "adopt_lock"]
               .map(
                 (t) => `
               <button onclick="setUniqueLockTag('${t}')" class="px-3 py-1.5 rounded-lg text-xs font-mono border ${
                   state.uniqueLockTag === t
-                    ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-semibold"
+                    ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                     : "bg-[var(--background)] text-[var(--foreground)] border-[var(--border)]"
                 }">${t}</button>`
               )
@@ -1546,18 +1739,17 @@
             <p class="text-[var(--muted-foreground)] text-xs">Step through <code class="font-mono">cv.wait(ul, predicate)</code>, <code class="font-mono">notify_one()</code>, bounded buffer slots, and Even-Odd thread alternation.</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="cvProduceItem()" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold text-xs">+ Producer: Enqueue Item</button>
+            <button onclick="cvProduceItem()" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-xs">+ Producer: Enqueue Item</button>
             <button onclick="cvConsumeItem()" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs">- Consumer: Dequeue Item</button>
-            <button onclick="cvStepEvenOdd()" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--primary)] font-semibold text-xs">Step Even-Odd Thread (${state.evenOddCounter})</button>
+            <button onclick="cvStepEvenOdd()" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--accent)] font-bold text-xs">Step Even-Odd Thread (${state.evenOddCounter})</button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Bounded Producer-Consumer Ring -->
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-3">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono font-semibold text-[var(--muted-foreground)]">BOUNDED QUEUE (CAPACITY = ${state.pcCapacity})</span>
-              <span class="text-xs font-mono text-[var(--foreground)]">size = ${state.pcBuffer.length} / ${state.pcCapacity}</span>
+              <span class="text-xs font-mono font-bold text-[var(--muted-foreground)]">BOUNDED QUEUE (CAPACITY = ${state.pcCapacity})</span>
+              <span class="text-xs font-mono font-bold text-[var(--foreground)]">size = ${state.pcBuffer.length} / ${state.pcCapacity}</span>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
@@ -1566,7 +1758,7 @@
                   (val, i) => `
                 <div class="rounded-xl p-3 text-center font-mono text-xs border ${
                     val !== null
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold"
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                       : "bg-[var(--card)] text-[var(--muted-foreground)] border-dashed border-[var(--border)]"
                   }">
                   <div>Slot [${i}]</div>
@@ -1582,26 +1774,25 @@
             </div>
           </div>
 
-          <!-- Even-Odd Alternating Thread State -->
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-3 font-mono text-xs">
-            <div class="text-[var(--muted-foreground)] font-semibold">CPPNUTS EVEN-ODD ALTERNATING THREADS</div>
+            <div class="text-[var(--muted-foreground)] font-bold">CPPNUTS EVEN-ODD ALTERNATING THREADS</div>
             <div class="grid grid-cols-2 gap-2">
-              <div class="p-3 rounded-lg border ${isOddTurn ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold" : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)]"}">
+              <div class="p-3 rounded-lg border ${isOddTurn ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)]"}">
                 <div>Odd Thread (counter % 2 == 1)</div>
                 <div class="mt-1">${isOddTurn ? "ACTIVE -> Prints " + state.evenOddCounter : "Sleeping in cv.wait()"}</div>
               </div>
-              <div class="p-3 rounded-lg border ${!isOddTurn ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold" : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)]"}">
+              <div class="p-3 rounded-lg border ${!isOddTurn ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)]"}">
                 <div>Even Thread (counter % 2 == 0)</div>
                 <div class="mt-1">${!isOddTurn ? "ACTIVE -> Prints " + state.evenOddCounter : "Sleeping in cv.wait()"}</div>
               </div>
             </div>
             <div class="text-[var(--foreground)]">
-              Printed Sequence: <span class="text-[var(--primary)] font-bold">${state.evenOddHistory.join(" -> ")}</span>
+              Printed Sequence: <span class="font-bold">${state.evenOddHistory.join(" -> ")}</span>
             </div>
           </div>
         </div>
 
-        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5 font-mono text-xs text-[var(--foreground)] space-y-1">
+        <div class="code-surface border-2 border-[var(--accent)] rounded-xl p-3.5 font-mono text-xs space-y-1">
           ${state.cvLog.slice(-4).map((l) => `<div>&gt; ${escapeHtml(l)}</div>`).join("")}
         </div>
       </div>
@@ -1659,7 +1850,7 @@
             <p class="text-[var(--muted-foreground)] text-xs">Fulfill a <code class="font-mono">std::promise</code> channel, compare <code class="font-mono">launch::async</code> vs <code class="font-mono">launch::deferred</code>, and enqueue tasks into a 4-worker Thread Pool.</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="togglePromiseState()" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold text-xs">
+            <button onclick="togglePromiseState()" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-xs">
               ${state.promiseFulfilled ? "Reset std::promise<int>" : "Worker: Call promise.set_value(250000)"}
             </button>
             <button onclick="enqueuePoolTaskSim()" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs">
@@ -1669,42 +1860,39 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-          <!-- Promise / Future Shared State -->
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
-            <div class="text-[var(--muted-foreground)] font-sans font-semibold">1. std::promise&lt;ull&gt; &rarr; std::future&lt;ull&gt; Shared State</div>
+            <div class="text-[var(--muted-foreground)] font-sans font-bold">1. std::promise&lt;ull&gt; &rarr; std::future&lt;ull&gt; Shared State</div>
             <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)] space-y-1">
               <div>Promise Status: <strong>${state.promiseFulfilled ? "FULFILLED (set_value(250000) called)" : "PENDING (Worker computing odd sum...)"}</strong></div>
               <div>Heap Shared State: <strong>${state.promiseFulfilled ? "Ready = true · Value = 250000" : "Ready = false"}</strong></div>
-              <div>Main Thread <code class="font-mono">odd_future.get()</code>: <strong class="text-[var(--primary)]">${state.promiseFulfilled ? "UNBLOCKED -> Returned 250000!" : "BLOCKED waiting on Shared State"}</strong></div>
+              <div>Main Thread <code class="font-mono">odd_future.get()</code>: <strong>${state.promiseFulfilled ? "UNBLOCKED -> Returned 250000!" : "BLOCKED waiting on Shared State"}</strong></div>
             </div>
           </div>
 
-          <!-- std::async Launch Policy Switch -->
           <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-[var(--muted-foreground)] font-sans font-semibold">2. std::async Launch Policy</span>
+              <span class="text-[var(--muted-foreground)] font-sans font-bold">2. std::async Launch Policy</span>
               <div class="flex gap-1.5">
-                <button onclick="setAsyncPolicySim('async')" class="px-2.5 py-1 rounded text-xs border ${state.asyncPolicy === "async" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold" : "bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]"}">launch::async</button>
-                <button onclick="setAsyncPolicySim('deferred')" class="px-2.5 py-1 rounded text-xs border ${state.asyncPolicy === "deferred" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-bold" : "bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]"}">launch::deferred</button>
+                <button onclick="setAsyncPolicySim('async')" class="px-2.5 py-1 rounded text-xs border ${state.asyncPolicy === "async" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]"}">launch::async</button>
+                <button onclick="setAsyncPolicySim('deferred')" class="px-2.5 py-1 rounded text-xs border ${state.asyncPolicy === "deferred" ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold" : "bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]"}">launch::deferred</button>
               </div>
             </div>
             <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)] space-y-1">
               ${
                 state.asyncPolicy === "async"
-                  ? `<div>Execution Thread: <strong class="text-[var(--primary)]">New Worker OS Thread (TID 0x8F20)</strong></div>
+                  ? `<div>Execution Thread: <strong>New Worker OS Thread (TID 0x8F20)</strong></div>
                      <div>When Started: <strong>Immediately at std::async(...) call site</strong></div>`
-                  : `<div>Execution Thread: <strong class="text-[var(--primary)]">Main Calling Thread (TID 0x1001 — ZERO new threads!)</strong></div>
+                  : `<div>Execution Thread: <strong>Main Calling Thread (TID 0x1001 — ZERO new threads!)</strong></div>
                      <div>When Started: <strong>Lazily only when future.get() or wait() is called</strong></div>`
               }
             </div>
           </div>
         </div>
 
-        <!-- Thread Pool Task Queue -->
         <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2.5">
           <div class="flex items-center justify-between text-xs font-mono">
-            <span class="text-[var(--muted-foreground)] font-semibold">3. C++20 THREAD POOL (4 PERSISTENT WORKERS + PACKAGED_TASK QUEUE)</span>
-            <span class="text-[var(--foreground)]">Total Enqueued: ${state.poolTasks.length}</span>
+            <span class="text-[var(--muted-foreground)] font-bold">3. C++20 THREAD POOL (4 PERSISTENT WORKERS + PACKAGED_TASK QUEUE)</span>
+            <span class="text-[var(--foreground)] font-bold">Total Enqueued: ${state.poolTasks.length}</span>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-2 font-mono text-xs">
             ${state.poolTasks
@@ -1713,8 +1901,8 @@
                 (t) => `
               <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
                 <div class="text-[var(--muted-foreground)]">Task #${t.id}: ${t.expr}</div>
-                <div class="font-semibold text-[var(--foreground)] mt-1">${t.worker}</div>
-                <div class="text-[var(--primary)] mt-0.5">${t.status}</div>
+                <div class="font-bold text-[var(--foreground)] mt-1">${t.worker}</div>
+                <div class="mt-0.5">${t.status}</div>
               </div>`
               )
               .join("")}
@@ -1747,6 +1935,99 @@
     renderMain();
   };
 
+  // --- SIMULATOR 10: STL VECTOR 2X REALLOCATION & UNORDERED_MAP BUCKETS ---
+  function renderStlSimulator() {
+    const slots = [];
+    for (let i = 0; i < state.stlVecCap; i++) {
+      slots.push(state.stlVecItems[i] !== undefined ? state.stlVecItems[i] : null);
+    }
+
+    return `
+      <div class="space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg md:text-xl font-bold text-[var(--foreground)]">STL Container Lab: std::vector 2x Growth &amp; std::unordered_map Hash Buckets</h2>
+            <p class="text-[var(--muted-foreground)] text-xs">Push elements into <code class="font-mono">std::vector</code> to watch 2x geometric capacity reallocation and inspect <code class="font-mono">std::unordered_map</code> bucket chains.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="stlPushBack()" class="px-3.5 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-xs">+ v.push_back(next)</button>
+            <button onclick="stlResetVector()" class="px-3.5 py-1.5 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] font-semibold text-xs">Reset std::vector</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
+            <div class="text-[var(--muted-foreground)] font-sans">v.size() / v.capacity()</div>
+            <div class="text-xl font-bold text-[var(--foreground)] mt-1">${state.stlVecItems.length} / ${state.stlVecCap}</div>
+          </div>
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
+            <div class="text-[var(--muted-foreground)] font-sans">Heap Reallocations</div>
+            <div class="text-xl font-bold text-[var(--foreground)] mt-1">${state.stlVecReallocCount} Reallocs</div>
+          </div>
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
+            <div class="text-[var(--muted-foreground)] font-sans">Stack Control Header</div>
+            <div class="text-sm font-bold text-[var(--foreground)] mt-1">24 Bytes (start, finish, cap)</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="text-xs font-mono font-bold text-[var(--muted-foreground)] mb-2">CONTIGUOUS HEAP BUFFER (std::vector&lt;int&gt;)</div>
+          <div class="grid grid-cols-4 md:grid-cols-8 gap-2 font-mono text-xs">
+            ${slots
+              .map(
+                (v, idx) => `
+              <div class="p-2.5 rounded-lg text-center border ${
+                  v !== null
+                    ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
+                    : "bg-[var(--background)] text-[var(--muted-foreground)] border-dashed border-[var(--border)]"
+                }">
+                <div>[${idx}]</div>
+                <div>${v !== null ? v : "uninit"}</div>
+              </div>`
+              )
+              .join("")}
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-[var(--border)]">
+          <div class="text-xs font-mono font-bold text-[var(--muted-foreground)] mb-2">COMPILER SYMBOL TABLE BUCKETS (std::unordered_map&lt;string, string&gt;)</div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-2 font-mono text-xs">
+            ${state.stlBuckets
+              .map(
+                (chain, bIdx) => `
+              <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+                <div class="font-bold text-[var(--foreground)] mb-1">Bucket [${bIdx}]</div>
+                ${
+                  chain.length === 0
+                    ? `<div class="text-[var(--muted-foreground)]">&rarr; nullptr</div>`
+                    : chain.map((node) => `<div class="px-2 py-1 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)] mt-1">&rarr; "${node.k}": ${node.v}</div>`).join("")
+                }
+              </div>`
+              )
+              .join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  window.stlPushBack = function () {
+    const nextVal = (state.stlVecItems.length + 1) * 10;
+    if (state.stlVecItems.length >= state.stlVecCap) {
+      state.stlVecCap = state.stlVecCap * 2;
+      state.stlVecReallocCount++;
+    }
+    state.stlVecItems.push(nextVal);
+    renderMain();
+  };
+
+  window.stlResetVector = function () {
+    state.stlVecItems = [10, 20, 30, 40];
+    state.stlVecCap = 4;
+    state.stlVecReallocCount = 3;
+    renderMain();
+  };
+
   // ==================== VIEW 5: QUIZ ====================
   function renderQuiz() {
     const filteredQuestions = DATA.quizQuestions.filter((q) => {
@@ -1759,14 +2040,14 @@
       <div class="space-y-6">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-[var(--foreground)]">C++20 OOP &amp; CppNuts Multithreading Mastery Quiz</h1>
-            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">25 interview-grade questions (15 OOP &amp; Memory + 10 CppNuts Concurrency). Filter by track using the top bar.</p>
+            <h1 class="text-2xl md:text-3xl font-bold text-[var(--foreground)]">C++20 OOP, Threading &amp; STL Mastery Quiz</h1>
+            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">30 interview-grade questions (15 OOP · 10 CppNuts Threading · 5 STL Containers). Filter by track in the top bar.</p>
           </div>
           <div class="flex items-center gap-3">
-            <span class="text-xs font-mono text-[var(--foreground)] bg-[var(--card)] border border-[var(--border)] px-3 py-1.5 rounded-lg">
+            <span class="text-xs font-mono font-bold text-[var(--foreground)] bg-[var(--card)] border border-[var(--border)] px-3 py-1.5 rounded-lg">
               Answered: ${answeredCount} / ${DATA.quizQuestions.length}
             </span>
-            <button onclick="submitQuiz()" class="px-5 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold text-xs md:text-sm">
+            <button onclick="submitQuiz()" class="px-5 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-xs md:text-sm">
               Submit &amp; View Results
             </button>
           </div>
@@ -1776,18 +2057,20 @@
           ${filteredQuestions
             .map((q) => {
               const picked = state.quizAnswers[q.id];
-              const isThread = q.track === "threading";
+              const tr = q.track || "oop";
+              const badgeText =
+                tr === "threading"
+                  ? "Track 2 · CppNuts Threading"
+                  : tr === "stl"
+                  ? "Track 3 · STL Containers"
+                  : "Track 1 · OOP & Memory";
               return `
               <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 md:p-6 space-y-3.5 shadow-sm">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <div class="text-xs font-mono text-[var(--muted-foreground)] font-semibold">QUESTION ${q.id} · ${q.topic.toUpperCase()}</div>
-                  <span class="px-2 py-0.5 rounded text-xs font-mono ${
-                    isThread
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold"
-                      : "bg-[var(--secondary)] text-[var(--secondary-foreground)]"
-                  }">${isThread ? "Track 2 · CppNuts Threading" : "Track 1 · OOP & Memory"}</span>
+                  <div class="text-xs font-mono text-[var(--muted-foreground)] font-bold">QUESTION ${q.id} · ${q.topic.toUpperCase()}</div>
+                  <span class="px-2.5 py-0.5 rounded text-xs font-mono bg-[var(--secondary)] text-[var(--secondary-foreground)] font-bold">${badgeText}</span>
                 </div>
-                <h3 class="text-sm md:text-base font-semibold text-[var(--foreground)] leading-relaxed">${escapeHtml(q.question)}</h3>
+                <h3 class="text-sm md:text-base font-bold text-[var(--foreground)] leading-relaxed">${escapeHtml(q.question)}</h3>
                 <div class="space-y-2">
                   ${q.options
                     .map((opt, oIdx) => {
@@ -1796,10 +2079,10 @@
                       <button onclick="pickQuizOption(${q.id}, ${oIdx})"
                         class="w-full text-left p-3.5 rounded-xl border text-xs md:text-sm transition flex items-start gap-3 ${
                           isSelected
-                            ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-medium"
+                            ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--accent)] font-bold"
                             : "bg-[var(--background)] border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--secondary)]"
                         }">
-                        <span class="font-mono text-xs px-2 py-0.5 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)]">${String.fromCharCode(65 + oIdx)}</span>
+                        <span class="font-mono text-xs px-2 py-0.5 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)] font-bold">${String.fromCharCode(65 + oIdx)}</span>
                         <span>${escapeHtml(opt)}</span>
                       </button>`;
                     })
@@ -1834,17 +2117,17 @@
 
     return `
       <div class="space-y-6">
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 md:p-8 flex flex-wrap items-center justify-between gap-6 shadow-sm">
+        <div class="bg-[var(--card)] border-2 border-[var(--accent)] rounded-2xl p-6 md:p-8 flex flex-wrap items-center justify-between gap-6 shadow-sm">
           <div>
-            <div class="text-xs font-mono text-[var(--muted-foreground)] uppercase mb-1">ASSESSMENT REPORT · OOP &amp; MULTITHREADING</div>
+            <div class="text-xs font-mono text-[var(--muted-foreground)] uppercase mb-1">ASSESSMENT REPORT · OOP, THREADING &amp; STL</div>
             <h1 class="text-2xl md:text-3xl font-bold text-[var(--foreground)]">Score: ${correct} / ${total} (${pct}%)</h1>
-            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">Review the detailed compiler, memory layout, and thread synchronization explanations for all 25 questions below.</p>
+            <p class="text-[var(--muted-foreground)] text-xs md:text-sm mt-1">Review the detailed compiler, memory layout, concurrency, and STL container explanations for all 30 questions below.</p>
           </div>
           <div class="flex gap-2.5">
-            <button onclick="resetQuiz()" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs md:text-sm font-semibold">
+            <button onclick="resetQuiz()" class="px-4 py-2 rounded-xl bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] text-xs md:text-sm font-bold">
               Retake Quiz
             </button>
-            <button onclick="switchView('code-demo')" class="px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs md:text-sm font-semibold">
+            <button onclick="switchView('code-demo')" class="px-4 py-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] text-xs md:text-sm font-bold">
               Open Code Demo IDE
             </button>
           </div>
@@ -1858,21 +2141,21 @@
               return `
               <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 space-y-2 shadow-sm">
                 <div class="flex items-center justify-between text-xs font-mono">
-                  <span class="text-[var(--muted-foreground)]">Q${idx + 1} · ${q.topic}</span>
-                  <span class="px-2.5 py-0.5 rounded-full font-semibold ${
+                  <span class="text-[var(--muted-foreground)] font-bold">Q${idx + 1} · ${q.topic}</span>
+                  <span class="px-2.5 py-0.5 rounded-full font-bold ${
                     isCorrect
                       ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
                       : "bg-[var(--secondary)] text-[var(--secondary-foreground)]"
                   }">${isCorrect ? "CORRECT" : "REVIEW"}</span>
                 </div>
-                <div class="text-sm font-semibold text-[var(--foreground)]">${escapeHtml(q.question)}</div>
+                <div class="text-sm font-bold text-[var(--foreground)]">${escapeHtml(q.question)}</div>
                 <div class="text-xs text-[var(--muted-foreground)]">
-                  Your Answer: <span class="text-[var(--foreground)] font-medium">${
+                  Your Answer: <span class="text-[var(--foreground)] font-semibold">${
                     userPick !== undefined ? escapeHtml(q.options[userPick]) : "(Not answered)"
                   }</span>
                 </div>
                 <div class="text-xs text-[var(--foreground)]">
-                  Correct Answer: <span class="font-semibold">${escapeHtml(q.options[q.answer])}</span>
+                  Correct Answer: <span class="font-bold">${escapeHtml(q.options[q.answer])}</span>
                 </div>
                 <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3 text-xs text-[var(--muted-foreground)] leading-relaxed">
                   <strong class="text-[var(--foreground)]">Explanation:</strong> ${escapeHtml(q.explanation)}
@@ -1910,7 +2193,18 @@
     else if (state.activeView === "result") main.innerHTML = renderResult();
   }
 
+  // Boot into requested default track if specified via window.DEFAULT_STUDIO_TRACK or URL ?track=
+  try {
+    const params = window.location && window.location.search ? new URLSearchParams(window.location.search) : null;
+    const requestedTrack = (params && params.get("track")) || window.DEFAULT_STUDIO_TRACK || null;
+    if (requestedTrack && ["oop", "threading", "stl"].includes(requestedTrack)) {
+      window.setTrackFilter(requestedTrack);
+      return;
+    }
+  } catch (_) {}
+
   renderNav();
   renderTrackSwitcher();
+  renderPaletteBar();
   renderMain();
 })();

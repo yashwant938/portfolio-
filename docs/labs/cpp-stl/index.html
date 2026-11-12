@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C++20 Systems Trinity Studio â€” OOP (Yellow) Â· Threading (Emerald) Â· STL (Indigo)</title>
+  <link rel="stylesheet" href="./src/styles.css" />
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const PALETTES = {
+        "solar-yellow": {
+          "--background": "#FFFDF5",
+          "--content": "#FEF9C3",
+          "--card": "#FFFFFF",
+          "--sidebar": "#FFFBEB",
+          "--border": "#E4E4E7",
+          "--foreground": "#18181B",
+          "--muted-foreground": "#52525B",
+          "--placeholder": "#71717A",
+          "--primary": "#FACC15",
+          "--primary-foreground": "#18181B",
+          "--secondary": "#FEF08A",
+          "--secondary-foreground": "#713F12",
+          "--accent": "#EAB308",
+          "--code-bg": "#18181B",
+          "--code-fg": "#FEF9C3"
+        },
+        "emerald-mint": {
+          "--background": "#F4FBF7",
+          "--content": "#D1FAE5",
+          "--card": "#FFFFFF",
+          "--sidebar": "#ECFDF5",
+          "--border": "#D1E7DD",
+          "--foreground": "#06281E",
+          "--muted-foreground": "#3F6256",
+          "--placeholder": "#52796F",
+          "--primary": "#10B981",
+          "--primary-foreground": "#052E16",
+          "--secondary": "#D1FAE5",
+          "--secondary-foreground": "#065F46",
+          "--accent": "#059669",
+          "--code-bg": "#06281E",
+          "--code-fg": "#A7F3D0"
+        },
+        "royal-indigo": {
+          "--background": "#F8FAFC",
+          "--content": "#E0E7FF",
+          "--card": "#FFFFFF",
+          "--sidebar": "#EEF2FF",
+          "--border": "#CBD5E1",
+          "--foreground": "#0F172A",
+          "--muted-foreground": "#475569",
+          "--placeholder": "#64748B",
+          "--primary": "#6366F1",
+          "--primary-foreground": "#FFFFFF",
+          "--secondary": "#FEF3C7",
+          "--secondary-foreground": "#92400E",
+          "--accent": "#4F46E5",
+          "--code-bg": "#0F172A",
+          "--code-fg": "#E0E7FF"
+        },
+        "cyber-dark": {
+          "--background": "#0D0D10",
+          "--content": "#141418",
+          "--card": "#18181E",
+          "--sidebar": "#121216",
+          "--border": "#2E2E36",
+          "--foreground": "#FAFAFA",
+          "--muted-foreground": "#A1A1AA",
+          "--placeholder": "#71717A",
+          "--primary": "#FACC15",
+          "--primary-foreground": "#09090B",
+          "--secondary": "#27272A",
+          "--secondary-foreground": "#FDE047",
+          "--accent": "#EAB308",
+          "--code-bg": "#09090B",
+          "--code-fg": "#FDE047"
+        }
+      };
+
+      window.applyStudioPalette = function (paletteKey) {
+        const tokens = PALETTES[paletteKey] || PALETTES["solar-yellow"];
+        Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(k, v));
+        root.dataset.theme = paletteKey;
+        if (window.renderPaletteBar) window.renderPaletteBar();
+      };
+
+      window.DEFAULT_STUDIO_TRACK = "stl"; window.applyStudioPalette("royal-indigo");
+    })();
+  </script>
+</head>
+<body class="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] antialiased">
+  <!-- Studio Command Header -->
+  <header class="sticky top-0 z-30 bg-[var(--card)] border-b-2 border-[var(--accent)] shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <button onclick="switchView('landing')" class="text-left font-bold text-base md:text-lg text-[var(--foreground)] bg-transparent border-0 p-0 tracking-tight flex items-center gap-2.5">
+        <span class="px-2.5 py-0.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-mono text-xs font-bold">C++20</span>
+        <span id="studio-brand-title">C++ Systems Trinity Studio Â· OOP, Threading &amp; STL</span>
+      </button>
+      <div class="flex flex-wrap items-center gap-2">
+        <nav id="top-nav-buttons" class="flex flex-wrap items-center gap-1.5"></nav>
+      </div>
+    </div>
+
+    <!-- Secondary 3-Color Trinity Track & Palette Switcher Bar -->
+    <div class="bg-[var(--sidebar)] border-t border-[var(--border)]">
+      <div class="max-w-7xl mx-auto px-4 md:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
+        <div id="track-switcher-bar" class="flex flex-wrap items-center gap-1.5"></div>
+        <div id="palette-switcher-bar" class="flex flex-wrap items-center gap-1.5"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main id="app-main-container" class="flex-1 max-w-7xl w-full mx-auto px-4 md:px-6 py-6 md:py-8"></main>
+
+  <!-- Footer -->
+  <footer class="border-t-2 border-[var(--accent)] bg-[var(--card)] py-4 mt-12 text-center text-xs text-[var(--muted-foreground)] font-mono">
+    CppOOPTopics v3.0 Â· 3-Color Trinity UI (White+Solar Yellow OOP Â· White+Emerald CppNuts Threading Â· White+Indigo STL) Â· 22 Modules Â· 17 Labs Â· 10 Simulators Â· 30 Quiz Items
+  </footer>
+
+  <script src="./src/data.js"></script>
+  <script src="./src/app.js"></script>
+</body>
+</html>
+

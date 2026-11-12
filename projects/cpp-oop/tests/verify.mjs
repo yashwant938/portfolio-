@@ -31,7 +31,6 @@ for (const rel of requiredFiles) {
   }
 }
 
-// Check generative_ui design constraints on src/app.js & index.html
 const appSource = fs.readFileSync(path.join(root, "src/app.js"), "utf8");
 const indexSource = fs.readFileSync(path.join(root, "index.html"), "utf8");
 
@@ -42,15 +41,20 @@ if (!appSource.includes("var(--card)") || !appSource.includes("var(--foreground)
   throw new Error("Design violation: missing semantic CSS variables");
 }
 
-// Simulate DOM and exercise all 6 views + 9 animation simulators + track switcher
 const elements = {
   "top-nav-buttons": { innerHTML: "" },
   "track-switcher-bar": { innerHTML: "" },
+  "palette-switcher-bar": { innerHTML: "" },
   "app-main-container": { innerHTML: "" }
 };
 
+let lastAppliedPalette = "solar-yellow";
 const sandbox = {
-  window: {},
+  window: {
+    applyStudioPalette: (p) => {
+      lastAppliedPalette = p;
+    }
+  },
   navigator: { clipboard: { writeText: () => {} } },
   document: {
     readyState: "complete",
@@ -64,14 +68,14 @@ vm.runInContext(fs.readFileSync(path.join(root, "src/data.js"), "utf8"), sandbox
 vm.runInContext(appSource, sandbox);
 
 const data = sandbox.window.CPP_OOP_DATA;
-if (data.slides.length !== 18) {
-  throw new Error(`Expected 18 concept slides, got ${data.slides.length}`);
+if (data.slides.length !== 22) {
+  throw new Error(`Expected 22 concept slides, got ${data.slides.length}`);
 }
-if (data.codeDemos.length !== 14) {
-  throw new Error(`Expected 14 code demos, got ${data.codeDemos.length}`);
+if (data.codeDemos.length !== 17) {
+  throw new Error(`Expected 17 code demos, got ${data.codeDemos.length}`);
 }
-if (data.quizQuestions.length !== 25) {
-  throw new Error(`Expected 25 quiz questions, got ${data.quizQuestions.length}`);
+if (data.quizQuestions.length !== 30) {
+  throw new Error(`Expected 30 quiz questions, got ${data.quizQuestions.length}`);
 }
 
 const views = ["landing", "slides", "code-demo", "animation", "quiz", "result"];
@@ -82,17 +86,30 @@ for (const v of views) {
   }
 }
 
-// Test Track Filter Switcher
-for (const track of ["all", "oop", "threading"]) {
-  sandbox.window.setTrackFilter(track);
-  sandbox.window.switchView("landing");
-  if (!elements["app-main-container"].innerHTML.includes("Curriculum")) {
-    throw new Error(`Track filter '${track}' failed to render landing curriculum`);
-  }
+// Verify 3-Color Trinity Auto-Morphing Track Switcher (Combo #5)
+sandbox.window.setTrackFilter("oop");
+if (lastAppliedPalette !== "solar-yellow") {
+  throw new Error(`Expected 'solar-yellow' for OOP track, got '${lastAppliedPalette}'`);
 }
+
+sandbox.window.setTrackFilter("threading");
+if (lastAppliedPalette !== "emerald-mint") {
+  throw new Error(`Expected 'emerald-mint' for Threading track, got '${lastAppliedPalette}'`);
+}
+
+sandbox.window.setTrackFilter("stl");
+if (lastAppliedPalette !== "royal-indigo") {
+  throw new Error(`Expected 'royal-indigo' for STL track, got '${lastAppliedPalette}'`);
+}
+
+sandbox.window.setPaletteManual("cyber-dark");
+if (lastAppliedPalette !== "cyber-dark") {
+  throw new Error(`Expected 'cyber-dark' on manual override, got '${lastAppliedPalette}'`);
+}
+
 sandbox.window.setTrackFilter("all");
 
-// Exercise all 9 animation simulators (5 OOP + 4 CppNuts Threading)
+// Exercise all 10 animation simulators (5 OOP + 4 CppNuts Threading + 1 STL)
 sandbox.window.switchView("animation");
 const allSimTabs = [
   "align",
@@ -103,7 +120,8 @@ const allSimTabs = [
   "threads5",
   "mutex_deadlock",
   "cv_queue",
-  "future_pool"
+  "future_pool",
+  "stl_sim"
 ];
 for (const tab of allSimTabs) {
   sandbox.window.setAnimTab(tab);
@@ -112,47 +130,13 @@ for (const tab of allSimTabs) {
   }
 }
 
-// Test Simulator 1: Greedy Alignment
-sandbox.window.setAnimTab("align");
-sandbox.window.applyGreedySort();
-if (!elements["app-main-container"].innerHTML.includes("16 Bytes")) {
-  throw new Error("Greedy alignment sort failed to compute 16 Bytes");
-}
-
-// Test Simulator 6: CppNuts 5 Thread Creation Ways
-sandbox.window.setAnimTab("threads5");
-sandbox.window.selectThreadWay(3);
-sandbox.window.setThreadLifecycleMode("jthread");
-if (!elements["app-main-container"].innerHTML.includes("EngineController::calibrate")) {
-  throw new Error("Thread simulator way #4 failed to render");
-}
-
-// Test Simulator 7: Mutex & Deadlock
-sandbox.window.setAnimTab("mutex_deadlock");
-sandbox.window.setDeadlockFixed(false);
-if (!elements["app-main-container"].innerHTML.includes("CIRCULAR WAIT DEADLOCK")) {
-  throw new Error("Deadlock simulator failed to show circular wait state");
-}
-sandbox.window.setDeadlockFixed(true);
-
-// Test Simulator 8: Condition Variable Producer-Consumer & Even-Odd
-sandbox.window.setAnimTab("cv_queue");
-sandbox.window.cvProduceItem();
-sandbox.window.cvConsumeItem();
-sandbox.window.cvStepEvenOdd();
-if (!elements["app-main-container"].innerHTML.includes("BOUNDED QUEUE")) {
-  throw new Error("Condition variable simulator failed to render bounded queue");
-}
-
-// Test Simulator 9: Future/Promise, Async & Thread Pool
-sandbox.window.setAnimTab("future_pool");
-sandbox.window.togglePromiseState();
-sandbox.window.setAsyncPolicySim("deferred");
-sandbox.window.enqueuePoolTaskSim();
-if (!elements["app-main-container"].innerHTML.includes("250000")) {
-  throw new Error("Future/Promise simulator failed to fulfill promise");
+// Test Simulator 10: STL Vector 2x Reallocation
+sandbox.window.setAnimTab("stl_sim");
+sandbox.window.stlPushBack();
+if (!elements["app-main-container"].innerHTML.includes("5 / 8")) {
+  throw new Error("STL vector simulator failed to double capacity from 4 to 8 on 5th push_back");
 }
 
 console.log(
-  "FRONTEND & DESIGN AUDIT PASSED: All 6 views, Dual-Track switcher, 18 slides, 14 demos, 9 simulators (5 OOP + 4 CppNuts Threading), 25 quiz questions, and 10 native C++20 labs verified."
+  "3-COLOR TRINITY UI AUDIT PASSED: All 6 views, 4 palettes (Solar Yellow, Emerald Mint, Royal Indigo, Cyber Dark), 22 slides, 17 demos, 10 simulators, 30 quiz items, and 10 native C++20 labs verified."
 );

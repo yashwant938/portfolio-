@@ -3,79 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>C++ OOP &amp; CppNuts Multithreading Studio — CppOOPTopics Lab</title>
+  <title>C++20 Systems Trinity Studio — OOP (Yellow) · Threading (Emerald) · STL (Indigo)</title>
   <link rel="stylesheet" href="./src/styles.css" />
   <script>
     (function () {
       const root = document.documentElement;
-      const applyStandaloneTheme = (mode) => {
-        const tokens =
-          mode === "light"
-            ? {
-                "--background": "#f8fafc",
-                "--content": "#f1f5f9",
-                "--card": "#ffffff",
-                "--sidebar": "#f1f5f9",
-                "--border": "#cbd5e1",
-                "--foreground": "#0f172a",
-                "--muted-foreground": "#475569",
-                "--placeholder": "#64748b",
-                "--primary": "#0284c7",
-                "--primary-foreground": "#ffffff",
-                "--secondary": "#e2e8f0",
-                "--secondary-foreground": "#0f172a",
-                "--accent": "#0284c7"
-              }
-            : {
-                "--background": "#050a14",
-                "--content": "#070d19",
-                "--card": "#0b1324",
-                "--sidebar": "#070d19",
-                "--border": "#1e293b",
-                "--foreground": "#f1f5f9",
-                "--muted-foreground": "#94a3b8",
-                "--placeholder": "#64748b",
-                "--primary": "#06b6d4",
-                "--primary-foreground": "#020617",
-                "--secondary": "#162238",
-                "--secondary-foreground": "#e2e8f0",
-                "--accent": "#22d3ee"
-              };
+      const PALETTES = {
+        "solar-yellow": {
+          "--background": "#FFFDF5",
+          "--content": "#FEF9C3",
+          "--card": "#FFFFFF",
+          "--sidebar": "#FFFBEB",
+          "--border": "#E4E4E7",
+          "--foreground": "#18181B",
+          "--muted-foreground": "#52525B",
+          "--placeholder": "#71717A",
+          "--primary": "#FACC15",
+          "--primary-foreground": "#18181B",
+          "--secondary": "#FEF08A",
+          "--secondary-foreground": "#713F12",
+          "--accent": "#EAB308",
+          "--code-bg": "#18181B",
+          "--code-fg": "#FEF9C3"
+        },
+        "emerald-mint": {
+          "--background": "#F4FBF7",
+          "--content": "#D1FAE5",
+          "--card": "#FFFFFF",
+          "--sidebar": "#ECFDF5",
+          "--border": "#D1E7DD",
+          "--foreground": "#06281E",
+          "--muted-foreground": "#3F6256",
+          "--placeholder": "#52796F",
+          "--primary": "#10B981",
+          "--primary-foreground": "#052E16",
+          "--secondary": "#D1FAE5",
+          "--secondary-foreground": "#065F46",
+          "--accent": "#059669",
+          "--code-bg": "#06281E",
+          "--code-fg": "#A7F3D0"
+        },
+        "royal-indigo": {
+          "--background": "#F8FAFC",
+          "--content": "#E0E7FF",
+          "--card": "#FFFFFF",
+          "--sidebar": "#EEF2FF",
+          "--border": "#CBD5E1",
+          "--foreground": "#0F172A",
+          "--muted-foreground": "#475569",
+          "--placeholder": "#64748B",
+          "--primary": "#6366F1",
+          "--primary-foreground": "#FFFFFF",
+          "--secondary": "#FEF3C7",
+          "--secondary-foreground": "#92400E",
+          "--accent": "#4F46E5",
+          "--code-bg": "#0F172A",
+          "--code-fg": "#E0E7FF"
+        },
+        "cyber-dark": {
+          "--background": "#0D0D10",
+          "--content": "#141418",
+          "--card": "#18181E",
+          "--sidebar": "#121216",
+          "--border": "#2E2E36",
+          "--foreground": "#FAFAFA",
+          "--muted-foreground": "#A1A1AA",
+          "--placeholder": "#71717A",
+          "--primary": "#FACC15",
+          "--primary-foreground": "#09090B",
+          "--secondary": "#27272A",
+          "--secondary-foreground": "#FDE047",
+          "--accent": "#EAB308",
+          "--code-bg": "#09090B",
+          "--code-fg": "#FDE047"
+        }
+      };
+
+      window.applyStudioPalette = function (paletteKey) {
+        const tokens = PALETTES[paletteKey] || PALETTES["solar-yellow"];
         Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(k, v));
-        root.dataset.theme = mode;
-        const btn = document.getElementById("theme-toggle-btn");
-        if (btn) btn.textContent = mode === "dark" ? "Light Theme" : "Dark Theme";
+        root.dataset.theme = paletteKey;
+        if (window.renderPaletteBar) window.renderPaletteBar();
       };
-      applyStandaloneTheme("dark");
-      window.toggleStandaloneTheme = function () {
-        applyStandaloneTheme(root.dataset.theme === "dark" ? "light" : "dark");
-      };
+
+      window.applyStudioPalette("solar-yellow");
     })();
   </script>
 </head>
 <body class="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] antialiased">
   <!-- Studio Command Header -->
-  <header class="sticky top-0 z-30 bg-[var(--card)] border-b border-[var(--border)] shadow-sm">
+  <header class="sticky top-0 z-30 bg-[var(--card)] border-b-2 border-[var(--accent)] shadow-sm">
     <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       <button onclick="switchView('landing')" class="text-left font-bold text-base md:text-lg text-[var(--foreground)] bg-transparent border-0 p-0 tracking-tight flex items-center gap-2.5">
-        <span class="w-2.5 h-2.5 rounded-full bg-[var(--primary)]"></span>
-        <span>C++20 OOP &amp; CppNuts Multithreading Studio</span>
-        <span class="px-2 py-0.5 rounded-md text-xs font-mono bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]">v2.0 Dual-Track</span>
+        <span class="px-2.5 py-0.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] font-mono text-xs font-bold">C++20</span>
+        <span id="studio-brand-title">C++ Systems Trinity Studio · OOP, Threading &amp; STL</span>
       </button>
       <div class="flex flex-wrap items-center gap-2">
         <nav id="top-nav-buttons" class="flex flex-wrap items-center gap-1.5"></nav>
-        <button id="theme-toggle-btn" onclick="toggleStandaloneTheme()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)]">
-          Light Theme
-        </button>
       </div>
     </div>
-    <!-- Secondary Track Filter Bar -->
+
+    <!-- Secondary 3-Color Trinity Track & Palette Switcher Bar -->
     <div class="bg-[var(--sidebar)] border-t border-[var(--border)]">
       <div class="max-w-7xl mx-auto px-4 md:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
         <div id="track-switcher-bar" class="flex flex-wrap items-center gap-1.5"></div>
-        <div class="text-xs font-mono text-[var(--muted-foreground)]">
-          18 Concept Modules · 14 C++20 Code Labs · 9 Interactive Simulators · 25 Quiz Items
-        </div>
+        <div id="palette-switcher-bar" class="flex flex-wrap items-center gap-1.5"></div>
       </div>
     </div>
   </header>
@@ -84,8 +116,8 @@
   <main id="app-main-container" class="flex-1 max-w-7xl w-full mx-auto px-4 md:px-6 py-6 md:py-8"></main>
 
   <!-- Footer -->
-  <footer class="border-t border-[var(--border)] bg-[var(--card)] py-4 mt-12 text-center text-xs text-[var(--muted-foreground)] font-mono">
-    CppOOPTopics · Complete C++20/23 OOP, Greedy Alignment, Vtable, Move Semantics &amp; CppNuts Multithreading Concurrency Lab
+  <footer class="border-t-2 border-[var(--accent)] bg-[var(--card)] py-4 mt-12 text-center text-xs text-[var(--muted-foreground)] font-mono">
+    CppOOPTopics v3.0 · 3-Color Trinity UI (White+Solar Yellow OOP · White+Emerald CppNuts Threading · White+Indigo STL) · 22 Modules · 17 Labs · 10 Simulators · 30 Quiz Items
   </footer>
 
   <script src="./src/data.js"></script>

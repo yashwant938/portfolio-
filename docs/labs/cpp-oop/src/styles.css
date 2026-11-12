@@ -1,24 +1,27 @@
 /* ============================================================================
-   CppOOPTopics — Self-Contained Responsive Design System (Zero External CDNs)
-   Supports Dark/Light Semantic Theme Variables & Dual-Track Systems Studio UI
+   CppOOPTopics — 3-Color Trinity Responsive Design System (Zero External CDNs)
+   Default Theme: Crisp Alabaster White + Solar Yellow + Charcoal Ink
+   Auto-Morphs Across OOP (Yellow), CppNuts Threading (Emerald), & STL (Indigo)
    ============================================================================ */
 
 :root {
-  --background: #050a14;
-  --content: #070d19;
-  --card: #0b1324;
-  --sidebar: #070d19;
-  --border: #1e293b;
-  --foreground: #f1f5f9;
-  --muted-foreground: #94a3b8;
-  --placeholder: #64748b;
-  --primary: #06b6d4;
-  --primary-foreground: #020617;
-  --secondary: #162238;
-  --secondary-foreground: #e2e8f0;
-  --accent: #22d3ee;
+  --background: #FFFDF5;
+  --content: #FEF9C3;
+  --card: #FFFFFF;
+  --sidebar: #FFFBEB;
+  --border: #E4E4E7;
+  --foreground: #18181B;
+  --muted-foreground: #52525B;
+  --placeholder: #71717A;
+  --primary: #FACC15;
+  --primary-foreground: #18181B;
+  --secondary: #FEF08A;
+  --secondary-foreground: #713F12;
+  --accent: #EAB308;
+  --code-bg: #18181B;
+  --code-fg: #FEF9C3;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 *, *::before, *::after {
@@ -32,6 +35,7 @@ html, body {
   overflow-x: hidden;
   background-color: var(--background);
   color: var(--foreground);
+  transition: background-color 0.2s ease, color 0.2s ease;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -45,7 +49,7 @@ button {
 }
 
 button:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -57,6 +61,11 @@ pre {
   margin: 0;
   max-width: 100%;
   overflow-x: auto;
+}
+
+.code-surface {
+  background-color: var(--code-bg, #18181B);
+  color: var(--code-fg, #FEF9C3);
 }
 
 /* Layout & Flexbox / Grid Utilities */
@@ -192,6 +201,7 @@ pre {
 .text-\[var\(--accent\)\] { color: var(--accent); }
 
 .border { border: 1px solid var(--border); }
+.border-2 { border: 2px solid var(--border); }
 .border-0 { border: 0; }
 .border-b { border-bottom: 1px solid var(--border); }
 .border-t { border-top: 1px solid var(--border); }
@@ -200,6 +210,7 @@ pre {
 .border-dashed { border-style: dashed; }
 .border-\[var\(--border\)\] { border-color: var(--border); }
 .border-\[var\(--primary\)\] { border-color: var(--primary); }
+.border-\[var\(--accent\)\] { border-color: var(--accent); }
 
 /* Border Radius & Shadows */
 .rounded { border-radius: 0.25rem; }
@@ -208,7 +219,7 @@ pre {
 .rounded-xl { border-radius: 0.75rem; }
 .rounded-2xl { border-radius: 1rem; }
 .rounded-full { border-radius: 9999px; }
-.shadow-sm { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.25); }
+.shadow-sm { box-shadow: 0 2px 6px -1px rgba(24, 24, 27, 0.07), 0 1px 3px -1px rgba(24, 24, 27, 0.05); }
 
 /* Typography (Minimum 12px floor enforced) */
 .text-xs { font-size: 0.75rem; line-height: 1.15rem; }

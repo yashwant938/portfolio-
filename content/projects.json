@@ -355,16 +355,20 @@
       "notes": "The live vector example visualizes instrumented program output, not debugger or memory-address traces. The Dual-Track OOP & Multithreading studio provides 9 interactive teaching simulations and 14 verified C++20 workbench examples. The separate copy benchmark uses small synthetic workloads; the original Q3 commands still use unbounded threads. Live compiler access requires Wandbox.",
       "links": [
         {
-          "label": "Live demo",
-          "url": "https://yashwant938.github.io/CompilerCppTopics/"
-        },
-        {
-          "label": "OOP & threading lab",
+          "label": "OOP & memory lab",
           "url": "labs/cpp-oop/"
         },
         {
-          "label": "Concepts source",
-          "url": "https://github.com/yashwant938/CompilerCppTopics"
+          "label": "Threading lab",
+          "url": "labs/cpp-threading/"
+        },
+        {
+          "label": "STL studio",
+          "url": "labs/cpp-stl/"
+        },
+        {
+          "label": "Live demo",
+          "url": "https://yashwant938.github.io/CompilerCppTopics/"
         },
         {
           "label": "OOP & threading source",
@@ -373,10 +377,6 @@
         {
           "label": "Systems source",
           "url": "https://github.com/yashwant938/OOPD-Project"
-        },
-        {
-          "label": "Copy benchmark",
-          "url": "https://github.com/yashwant938/OOPD-Project#bounded-copy-experiment"
         }
       ],
       "highlights": [
